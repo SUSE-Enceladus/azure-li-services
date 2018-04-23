@@ -1,0 +1,70 @@
+# Copyright (c) 2017 SUSE Linux GmbH.  All rights reserved.
+#
+# This file is part of azure-li-services.
+#
+# azure-li-services is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# azure-li-services is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with azure-li-services.  If not, see <http://www.gnu.org/licenses/>
+#
+import os
+import yaml
+
+
+class RuntimeConfig(object):
+    """
+    **Implements reading of Azure provided runtime config file**
+
+    The provided config file is a yaml formatted file containing
+    information to help with automation of customer installation
+    and setup processes for e.g SAP Hana workloads
+
+    Following sections are taken into account by the services
+    provided with this project:
+
+    .. code:: yaml
+        version: some_version_identifier
+
+        blade:
+          sku: identifier
+          cpu: expected_number_of_cpus
+          memory: expected_min_size_of_main_memory
+          time_server: ip_address_of_time_server
+          nics: expected_number_of_nics
+
+        storage:
+          -
+            device: expected_persistent_device_name
+            mount: path_to_mount_this_device
+            size: expected_blocksize_of_the_device
+            path: expected_unix_device_node
+
+        credentials:
+          username: user_name
+          password: base64_encoded_password
+          ssh-key:  ssh_rsa_key
+
+        packages:
+          directory: path_to_a_package_repository
+
+        call: program_call_directive
+
+    :param str config_file: file path name
+    """
+    def __init__(self, config_file):
+        self.config_data = None
+
+        if os.path.exists(config_file):
+            with open(config_file, 'r') as config:
+                self.config_data = yaml.load(config)
+
+    def get_config_file_version(self):
+        return self.config_data['version']

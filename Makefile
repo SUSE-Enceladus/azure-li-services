@@ -8,9 +8,9 @@ build: check test
 	cat setup.py | sed -e 's@>=[0-9.]*@@g' > setup.build.py
 	python setup.build.py sdist
 	rm setup.build.py
-	cat package/azure-li-services-spec-template \
+	cat package/azure_li_services_spec_template \
 		| sed -e s'@%%VERSION@${version}@' \
-		> dist/azure-li-services.spec
+		> dist/azure_li_services.spec
 
 .PHONY: test
 test:

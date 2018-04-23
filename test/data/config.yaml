@@ -1,0 +1,29 @@
+version: 2017-11-15
+blade:
+  sku: "SR92"
+  cpu: 32
+  memory: "20tb"
+  time_server: "129.6.15.28"
+  nics: 2
+  storage:
+    -
+      device: "/vol/bar"
+      mount: "/mnt/bar"
+      size: "30G"
+      path: "/dev/1234567890"
+      path: "/dev/2345678901"
+    -
+      device: "/vol/foo"
+      mount: "/mnt/foo"
+      size: "112G"
+
+credentials:
+  username: "hanauser"
+  password: "c29tZXJhbmRvbXBhc3N3b3JkCg=="
+  ssh-key: "ssh-rsa foo"
+
+packages:
+  directory: "/mnt/directory-with-rpm-files"
+  directory: "/mnt/another-directory-with-rpm-files"
+
+call: "/mnt/foo/update.sh"

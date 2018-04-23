@@ -1,0 +1,15 @@
+# Manifest describing source package contents
+
+graft azure_li_services
+graft package
+
+include tox.ini
+include README.md
+include LICENSE
+
+recursive-include *.py *.rst
+
+global-exclude *.py[cod] __pycache__
+
+include .virtualenv.dev-requirements.txt
+include .virtualenv.requirements.txt
