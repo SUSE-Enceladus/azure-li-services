@@ -25,6 +25,7 @@ config = {
     'packages': ['azure_li_services'],
     'entry_points': {
         'console_scripts': [
+            'azure-li-config-lookup=azure_li_services.units.config_lookup:main'
         ]
     },
     'include_package_data': True,

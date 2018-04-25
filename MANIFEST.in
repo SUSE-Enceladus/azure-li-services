@@ -1,7 +1,8 @@
 # Manifest describing source package contents
 
-graft azure_li_services
+graft azure_li_services/units
 graft package
+graft systemd
 
 include tox.ini
 include README.md

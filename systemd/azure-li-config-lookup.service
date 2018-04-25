@@ -1,0 +1,11 @@
+[Unit]
+Description=Lookup and import Azure Li/VLi config file
+ConditionPathExists=/.azure-li-config-lookup.trigger
+
+[Service]
+Type=oneshot
+ExecStart=azure-li-config-lookup
+ExecStartPost=/bin/bash -c 'rm -f /.azure-li-config-lookup.trigger'
+
+[Install]
+WantedBy=multi-user.target
