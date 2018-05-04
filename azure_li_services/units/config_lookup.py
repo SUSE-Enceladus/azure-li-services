@@ -15,6 +15,14 @@
 # You should have received a copy of the GNU General Public License
 # along with azure-li-services.  If not, see <http://www.gnu.org/licenses/>
 #
+import os
+from collections import namedtuple
+
+# project
+from azure_li_services.command import Command
+from azure_li_services.path import Path
+from azure_li_services.exceptions import AzureLiConfigFileNotFoundException
+from azure_li_services.defaults import Defaults
 
 
 def main():
@@ -23,9 +31,35 @@ def main():
 
     Lookup config file as provided by the Azure Li/VLi storage backend
     and make it locally available at the location described by
-    Defaults.get_config_file()
+    Defaults.get_config_file_name()
     """
-    # TODO:
-    # We need information from $MS how the config file is
-    # attached to the machine in order to find and fetch it here
-    pass
+    config_type = namedtuple(
+        'config_type', ['name', 'location', 'label']
+    )
+    azure_config = config_type(
+        name='suse_firstboot_config.yaml', location='/mnt', label='azconfig'
+    )
+
+    Command.run(
+        ['mount', '--label', azure_config.label, azure_config.location]
+    )
+
+    try:
+        azure_config_lookup_paths = [azure_config.location]
+        azure_config_file = Path.which(
+            azure_config.name, azure_config_lookup_paths
+        )
+        if not azure_config_file:
+            raise AzureLiConfigFileNotFoundException(
+                'Config file not found at: {0}/{1}'.format(
+                    azure_config.location, azure_config.name
+                )
+            )
+        Path.create(
+            os.path.dirname(Defaults.get_config_file_name())
+        )
+        Command.run(
+            ['cp', azure_config_file, Defaults.get_config_file_name()]
+        )
+    finally:
+        Command.run(['umount', azure_config.location])

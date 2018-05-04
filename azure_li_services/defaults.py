@@ -27,6 +27,10 @@ class Defaults(object):
     Provides class methods for default values
     """
     @classmethod
+    def get_config_file_name(self):
+        return '/etc/azure_li_config.yaml'
+
+    @classmethod
     def get_config_file(self):
         """
         Provides config file as stored locally
@@ -36,7 +40,7 @@ class Defaults(object):
         location. If there is no such file an exception is
         raised
         """
-        config_file = '/etc/azure_li_config.yaml'
+        config_file = Defaults.get_config_file_name()
         if os.path.exists(config_file):
             return config_file
         else:
