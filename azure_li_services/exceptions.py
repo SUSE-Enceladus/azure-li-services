@@ -37,3 +37,18 @@ class AzureLiConfigFileNotFoundException(AzureLiException):
     Exception raised if Azure Li/VLi config file could not
     be found at the expected path on the local system
     """
+
+
+class AzureLiCommandException(AzureLiException):
+    """
+    Exception raised if an external command called via a Command
+    instance has returned with an exit code != 0 or could not
+    be called at all.
+    """
+
+
+class AzureLiCommandNotFoundException(AzureLiException):
+    """
+    Exception raised if any executable command cannot be found in
+    the evironment PATH variable.
+    """
