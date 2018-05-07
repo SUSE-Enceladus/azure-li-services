@@ -28,7 +28,7 @@ class Defaults(object):
     """
     @classmethod
     def get_config_file_name(self):
-        return '/etc/azure_li_config.yaml'
+        return '/etc/suse_firstboot_config.yaml'
 
     @classmethod
     def get_config_file(self):

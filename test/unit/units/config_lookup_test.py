@@ -15,7 +15,8 @@ class TestConfigLookup(object):
         assert mock_Command_run.call_args_list == [
             call(['mount', '--label', 'azconfig', '/mnt']),
             call([
-                'cp', mock_Path_which.return_value, '/etc/azure_li_config.yaml'
+                'cp', mock_Path_which.return_value,
+                '/etc/suse_firstboot_config.yaml'
             ]),
             call(['umount', '/mnt'])
         ]

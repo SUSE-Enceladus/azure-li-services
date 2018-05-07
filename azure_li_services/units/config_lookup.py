@@ -37,7 +37,8 @@ def main():
         'config_type', ['name', 'location', 'label']
     )
     azure_config = config_type(
-        name='suse_firstboot_config.yaml', location='/mnt', label='azconfig'
+        name=os.path.basename(Defaults.get_config_file_name()),
+        location='/mnt', label='azconfig'
     )
 
     Command.run(
