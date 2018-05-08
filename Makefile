@@ -8,6 +8,8 @@ build: check test
 	cat setup.py | sed -e 's@>=[0-9.]*@@g' > setup.build.py
 	python setup.build.py sdist
 	rm setup.build.py
+	git log | helper/changelog_generator |\
+		helper/changelog_descending > dist/azure_li_services.changes
 	cat package/azure_li_services_spec_template \
 		| sed -e s'@%%VERSION@${version}@' \
 		> dist/azure_li_services.spec
