@@ -4,7 +4,7 @@ ConditionPathExists=/.azure-li-config-lookup.trigger
 
 [Service]
 Type=oneshot
-ExecStart=azure-li-config-lookup
+ExecStart=/usr/bin/azure-li-config-lookup
 ExecStartPost=/bin/bash -c 'rm -f /.azure-li-config-lookup.trigger'
 
 [Install]
