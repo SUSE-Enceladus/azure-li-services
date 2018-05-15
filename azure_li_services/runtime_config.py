@@ -38,7 +38,13 @@ class RuntimeConfig(object):
           cpu: expected_number_of_cpus
           memory: expected_min_size_of_main_memory
           time_server: ip_address_of_time_server
-          nics: expected_number_of_nics
+          networking:
+            -
+              interface: eth0
+              vlan: 10
+              ip: 10.250.10.51
+              gateway: 10.250.10.1
+              subnet_mask: 255.255.255.0
 
         storage:
           -
@@ -68,3 +74,8 @@ class RuntimeConfig(object):
 
     def get_config_file_version(self):
         return self.config_data['version']
+
+    def get_network_config(self):
+        if self.config_data and 'blade' in self.config_data:
+            if 'networking' in self.config_data['blade']:
+                return self.config_data['blade']['networking']

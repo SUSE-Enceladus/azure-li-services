@@ -1,0 +1,13 @@
+[Unit]
+Description=Setup of Azure Li/VLi network configuration
+ConditionPathExists=/.azure-li-network.trigger
+After=azure-li-config-lookup.service
+Before=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/azure-li-network
+ExecStartPost=/bin/bash -c 'rm -f /.azure-li-network.trigger'
+
+[Install]
+WantedBy=multi-user.target

@@ -8,3 +8,14 @@ class TestRuntimeConfig(object):
     def test_get_config_file_version(self):
         assert self.runtime_config.get_config_file_version().isoformat() == \
             '2017-11-15'
+
+    def test_get_network_config(self):
+        assert self.runtime_config.get_network_config() == [
+            {
+                'interface': 'eth0',
+                'vlan': 10,
+                'subnet_mask': '255.255.255.0',
+                'ip': '10.250.10.51',
+                'gateway': '10.250.10.1'
+            }
+        ]

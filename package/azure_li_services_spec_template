@@ -48,11 +48,17 @@ python3 setup.py install --prefix=%{_prefix} --root=%{buildroot}
 install -D -m 644 systemd/azure-li-config-lookup.service \
     %{buildroot}%{_unitdir}/azure-li-config-lookup.service
 
+install -D -m 644 systemd/azure-li-network.service \
+    %{buildroot}%{_unitdir}/azure-li-network.service
+
 %files
 %defattr(-,root,root,-)
 %{python3_sitelib}/*
 
 %{_bindir}/azure-li-config-lookup
 %{_unitdir}/azure-li-config-lookup.service
+
+%{_bindir}/azure-li-network
+%{_unitdir}/azure-li-network.service
 
 %changelog

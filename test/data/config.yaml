@@ -4,7 +4,13 @@ blade:
   cpu: 32
   memory: "20tb"
   time_server: "129.6.15.28"
-  nics: 2
+  networking:
+    -
+      interface: eth0
+      vlan: 10
+      ip: 10.250.10.51
+      gateway: 10.250.10.1
+      subnet_mask: 255.255.255.0
   storage:
     -
       device: "/vol/bar"

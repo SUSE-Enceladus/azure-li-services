@@ -52,3 +52,10 @@ class AzureLiCommandNotFoundException(AzureLiException):
     Exception raised if any executable command cannot be found in
     the evironment PATH variable.
     """
+
+
+class AzureLiNetworkConfigDataException(AzureLiException):
+    """
+    Exception raised if any of the required data to setup the network
+    configuration is missing
+    """
