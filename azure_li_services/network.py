@@ -19,10 +19,10 @@ import ipaddress
 from textwrap import dedent
 
 # project
-from azure_li_services.exceptions import AzureLiNetworkConfigDataException
+from azure_li_services.exceptions import AzureHostedNetworkConfigDataException
 
 
-class AzureLiNetworkSetup(object):
+class AzureHostedNetworkSetup(object):
     """
     Azure Li/VLi network configuration
 
@@ -34,7 +34,7 @@ class AzureLiNetworkSetup(object):
             'interface' not in network or
             'subnet_mask' not in network
         ):
-            raise AzureLiNetworkConfigDataException(
+            raise AzureHostedNetworkConfigDataException(
                 'At least one of {0} missing in {1}'.format(
                     ('ip', 'interface', 'subnet_mask'), network
                 )
@@ -97,7 +97,7 @@ class AzureLiNetworkSetup(object):
         Setup vlan configuration on top of interface config
         """
         if 'vlan' not in self.network:
-            raise AzureLiNetworkConfigDataException(
+            raise AzureHostedNetworkConfigDataException(
                 'vlan id missing in {0}'.format(self.network)
             )
         vlan_file = '/etc/sysconfig/network/ifcfg-{0}.{1}'.format(

@@ -2,7 +2,7 @@ from unittest.mock import patch
 from pytest import raises
 
 from azure_li_services.defaults import Defaults
-from azure_li_services.exceptions import AzureLiConfigFileNotFoundException
+from azure_li_services.exceptions import AzureHostedConfigFileNotFoundException
 
 
 class TestDefaults(object):
@@ -11,5 +11,5 @@ class TestDefaults(object):
         mock_os_path_exists.return_value = True
         assert Defaults.get_config_file() == '/etc/suse_firstboot_config.yaml'
         mock_os_path_exists.return_value = False
-        with raises(AzureLiConfigFileNotFoundException):
+        with raises(AzureHostedConfigFileNotFoundException):
             Defaults.get_config_file()

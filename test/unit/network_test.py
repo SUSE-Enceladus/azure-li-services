@@ -4,18 +4,18 @@ from unittest.mock import (
     MagicMock, patch
 )
 from azure_li_services.runtime_config import RuntimeConfig
-from azure_li_services.network import AzureLiNetworkSetup
-from azure_li_services.exceptions import AzureLiNetworkConfigDataException
+from azure_li_services.network import AzureHostedNetworkSetup
+from azure_li_services.exceptions import AzureHostedNetworkConfigDataException
 
 
-class TestAzureLiNetworkSetup(object):
+class TestAzureHostedNetworkSetup(object):
     def setup(self):
         config = RuntimeConfig('../data/config.yaml')
-        self.network = AzureLiNetworkSetup(config.get_network_config()[0])
+        self.network = AzureHostedNetworkSetup(config.get_network_config()[0])
 
     def test_init_raises(self):
-        with raises(AzureLiNetworkConfigDataException):
-            AzureLiNetworkSetup({})
+        with raises(AzureHostedNetworkConfigDataException):
+            AzureHostedNetworkSetup({})
 
     def test_create_interface_config(self):
         with patch('builtins.open', create=True) as mock_open:
@@ -66,7 +66,7 @@ class TestAzureLiNetworkSetup(object):
 
     def test_create_vlan_config_raises(self):
         del self.network.network['vlan']
-        with raises(AzureLiNetworkConfigDataException):
+        with raises(AzureHostedNetworkConfigDataException):
             self.network.create_vlan_config()
 
     def test_create_bridge_config(self):

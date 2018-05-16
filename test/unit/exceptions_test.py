@@ -1,7 +1,7 @@
-from azure_li_services.exceptions import AzureLiException
+from azure_li_services.exceptions import AzureHostedException
 
 
-class TestAzureLiException(object):
+class TestAzureHostedException(object):
     def test_init(self):
-        instance = AzureLiException('message')
+        instance = AzureHostedException('message')
         assert instance.__str__() == 'message'

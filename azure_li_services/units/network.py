@@ -18,10 +18,10 @@
 # project
 from azure_li_services.runtime_config import RuntimeConfig
 from azure_li_services.defaults import Defaults
-from azure_li_services.network import AzureLiNetworkSetup
+from azure_li_services.network import AzureHostedNetworkSetup
 from azure_li_services.instance_type import InstanceType
 
-from azure_li_services.exceptions import AzureLiNetworkConfigDataException
+from azure_li_services.exceptions import AzureHostedNetworkConfigDataException
 
 
 def main():
@@ -37,12 +37,12 @@ def main():
     if network_config:
         if instance_type == InstanceType.li:
             for network in network_config:
-                li_network = AzureLiNetworkSetup(network)
+                li_network = AzureHostedNetworkSetup(network)
                 li_network.create_interface_config()
                 li_network.create_vlan_config()
                 li_network.create_default_route_config()
         else:
-            raise AzureLiNetworkConfigDataException(
+            raise AzureHostedNetworkConfigDataException(
                 'No idea how to setup network for Instance Type: {0}'.format(
                     instance_type
                 )

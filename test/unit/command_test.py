@@ -10,8 +10,8 @@ from collections import namedtuple
 from azure_li_services.command import Command
 
 from azure_li_services.exceptions import (
-    AzureLiCommandException,
-    AzureLiCommandNotFoundException
+    AzureHostedCommandException,
+    AzureHostedCommandNotFoundException
 )
 
 
@@ -26,19 +26,19 @@ class TestCommand(object):
         )
         mock_process.returncode = 1
         mock_popen.return_value = mock_process
-        with raises(AzureLiCommandException):
+        with raises(AzureHostedCommandException):
             Command.run(['command', 'args'])
 
     @patch('azure_li_services.path.Path.which')
     @patch('subprocess.Popen')
     def test_run_failure(self, mock_popen, mock_which):
         mock_which.return_value = 'command'
-        mock_popen.side_effect = AzureLiCommandException('Run failure')
-        with raises(AzureLiCommandException):
+        mock_popen.side_effect = AzureHostedCommandException('Run failure')
+        with raises(AzureHostedCommandException):
             Command.run(['command', 'args'])
 
     def test_run_invalid_environment(self):
-        with raises(AzureLiCommandNotFoundException):
+        with raises(AzureHostedCommandNotFoundException):
             Command.run(['command', 'args'], {'HOME': '/root'})
 
     @patch('azure_li_services.path.Path.which')
@@ -92,11 +92,11 @@ class TestCommand(object):
         assert Command.run(['command', 'args']) == run_result
 
     def test_run_command_does_not_exist(self):
-        with raises(AzureLiCommandNotFoundException):
+        with raises(AzureHostedCommandNotFoundException):
             Command.run(['does-not-exist'])
 
     def test_call_command_does_not_exist(self):
-        with raises(AzureLiCommandNotFoundException):
+        with raises(AzureHostedCommandNotFoundException):
             Command.call(['does-not-exist'], os.environ)
 
     @patch('azure_li_services.path.Path.which')
@@ -118,6 +118,6 @@ class TestCommand(object):
     @patch('subprocess.Popen')
     def test_call_failure(self, mock_popen, mock_which):
         mock_which.return_value = 'command'
-        mock_popen.side_effect = AzureLiCommandException('Call failure')
-        with raises(AzureLiCommandException):
+        mock_popen.side_effect = AzureHostedCommandException('Call failure')
+        with raises(AzureHostedCommandException):
             Command.call(['command', 'args'])
