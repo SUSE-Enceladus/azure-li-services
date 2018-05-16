@@ -18,6 +18,9 @@
 import os
 import yaml
 
+# project
+from azure_li_services.instance_type import InstanceType
+
 
 class RuntimeConfig(object):
     """
@@ -32,6 +35,7 @@ class RuntimeConfig(object):
 
     .. code:: yaml
         version: some_version_identifier
+        instance_type: LargeInstance
 
         blade:
           sku: identifier
@@ -73,7 +77,15 @@ class RuntimeConfig(object):
                 self.config_data = yaml.load(config)
 
     def get_config_file_version(self):
-        return self.config_data['version']
+        if self.config_data and 'version' in self.config_data:
+            return self.config_data['version']
+
+    def get_instance_type(self):
+        if self.config_data and 'instance_type' in self.config_data:
+            if self.config_data['instance_type'] == 'VeryLargeInstance':
+                return InstanceType.vli
+            else:
+                return InstanceType.li
 
     def get_network_config(self):
         if self.config_data and 'blade' in self.config_data:
