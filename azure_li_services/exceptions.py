@@ -1,4 +1,4 @@
-# Copyright (c) 2017 SUSE Linux GmbH.  All rights reserved.
+# Copyright (c) 2018 SUSE Linux GmbH.  All rights reserved.
 #
 # This file is part of azure-li-services.
 #
@@ -17,11 +17,11 @@
 #
 
 
-class AzureLiException(Exception):
+class AzureHostedException(Exception):
     """
     Base class to handle all known exceptions.
 
-    Specific exceptions are implemented as sub classes of AzureLiException
+    Specific exceptions are implemented as sub classes of AzureHostedException
 
     :param string message: Exception message text
     """
@@ -32,14 +32,14 @@ class AzureLiException(Exception):
         return format(self.message)
 
 
-class AzureLiConfigFileNotFoundException(AzureLiException):
+class AzureHostedConfigFileNotFoundException(AzureHostedException):
     """
     Exception raised if Azure Li/VLi config file could not
     be found at the expected path on the local system
     """
 
 
-class AzureLiCommandException(AzureLiException):
+class AzureHostedCommandException(AzureHostedException):
     """
     Exception raised if an external command called via a Command
     instance has returned with an exit code != 0 or could not
@@ -47,8 +47,15 @@ class AzureLiCommandException(AzureLiException):
     """
 
 
-class AzureLiCommandNotFoundException(AzureLiException):
+class AzureHostedCommandNotFoundException(AzureHostedException):
     """
     Exception raised if any executable command cannot be found in
     the evironment PATH variable.
+    """
+
+
+class AzureHostedNetworkConfigDataException(AzureHostedException):
+    """
+    Exception raised if any of the required data to setup the network
+    configuration is missing
     """

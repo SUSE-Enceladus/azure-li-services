@@ -3,7 +3,7 @@ from unittest.mock import (
 )
 from pytest import raises
 from azure_li_services.units.config_lookup import main
-from azure_li_services.exceptions import AzureLiConfigFileNotFoundException
+from azure_li_services.exceptions import AzureHostedConfigFileNotFoundException
 
 
 class TestConfigLookup(object):
@@ -29,5 +29,5 @@ class TestConfigLookup(object):
     @patch('azure_li_services.path.Path.which')
     def test_main_raises(self, mock_Path_which, mock_Command_run):
         mock_Path_which.return_value = None
-        with raises(AzureLiConfigFileNotFoundException):
+        with raises(AzureHostedConfigFileNotFoundException):
             main()

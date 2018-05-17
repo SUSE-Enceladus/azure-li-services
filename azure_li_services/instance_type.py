@@ -15,7 +15,14 @@
 # You should have received a copy of the GNU General Public License
 # along with azure-li-services.  If not, see <http://www.gnu.org/licenses/>
 #
-"""
-Global version information used in azure-li-services and the package
-"""
-__VERSION__ = '0.0.6'
+from collections import namedtuple
+
+
+class InstanceType(object):
+    Constants = namedtuple(
+        'Constants', ['li', 'vli']
+    )
+    constants = Constants('li', 'vli')
+
+    li = constants.li
+    vli = constants.vli

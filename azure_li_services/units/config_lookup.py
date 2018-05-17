@@ -1,4 +1,4 @@
-# Copyright (c) 2017 SUSE Linux GmbH.  All rights reserved.
+# Copyright (c) 2018 SUSE Linux GmbH.  All rights reserved.
 #
 # This file is part of azure-li-services.
 #
@@ -21,7 +21,7 @@ from collections import namedtuple
 # project
 from azure_li_services.command import Command
 from azure_li_services.path import Path
-from azure_li_services.exceptions import AzureLiConfigFileNotFoundException
+from azure_li_services.exceptions import AzureHostedConfigFileNotFoundException
 from azure_li_services.defaults import Defaults
 
 
@@ -51,7 +51,7 @@ def main():
             azure_config.name, azure_config_lookup_paths
         )
         if not azure_config_file:
-            raise AzureLiConfigFileNotFoundException(
+            raise AzureHostedConfigFileNotFoundException(
                 'Config file not found at: {0}/{1}'.format(
                     azure_config.location, azure_config.name
                 )

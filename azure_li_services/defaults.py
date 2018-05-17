@@ -1,4 +1,4 @@
-# Copyright (c) 2017 SUSE Linux GmbH.  All rights reserved.
+# Copyright (c) 2018 SUSE Linux GmbH.  All rights reserved.
 #
 # This file is part of azure-li-services.
 #
@@ -17,7 +17,7 @@
 #
 import os
 
-from azure_li_services.exceptions import AzureLiConfigFileNotFoundException
+from azure_li_services.exceptions import AzureHostedConfigFileNotFoundException
 
 
 class Defaults(object):
@@ -44,6 +44,6 @@ class Defaults(object):
         if os.path.exists(config_file):
             return config_file
         else:
-            raise AzureLiConfigFileNotFoundException(
+            raise AzureHostedConfigFileNotFoundException(
                 'No Azure Li/VLi file found: {0}'.format(config_file)
             )

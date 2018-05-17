@@ -1,5 +1,5 @@
 version: 2017-11-15
-instance_type: LargeInstance
+instance_type: VeryLargeInstance
 blade:
   sku: "SR92"
   cpu: 32
@@ -8,9 +8,7 @@ blade:
   networking:
     -
       interface: eth0
-      vlan: 10
       ip: 10.250.10.51
-      gateway: 10.250.10.1
       subnet_mask: 255.255.255.0
   storage:
     -

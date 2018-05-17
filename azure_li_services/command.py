@@ -1,4 +1,4 @@
-# Copyright (c) 2017 SUSE Linux GmbH.  All rights reserved.
+# Copyright (c) 2018 SUSE Linux GmbH.  All rights reserved.
 #
 # This file is part of azure-li-services.
 #
@@ -22,8 +22,8 @@ from collections import namedtuple
 
 # project
 from .exceptions import (
-    AzureLiCommandException,
-    AzureLiCommandNotFoundException
+    AzureHostedCommandException,
+    AzureHostedCommandNotFoundException
 )
 
 
@@ -81,7 +81,7 @@ class Command(object):
                     returncode=-1
                 )
             else:
-                raise AzureLiCommandNotFoundException(message)
+                raise AzureHostedCommandNotFoundException(message)
         try:
             process = subprocess.Popen(
                 command,
@@ -90,7 +90,7 @@ class Command(object):
                 env=environment
             )
         except Exception as e:
-            raise AzureLiCommandException(
+            raise AzureHostedCommandException(
                 '%s: %s: %s' % (command[0], type(e).__name__, format(e))
             )
         output, error = process.communicate()
@@ -99,7 +99,7 @@ class Command(object):
         if process.returncode != 0 and not output:
             output = bytes(b'(no output on stdout)')
         if process.returncode != 0 and raise_on_error:
-            raise AzureLiCommandException(
+            raise AzureHostedCommandException(
                 '%s: stderr: %s, stdout: %s' % (
                     command[0], error.decode(), output.decode()
                 )
@@ -148,7 +148,7 @@ class Command(object):
         if not Path.which(
             command[0], custom_env=environment, access_mode=os.X_OK
         ):
-            raise AzureLiCommandNotFoundException(
+            raise AzureHostedCommandNotFoundException(
                 'Command "%s" not found in the environment' % command[0]
             )
         try:
@@ -159,7 +159,7 @@ class Command(object):
                 env=environment
             )
         except Exception as e:
-            raise AzureLiCommandException(
+            raise AzureHostedCommandException(
                 '%s: %s' % (type(e).__name__, format(e))
             )
 
