@@ -12,6 +12,6 @@ class TestCall(object):
         main()
         assert mock_Command_run.call_args_list == [
             call(['mount', '--label', 'azconfig', '/mnt']),
-            call(['bash', '-c', '/mnt/foo/update.sh']),
+            call(['bash', '-c', '/mnt/path/to/executable/file']),
             call(['umount', '/mnt'])
         ]

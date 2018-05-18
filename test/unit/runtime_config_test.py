@@ -42,4 +42,5 @@ class TestRuntimeConfig(object):
         ]
 
     def test_get_call_script(self):
-        assert self.runtime_config.get_call_script() == 'foo/update.sh'
+        assert self.runtime_config.get_call_script() == \
+            'path/to/executable/file'

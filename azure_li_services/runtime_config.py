@@ -71,7 +71,7 @@ class RuntimeConfig(object):
         packages:
           directory: path_to_a_package_repository
 
-        call: program_call_directive
+        call: path/to/executable/file
 
     :param str config_file: file path name
     """
