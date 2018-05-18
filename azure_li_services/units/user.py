@@ -34,11 +34,14 @@ def main():
     and sudo services in the scope of an Azure Li/Vli instance
     """
     config = RuntimeConfig(Defaults.get_config_file())
+
     user_config = config.get_user_config()
     for user in user_config:
         create_user(user)
         setup_ssh_authorization(user)
         setup_sudo_authorization(user)
+
+    setup_sudo_config()
 
 
 def create_user(user):
@@ -92,13 +95,19 @@ def setup_ssh_authorization(user):
 
 
 def setup_sudo_authorization(user):
-    sudo_config = '/etc/sudoers'
-    if 'shadow_hash' in user and os.path.exists(sudo_config):
+    if 'shadow_hash' in user:
         system_users = Users()
-        system_users.group_add('admin', [])
+        if not system_users.group_exists('admin'):
+            system_users.group_add('admin', [])
         system_users.user_modify(
             user['username'], ['-a', '-G', 'admin']
         )
+
+
+def setup_sudo_config():
+    sudo_config = '/etc/sudoers'
+    system_users = Users()
+    if os.path.exists(sudo_config) and system_users.group_exists('admin'):
         with open(sudo_config, 'a') as sudo:
             sudo.write(os.linesep)
             sudo.write('%admin ALL=(ALL) NOPASSWD: ALL')

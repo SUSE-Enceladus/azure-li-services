@@ -20,15 +20,22 @@ class TestUser(object):
         self, mock_path_exists, mock_Path_create, mock_Users,
         mock_RuntimConfig, mock_get_config_file
     ):
+        group_exists = [True, False, False]
+
+        def side_effect(group):
+            return group_exists.pop()
+
         mock_path_exists.return_value = True
         mock_RuntimConfig.return_value = self.config
         with patch('builtins.open', create=True) as mock_open:
             system_users = Mock()
-            system_users.group_exists.return_value = False
+            system_users.group_exists.side_effect = side_effect
             mock_Users.return_value = system_users
             main()
             file_handle = mock_open.return_value.__enter__.return_value
-            system_users.group_exists.assert_called_once_with('nogroup')
+            assert system_users.group_exists.call_args_list == [
+                call('admin'), call('nogroup'), call('admin')
+            ]
             assert system_users.user_add.call_args_list == [
                 call('hanauser', [
                     '-p', 'sha-512-cipher',
