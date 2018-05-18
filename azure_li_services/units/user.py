@@ -20,7 +20,7 @@ import os
 # project
 from azure_li_services.runtime_config import RuntimeConfig
 from azure_li_services.defaults import Defaults
-from azure_li_services.command import Command
+from azure_li_services.users import Users
 
 from azure_li_services.exceptions import AzureHostedUserConfigDataException
 from azure_li_services.path import Path
@@ -35,48 +35,69 @@ def main():
     """
     config = RuntimeConfig(Defaults.get_config_file())
     user_config = config.get_user_config()
+    for user in user_config:
+        create_user(user)
+        setup_ssh_authorization(user)
+        setup_sudo_authorization(user)
 
-    create_user(user_config)
-    setup_ssh_authorization(user_config)
-    setup_sudo_authorization(user_config)
 
-
-def create_user(user_config):
-    if 'username' not in user_config or 'shadow_hash' not in user_config:
+def create_user(user):
+    if 'username' not in user:
         raise AzureHostedUserConfigDataException(
-            'At least one of {0} missing in {1}'.format(
-                ('username', 'shadow_hash'), user_config
-            )
+            'username missing in config {0}'.format(user)
         )
-    options = [
-        '-p', user_config['shadow_hash'],
-        '-s', '/bin/bash',
-        '-m', '-d', '/home/{0}'.format(user_config['username'])
-    ]
-    Command.run(
-        ['useradd'] + options + [user_config['username']]
+    options = []
+    system_users = Users()
+    if 'group' in user:
+        if not system_users.group_exists(user['group']):
+            system_users.group_add(user['group'], [])
+        options += [
+            '-g', user['group']
+        ]
+    if 'shadow_hash' in user:
+        options += [
+            '-p', user['shadow_hash'],
+            '-s', '/bin/bash'
+        ]
+    else:
+        options += [
+            '-s', '/sbin/nologin'
+        ]
+    if 'home_dir' in user:
+        options += [
+            '-m', '-d', user['home_dir']
+        ]
+    else:
+        options += [
+            '-m', '-d', '/home/{0}'.format(user['username'])
+        ]
+    if 'id' in user:
+        options += [
+            '-u', '{0}'.format(user['id'])
+        ]
+    system_users.user_add(
+        user['username'], options
     )
 
 
-def setup_ssh_authorization(user_config):
-    if 'ssh-key' in user_config:
+def setup_ssh_authorization(user):
+    if 'ssh-key' in user:
         ssh_auth_dir = '/home/{0}/.ssh/'.format(
-            user_config['username']
+            user['username']
         )
         Path.create(ssh_auth_dir)
         with open(ssh_auth_dir + 'authorized_keys', 'a') as ssh:
             ssh.write(os.linesep)
-            ssh.write(user_config['ssh-key'])
+            ssh.write(user['ssh-key'])
 
 
-def setup_sudo_authorization(user_config):
+def setup_sudo_authorization(user):
     sudo_config = '/etc/sudoers'
-    if os.path.exists(sudo_config):
-        Command.run(
-            ['groupadd', 'admin']
-        )
-        Command.run(
-            ['usermod', '-a', '-G', 'admin', user_config['username']]
+    if 'shadow_hash' in user and os.path.exists(sudo_config):
+        system_users = Users()
+        system_users.group_add('admin', [])
+        system_users.user_modify(
+            user['username'], ['-a', '-G', 'admin']
         )
         with open(sudo_config, 'a') as sudo:
             sudo.write(os.linesep)

@@ -58,9 +58,15 @@ class RuntimeConfig(object):
             path: expected_unix_device_node
 
         credentials:
-          username: user
-          shadow_hash: "password-hash-sha-512-preferred"
-          ssh-key:  "public-ssh-key"
+          -
+            username: user
+            shadow_hash: "password-hash-sha-512-preferred"
+            ssh-key:  "public-ssh-key"
+          -
+            username: rpc
+            id: 495
+            group: nogroup
+            home_dir: /var/lib/empty
 
         packages:
           directory: path_to_a_package_repository

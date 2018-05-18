@@ -27,8 +27,16 @@ class TestRuntimeConfig(object):
         ]
 
     def test_get_user_config(self):
-        assert self.runtime_config.get_user_config() == {
-            'username': 'hanauser',
-            'shadow_hash': 'sha-512-cipher',
-            'ssh-key': 'ssh-rsa foo'
-        }
+        assert self.runtime_config.get_user_config() == [
+            {
+                'ssh-key': 'ssh-rsa foo',
+                'username': 'hanauser',
+                'shadow_hash': 'sha-512-cipher'
+            },
+            {
+                'group': 'nogroup',
+                'home_dir': '/var/lib/empty',
+                'username': 'rpc',
+                'id': 495
+            }
+        ]
