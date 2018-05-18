@@ -101,3 +101,7 @@ class RuntimeConfig(object):
     def get_user_config(self):
         if 'credentials' in self.config_data:
             return self.config_data['credentials']
+
+    def get_call_script(self):
+        if 'call' in self.config_data:
+            return self.config_data['call']
