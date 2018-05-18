@@ -25,3 +25,10 @@ class TestRuntimeConfig(object):
                 'gateway': '10.250.10.1'
             }
         ]
+
+    def test_get_user_config(self):
+        assert self.runtime_config.get_user_config() == {
+            'username': 'hanauser',
+            'shadow_hash': 'sha-512-cipher',
+            'ssh-key': 'ssh-rsa foo'
+        }

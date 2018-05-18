@@ -23,8 +23,8 @@ blade:
       size: "112G"
 
 credentials:
-  username: "hanauser"
-  password: "c29tZXJhbmRvbXBhc3N3b3JkCg=="
+  username: hanauser
+  shadow_hash: "sha-512-cipher"
   ssh-key: "ssh-rsa foo"
 
 packages:
