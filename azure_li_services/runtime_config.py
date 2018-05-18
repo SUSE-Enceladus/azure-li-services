@@ -59,8 +59,8 @@ class RuntimeConfig(object):
 
         credentials:
           username: user
-          shadow_hash: "sha-512-cipher"
-          ssh-key:  "ssh-rsa cipher"
+          shadow_hash: "password-hash-sha-512-preferred"
+          ssh-key:  "public-ssh-key"
 
         packages:
           directory: path_to_a_package_repository
