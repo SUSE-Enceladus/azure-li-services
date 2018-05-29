@@ -26,7 +26,8 @@ config = {
     'entry_points': {
         'console_scripts': [
             'azure-li-config-lookup=azure_li_services.units.config_lookup:main',
-            'azure-li-network=azure_li_services.units.network:main'
+            'azure-li-network=azure_li_services.units.network:main',
+            'azure-li-user=azure_li_services.units.user:main'
         ]
     },
     'include_package_data': True,

@@ -58,9 +58,15 @@ class RuntimeConfig(object):
             path: expected_unix_device_node
 
         credentials:
-          username: user_name
-          password: base64_encoded_password
-          ssh-key:  ssh_rsa_key
+          -
+            username: user
+            shadow_hash: "password-hash-sha-512-preferred"
+            ssh-key:  "public-ssh-key"
+          -
+            username: rpc
+            id: 495
+            group: nogroup
+            home_dir: /var/lib/empty
 
         packages:
           directory: path_to_a_package_repository
@@ -91,3 +97,7 @@ class RuntimeConfig(object):
         if self.config_data and 'blade' in self.config_data:
             if 'networking' in self.config_data['blade']:
                 return self.config_data['blade']['networking']
+
+    def get_user_config(self):
+        if 'credentials' in self.config_data:
+            return self.config_data['credentials']

@@ -25,9 +25,15 @@ blade:
       size: "112G"
 
 credentials:
-  username: "hanauser"
-  password: "c29tZXJhbmRvbXBhc3N3b3JkCg=="
-  ssh-key: "ssh-rsa foo"
+  -
+    username: hanauser
+    shadow_hash: "sha-512-cipher"
+    ssh-key: "ssh-rsa foo"
+  -
+    username: rpc
+    id: 495
+    group: nogroup
+    home_dir: /var/lib/empty
 
 packages:
   directory: "/mnt/directory-with-rpm-files"

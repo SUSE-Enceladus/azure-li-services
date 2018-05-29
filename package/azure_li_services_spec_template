@@ -29,6 +29,7 @@ BuildRequires:  python3-devel
 BuildRequires:  python3-setuptools
 Requires:       python3-PyYAML
 Requires:       python3-setuptools
+Requires:       shadow
 BuildArch:      noarch
 
 %description
@@ -51,6 +52,9 @@ install -D -m 644 systemd/azure-li-config-lookup.service \
 install -D -m 644 systemd/azure-li-network.service \
     %{buildroot}%{_unitdir}/azure-li-network.service
 
+install -D -m 644 systemd/azure-li-user.service \
+    %{buildroot}%{_unitdir}/azure-li-user.service
+
 %files
 %defattr(-,root,root,-)
 %{python3_sitelib}/*
@@ -60,5 +64,8 @@ install -D -m 644 systemd/azure-li-network.service \
 
 %{_bindir}/azure-li-network
 %{_unitdir}/azure-li-network.service
+
+%{_bindir}/azure-li-user
+%{_unitdir}/azure-li-user.service
 
 %changelog

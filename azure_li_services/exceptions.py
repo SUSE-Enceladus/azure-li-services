@@ -59,3 +59,10 @@ class AzureHostedNetworkConfigDataException(AzureHostedException):
     Exception raised if any of the required data to setup the network
     configuration is missing
     """
+
+
+class AzureHostedUserConfigDataException(AzureHostedException):
+    """
+    Exception raised if any of the required data to setup the user
+    is missing
+    """
