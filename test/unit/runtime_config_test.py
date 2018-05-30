@@ -44,3 +44,12 @@ class TestRuntimeConfig(object):
     def test_get_call_script(self):
         assert self.runtime_config.get_call_script() == \
             'path/to/executable/file'
+
+    def test_get_packages_config(self):
+        assert self.runtime_config.get_packages_config() == {
+            'directory': [
+                '/directory-with-rpm-files',
+                '/another-directory-with-rpm-files'
+            ],
+            'repository_name': 'azure_packages'
+        }

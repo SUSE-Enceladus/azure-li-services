@@ -99,9 +99,13 @@ class RuntimeConfig(object):
                 return self.config_data['blade']['networking']
 
     def get_user_config(self):
-        if 'credentials' in self.config_data:
+        if self.config_data and 'credentials' in self.config_data:
             return self.config_data['credentials']
 
+    def get_packages_config(self):
+        if self.config_data and 'packages' in self.config_data:
+            return self.config_data['packages']
+
     def get_call_script(self):
-        if 'call' in self.config_data:
+        if self.config_data and 'call' in self.config_data:
             return self.config_data['call']
