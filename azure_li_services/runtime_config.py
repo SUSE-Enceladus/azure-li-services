@@ -71,7 +71,7 @@ class RuntimeConfig(object):
         packages:
           directory: path_to_a_package_repository
 
-        call: program_call_directive
+        call: path/to/executable/file
 
     :param str config_file: file path name
     """
@@ -101,3 +101,7 @@ class RuntimeConfig(object):
     def get_user_config(self):
         if 'credentials' in self.config_data:
             return self.config_data['credentials']
+
+    def get_call_script(self):
+        if 'call' in self.config_data:
+            return self.config_data['call']

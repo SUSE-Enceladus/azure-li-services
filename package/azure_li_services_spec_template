@@ -55,6 +55,9 @@ install -D -m 644 systemd/azure-li-network.service \
 install -D -m 644 systemd/azure-li-user.service \
     %{buildroot}%{_unitdir}/azure-li-user.service
 
+install -D -m 644 systemd/azure-li-call.service \
+    %{buildroot}%{_unitdir}/azure-li-call.service
+
 %files
 %defattr(-,root,root,-)
 %{python3_sitelib}/*
@@ -67,5 +70,8 @@ install -D -m 644 systemd/azure-li-user.service \
 
 %{_bindir}/azure-li-user
 %{_unitdir}/azure-li-user.service
+
+%{_bindir}/azure-li-call
+%{_unitdir}/azure-li-call.service
 
 %changelog

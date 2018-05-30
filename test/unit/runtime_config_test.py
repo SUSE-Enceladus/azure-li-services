@@ -40,3 +40,7 @@ class TestRuntimeConfig(object):
                 'id': 495
             }
         ]
+
+    def test_get_call_script(self):
+        assert self.runtime_config.get_call_script() == \
+            'path/to/executable/file'

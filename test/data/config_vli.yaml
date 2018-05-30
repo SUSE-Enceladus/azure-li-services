@@ -37,4 +37,4 @@ packages:
   directory: "/mnt/directory-with-rpm-files"
   directory: "/mnt/another-directory-with-rpm-files"
 
-call: "/mnt/foo/update.sh"
+call: "path/to/executable/file"
