@@ -30,6 +30,9 @@ BuildRequires:  python3-setuptools
 Requires:       python3-PyYAML
 Requires:       python3-setuptools
 Requires:       shadow
+Requires:       createrepo
+Requires:       zypper
+Requires:       rsync
 BuildArch:      noarch
 
 %description
@@ -58,6 +61,9 @@ install -D -m 644 systemd/azure-li-user.service \
 install -D -m 644 systemd/azure-li-call.service \
     %{buildroot}%{_unitdir}/azure-li-call.service
 
+install -D -m 644 systemd/azure-li-install.service \
+    %{buildroot}%{_unitdir}/azure-li-install.service
+
 %files
 %defattr(-,root,root,-)
 %{python3_sitelib}/*
@@ -73,5 +79,8 @@ install -D -m 644 systemd/azure-li-call.service \
 
 %{_bindir}/azure-li-call
 %{_unitdir}/azure-li-call.service
+
+%{_bindir}/azure-li-install
+%{_unitdir}/azure-li-install.service
 
 %changelog
