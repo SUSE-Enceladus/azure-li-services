@@ -26,8 +26,8 @@ class TestInstall(object):
             call(['mount', '--label', 'azconfig', '/mnt']),
             call(
                 [
-                    'rsync', '-zav', '/directory-with-rpm-files/*',
-                    '/another-directory-with-rpm-files/*',
+                    'bash', '-c', 'rsync -zav /mnt/directory-with-rpm-files/* '
+                    '/mnt/another-directory-with-rpm-files/* '
                     '/var/lib/localrepos/azure_packages'
                 ]
             ),

@@ -54,15 +54,19 @@ def main():
                 repository_name
             )
             Path.create(repository_location)
-            Command.run(
+            bash_command = ' '.join(
                 ['rsync', '-zav'] + list(
                     map(
-                        lambda dir_name: '{0}/*'.format(dir_name),
-                        packages_config['directory']
+                        lambda dir_name: '{0}/{1}/*'.format(
+                            call_source.location, dir_name
+                        ), packages_config['directory']
                     )
                 ) + [
                     repository_location
                 ]
+            )
+            Command.run(
+                ['bash', '-c', bash_command]
             )
             Command.run(
                 ['createrepo', repository_location]
