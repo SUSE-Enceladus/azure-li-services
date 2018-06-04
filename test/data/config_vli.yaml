@@ -1,26 +1,27 @@
 version: 2017-11-15
 instance_type: VeryLargeInstance
-blade:
-  sku: "SR92"
-  cpu: 32
-  memory: "20tb"
-  time_server: "129.6.15.28"
-  networking:
-    -
-      interface: eth0
-      ip: 10.250.10.51
-      subnet_mask: 255.255.255.0
-  storage:
-    -
-      device: "/vol/bar"
-      mount: "/mnt/bar"
-      size: "30G"
-      path: "/dev/1234567890"
-      path: "/dev/2345678901"
-    -
-      device: "/vol/foo"
-      mount: "/mnt/foo"
-      size: "112G"
+sku: "SR92"
+
+machine_constraints:
+  min_cores: 32
+  min_memory: "20tb"
+
+networking:
+  -
+    interface: eth0
+    ip: 10.250.10.51
+    subnet_mask: 255.255.255.0
+
+storage:
+  -
+    file_system: nfs
+    min_size:  112G
+    device: "10.250.21.12:/nfs/share"
+    mount: "/mnt/foo"
+    mount_options:
+      - a
+      - b
+      - c
 
 credentials:
    -
