@@ -35,27 +35,31 @@ class RuntimeConfig(object):
 
     .. code:: yaml
         version: some_version_identifier
-        instance_type: LargeInstance
+        instance_type: LargeInstance|VeryLargeInstance
+        sku: identifier_string
 
-        blade:
-          sku: identifier
-          cpu: expected_number_of_cpus
-          memory: expected_min_size_of_main_memory
-          time_server: ip_address_of_time_server
-          networking:
-            -
-              interface: eth0
-              vlan: 10
-              ip: 10.250.10.51
-              gateway: 10.250.10.1
-              subnet_mask: 255.255.255.0
+        machine_constraints:
+          min_cores: number_of_cores
+          min_memory: main_memory_value_with_unit
+
+        networking:
+          -
+            interface: eth0
+            vlan: vlan_number
+            ip: 10.250.10.51
+            gateway: 10.250.10.1
+            subnet_mask: 255.255.255.0
 
         storage:
           -
-            device: expected_persistent_device_name
-            mount: path_to_mount_this_device
-            size: expected_blocksize_of_the_device
-            path: expected_unix_device_node
+            file_system: nfs
+            min_size:  storage_size_value_with_unit
+            device: "10.250.21.12:/nfs/share"
+            mount: "/mnt/foo"
+            mount_options:
+              - a
+              - b
+              - c
 
         credentials:
           -
@@ -94,9 +98,8 @@ class RuntimeConfig(object):
                 return InstanceType.li
 
     def get_network_config(self):
-        if self.config_data and 'blade' in self.config_data:
-            if 'networking' in self.config_data['blade']:
-                return self.config_data['blade']['networking']
+        if self.config_data and 'networking' in self.config_data:
+            return self.config_data['networking']
 
     def get_user_config(self):
         if self.config_data and 'credentials' in self.config_data:
