@@ -10,7 +10,10 @@ class TestConfigLookup(object):
     @patch('azure_li_services.command.Command.run')
     @patch('azure_li_services.path.Path.create')
     @patch('azure_li_services.path.Path.which')
-    def test_main(self, mock_Path_which, mock_Path_create, mock_Command_run):
+    @patch('os.chmod')
+    def test_main(
+        self, mock_chmod, mock_Path_which, mock_Path_create, mock_Command_run
+    ):
         main()
         assert mock_Command_run.call_args_list == [
             call(['mount', '--label', 'azconfig', '/mnt']),
@@ -20,6 +23,9 @@ class TestConfigLookup(object):
             ]),
             call(['umount', '/mnt'])
         ]
+        mock_chmod.assert_called_once_with(
+            '/etc/suse_firstboot_config.yaml', 0o600
+        )
         mock_Path_create.assert_called_once_with('/etc')
         mock_Path_which.assert_called_once_with(
             'suse_firstboot_config.yaml', ['/mnt']
