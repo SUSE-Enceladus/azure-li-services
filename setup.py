@@ -29,7 +29,8 @@ config = {
             'azure-li-network=azure_li_services.units.network:main',
             'azure-li-user=azure_li_services.units.user:main',
             'azure-li-call=azure_li_services.units.call:main',
-            'azure-li-install=azure_li_services.units.install:main'
+            'azure-li-install=azure_li_services.units.install:main',
+            'azure-li-cleanup=azure_li_services.units.cleanup:main'
         ]
     },
     'include_package_data': True,
