@@ -21,6 +21,7 @@ from collections import namedtuple
 from azure_li_services.runtime_config import RuntimeConfig
 from azure_li_services.defaults import Defaults
 from azure_li_services.command import Command
+from azure_li_services.status_report import StatusReport
 
 
 def main():
@@ -29,6 +30,7 @@ def main():
 
     Calls a custom script in the scope of an Azure Li/Vli instance
     """
+    status = StatusReport('call')
     config = RuntimeConfig(Defaults.get_config_file())
     call_script = config.get_call_script()
 
@@ -50,5 +52,6 @@ def main():
                     )
                 ]
             )
+            status.set_success()
         finally:
             Command.run(['umount', call_source.location])

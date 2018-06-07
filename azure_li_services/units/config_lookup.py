@@ -23,6 +23,7 @@ from azure_li_services.command import Command
 from azure_li_services.path import Path
 from azure_li_services.exceptions import AzureHostedConfigFileNotFoundException
 from azure_li_services.defaults import Defaults
+from azure_li_services.status_report import StatusReport
 
 
 def main():
@@ -33,6 +34,7 @@ def main():
     and make it locally available at the location described by
     Defaults.get_config_file_name()
     """
+    status = StatusReport('config_lookup')
     config_type = namedtuple(
         'config_type', ['name', 'location', 'label']
     )
@@ -63,5 +65,6 @@ def main():
             ['cp', azure_config_file, Defaults.get_config_file_name()]
         )
         os.chmod(Defaults.get_config_file_name(), 0o600)
+        status.set_success()
     finally:
         Command.run(['umount', azure_config.location])
