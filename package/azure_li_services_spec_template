@@ -64,6 +64,9 @@ install -D -m 644 systemd/azure-li-call.service \
 install -D -m 644 systemd/azure-li-install.service \
     %{buildroot}%{_unitdir}/azure-li-install.service
 
+install -D -m 644 systemd/azure-li-cleanup.service \
+    %{buildroot}%{_unitdir}/azure-li-cleanup.service
+
 %files
 %defattr(-,root,root,-)
 %{python3_sitelib}/*
@@ -82,5 +85,8 @@ install -D -m 644 systemd/azure-li-install.service \
 
 %{_bindir}/azure-li-install
 %{_unitdir}/azure-li-install.service
+
+%{_bindir}/azure-li-cleanup
+%{_unitdir}/azure-li-cleanup.service
 
 %changelog
