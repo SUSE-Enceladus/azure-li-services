@@ -16,8 +16,9 @@ class TestUser(object):
     @patch('azure_li_services.units.user.Users')
     @patch('azure_li_services.units.user.Path.create')
     @patch('os.path.exists')
+    @patch('os.chmod')
     def test_main(
-        self, mock_path_exists, mock_Path_create, mock_Users,
+        self, mock_chmod, mock_path_exists, mock_Path_create, mock_Users,
         mock_RuntimConfig, mock_get_config_file
     ):
         group_exists = [True, False, False]
@@ -65,6 +66,10 @@ class TestUser(object):
                 call('ssh-rsa foo'),
                 call('\n'),
                 call('%admin ALL=(ALL) NOPASSWD: ALL')
+            ]
+            assert mock_chmod.call_args_list == [
+                call('/home/hanauser/.ssh/', 0o700),
+                call('/home/hanauser/.ssh/authorized_keys', 0o600)
             ]
 
     @patch('azure_li_services.units.user.Defaults.get_config_file')

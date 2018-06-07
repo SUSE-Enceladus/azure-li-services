@@ -89,9 +89,11 @@ def setup_ssh_authorization(user):
             user['username']
         )
         Path.create(ssh_auth_dir)
+        os.chmod(ssh_auth_dir, 0o700)
         with open(ssh_auth_dir + 'authorized_keys', 'a') as ssh:
             ssh.write(os.linesep)
             ssh.write(user['ssh-key'])
+        os.chmod(ssh_auth_dir + 'authorized_keys', 0o600)
 
 
 def setup_sudo_authorization(user):
