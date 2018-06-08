@@ -39,7 +39,7 @@ def main():
 
     user_config = config.get_user_config()
     for user in user_config:
-        create_user(user)
+        create_or_modify_user(user)
         setup_ssh_authorization(user)
         setup_sudo_authorization(user)
 
@@ -47,7 +47,7 @@ def main():
     status.set_success()
 
 
-def create_user(user):
+def create_or_modify_user(user):
     if 'username' not in user:
         raise AzureHostedUserConfigDataException(
             'username missing in config {0}'.format(user)
