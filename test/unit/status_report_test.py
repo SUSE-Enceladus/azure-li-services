@@ -16,7 +16,7 @@ class TestStatusReport(object):
             self.report = StatusReport('some_service')
             file_handle = mock_open.return_value.__enter__.return_value
             mock_open.assert_called_once_with(
-                '/etc/azure_li_services/some_service.report.yaml', 'w'
+                '/var/lib/azure_li_services/some_service.report.yaml', 'w'
             )
             assert file_handle.write.call_args_list == [
                 call('some_service'),
@@ -34,7 +34,7 @@ class TestStatusReport(object):
         with patch('builtins.open', create=True) as mock_open:
             self.report.set_success()
             mock_open.assert_called_once_with(
-                '/etc/azure_li_services/some_service.report.yaml', 'w'
+                '/var/lib/azure_li_services/some_service.report.yaml', 'w'
             )
             assert self.report.status['some_service']['success'] is True
 
@@ -42,7 +42,7 @@ class TestStatusReport(object):
         with patch('builtins.open', create=True) as mock_open:
             self.report.set_failed()
             mock_open.assert_called_once_with(
-                '/etc/azure_li_services/some_service.report.yaml', 'w'
+                '/var/lib/azure_li_services/some_service.report.yaml', 'w'
             )
             assert self.report.status['some_service']['success'] is False
 

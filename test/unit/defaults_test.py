@@ -16,4 +16,4 @@ class TestDefaults(object):
 
     def test_get_status_report_directory(self):
         assert Defaults.get_status_report_directory() == \
-            '/etc/azure_li_services'
+            '/var/lib/azure_li_services'

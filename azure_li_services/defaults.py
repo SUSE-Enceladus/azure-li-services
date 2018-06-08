@@ -32,7 +32,7 @@ class Defaults(object):
 
     @classmethod
     def get_status_report_directory(self):
-        return '/etc/azure_li_services'
+        return '/var/lib/azure_li_services'
 
     @classmethod
     def get_config_file(self):
