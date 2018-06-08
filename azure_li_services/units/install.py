@@ -25,6 +25,8 @@ from azure_li_services.command import Command
 from azure_li_services.path import Path
 from azure_li_services.status_report import StatusReport
 
+from azure_li_services.exceptions import AzureHostedInstallException
+
 
 def main():
     """
@@ -45,7 +47,12 @@ def main():
         location='/mnt', label='azconfig'
     )
 
-    if 'directory' in packages_config:
+    if packages_config:
+        if 'directory' not in packages_config:
+            raise AzureHostedInstallException(
+                'directory list missing in config {0}'.format(packages_config)
+            )
+
         Command.run(
             ['mount', '--label', call_source.label, call_source.location]
         )

@@ -66,3 +66,10 @@ class AzureHostedUserConfigDataException(AzureHostedException):
     Exception raised if any of the required data to setup the user
     is missing
     """
+
+
+class AzureHostedInstallException(AzureHostedException):
+    """
+    Exception raised if any of the required data to install
+    packages is missing
+    """

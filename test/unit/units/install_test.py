@@ -1,7 +1,9 @@
+from pytest import raises
 from unittest.mock import (
     patch, call, Mock
 )
 from azure_li_services.units.install import main
+from azure_li_services.exceptions import AzureHostedInstallException
 
 
 class TestInstall(object):
@@ -61,3 +63,12 @@ class TestInstall(object):
             ),
             call(['umount', '/mnt'])
         ]
+
+    @patch('azure_li_services.units.install.Defaults.get_config_file')
+    @patch('azure_li_services.units.install.RuntimeConfig')
+    def test_main_raises(self, mock_RuntimeConfig, mock_get_config_file):
+        config = Mock()
+        mock_RuntimeConfig.return_value = config
+        config.get_packages_config.return_value = {'packages': None}
+        with raises(AzureHostedInstallException):
+            main()
