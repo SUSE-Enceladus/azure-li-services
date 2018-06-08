@@ -21,6 +21,7 @@ import os
 from azure_li_services.runtime_config import RuntimeConfig
 from azure_li_services.defaults import Defaults
 from azure_li_services.users import Users
+from azure_li_services.status_report import StatusReport
 
 from azure_li_services.exceptions import AzureHostedUserConfigDataException
 from azure_li_services.path import Path
@@ -33,6 +34,7 @@ def main():
     Creates the configured user and its access setup for ssh
     and sudo services in the scope of an Azure Li/Vli instance
     """
+    status = StatusReport('user')
     config = RuntimeConfig(Defaults.get_config_file())
 
     user_config = config.get_user_config()
@@ -42,6 +44,7 @@ def main():
         setup_sudo_authorization(user)
 
     setup_sudo_config()
+    status.set_success()
 
 
 def create_user(user):

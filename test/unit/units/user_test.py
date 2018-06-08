@@ -15,17 +15,20 @@ class TestUser(object):
     @patch('azure_li_services.units.user.RuntimeConfig')
     @patch('azure_li_services.units.user.Users')
     @patch('azure_li_services.units.user.Path.create')
+    @patch('azure_li_services.units.user.StatusReport')
     @patch('os.path.exists')
     @patch('os.chmod')
     def test_main(
-        self, mock_chmod, mock_path_exists, mock_Path_create, mock_Users,
-        mock_RuntimConfig, mock_get_config_file
+        self, mock_chmod, mock_path_exists, mock_StatusReport, mock_Path_create,
+        mock_Users, mock_RuntimConfig, mock_get_config_file
     ):
         group_exists = [True, False, False]
 
         def side_effect(group):
             return group_exists.pop()
 
+        status = Mock()
+        mock_StatusReport.return_value = status
         mock_path_exists.return_value = True
         mock_RuntimConfig.return_value = self.config
         with patch('builtins.open', create=True) as mock_open:
@@ -33,6 +36,8 @@ class TestUser(object):
             system_users.group_exists.side_effect = side_effect
             mock_Users.return_value = system_users
             main()
+            mock_StatusReport.assert_called_once_with('user')
+            status.set_success.assert_called_once_with()
             file_handle = mock_open.return_value.__enter__.return_value
             assert system_users.group_exists.call_args_list == [
                 call('admin'), call('nogroup'), call('admin')
@@ -74,7 +79,10 @@ class TestUser(object):
 
     @patch('azure_li_services.units.user.Defaults.get_config_file')
     @patch('azure_li_services.units.user.RuntimeConfig')
-    def test_main_raises(self, mock_RuntimConfig, mock_get_config_file):
+    @patch('azure_li_services.units.user.StatusReport')
+    def test_main_raises(
+        self, mock_StatusReport, mock_RuntimConfig, mock_get_config_file
+    ):
         config = Mock()
         config.get_user_config.return_value = [{}]
         mock_RuntimConfig.return_value = config

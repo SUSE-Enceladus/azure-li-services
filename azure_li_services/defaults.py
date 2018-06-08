@@ -31,6 +31,10 @@ class Defaults(object):
         return '/etc/suse_firstboot_config.yaml'
 
     @classmethod
+    def get_status_report_directory(self):
+        return '/var/lib/azure_li_services'
+
+    @classmethod
     def get_config_file(self):
         """
         Provides config file as stored locally

@@ -9,16 +9,21 @@ class TestInstall(object):
     @patch('azure_li_services.units.install.Defaults.get_config_file')
     @patch('azure_li_services.units.install.Path.create')
     @patch('azure_li_services.units.install.glob.iglob')
+    @patch('azure_li_services.units.install.StatusReport')
     def test_main(
-        self, mock_iglob, mock_Path_create, mock_get_config_file,
-        mock_Command_run
+        self, mock_StatusReport, mock_iglob, mock_Path_create,
+        mock_get_config_file, mock_Command_run
     ):
+        status = Mock()
+        mock_StatusReport.return_value = status
         command_result = Mock()
         command_result.output = 'foo'
         mock_Command_run.return_value = command_result
         mock_iglob.return_value = ['/var/lib/localrepos/azure_packages/foo.rpm']
         mock_get_config_file.return_value = '../data/config.yaml'
         main()
+        mock_StatusReport.assert_called_once_with('install')
+        status.set_success.assert_called_once_with()
         mock_Path_create.assert_called_once_with(
             '/var/lib/localrepos/azure_packages'
         )

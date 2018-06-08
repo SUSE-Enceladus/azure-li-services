@@ -23,6 +23,7 @@ from azure_li_services.runtime_config import RuntimeConfig
 from azure_li_services.defaults import Defaults
 from azure_li_services.command import Command
 from azure_li_services.path import Path
+from azure_li_services.status_report import StatusReport
 
 
 def main():
@@ -33,6 +34,7 @@ def main():
     Installs all packages configured in the scope of an Azure
     Li/Vli instance
     """
+    status = StatusReport('install')
     config = RuntimeConfig(Defaults.get_config_file())
     packages_config = config.get_packages_config()
 
@@ -96,5 +98,6 @@ def main():
                         'install', '--auto-agree-with-licenses'
                     ] + install_items
                 )
+            status.set_success()
         finally:
             Command.run(['umount', call_source.location])
