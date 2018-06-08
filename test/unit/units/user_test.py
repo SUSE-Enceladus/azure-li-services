@@ -23,9 +23,13 @@ class TestUser(object):
         mock_Users, mock_RuntimConfig, mock_get_config_file
     ):
         group_exists = [True, False, False]
+        user_exists = [True, False]
 
-        def side_effect(group):
+        def side_effect_group_exists(group):
             return group_exists.pop()
+
+        def side_effect_user_exists(user):
+            return user_exists.pop()
 
         status = Mock()
         mock_StatusReport.return_value = status
@@ -33,7 +37,8 @@ class TestUser(object):
         mock_RuntimConfig.return_value = self.config
         with patch('builtins.open', create=True) as mock_open:
             system_users = Mock()
-            system_users.group_exists.side_effect = side_effect
+            system_users.group_exists.side_effect = side_effect_group_exists
+            system_users.user_exists.side_effect = side_effect_user_exists
             mock_Users.return_value = system_users
             main()
             mock_StatusReport.assert_called_once_with('user')
@@ -42,26 +47,27 @@ class TestUser(object):
             assert system_users.group_exists.call_args_list == [
                 call('admin'), call('nogroup'), call('admin')
             ]
-            assert system_users.user_add.call_args_list == [
-                call('hanauser', [
+            system_users.user_add.assert_called_once_with(
+                'hanauser', [
                     '-p', 'sha-512-cipher',
                     '-s', '/bin/bash',
                     '-m', '-d', '/home/hanauser'
-                ]),
-                call('rpc', [
-                    '-g', 'nogroup',
-                    '-s', '/sbin/nologin',
-                    '-m', '-d', '/var/lib/empty',
-                    '-u', '495'
-                ])
+                ]
+            )
+            assert system_users.user_modify.call_args_list == [
+                call('hanauser', ['-a', '-G', 'admin']),
+                call(
+                    'rpc', [
+                        '-g', 'nogroup',
+                        '-s', '/sbin/nologin',
+                        '-u', '495'
+                    ]
+                )
             ]
             assert system_users.group_add.call_args_list == [
                 call('admin', []),
                 call('nogroup', [])
             ]
-            system_users.user_modify.assert_called_once_with(
-                'hanauser', ['-a', '-G', 'admin']
-            )
             assert mock_open.call_args_list == [
                 call('/home/hanauser/.ssh/authorized_keys', 'a'),
                 call('/etc/sudoers', 'a')
