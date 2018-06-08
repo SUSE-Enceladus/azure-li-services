@@ -66,7 +66,10 @@ class TestInstall(object):
 
     @patch('azure_li_services.units.install.Defaults.get_config_file')
     @patch('azure_li_services.units.install.RuntimeConfig')
-    def test_main_raises(self, mock_RuntimeConfig, mock_get_config_file):
+    @patch('azure_li_services.units.install.StatusReport')
+    def test_main_raises(
+        self, mock_StatusReport, mock_RuntimeConfig, mock_get_config_file
+    ):
         config = Mock()
         mock_RuntimeConfig.return_value = config
         config.get_packages_config.return_value = {'packages': None}
