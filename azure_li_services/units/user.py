@@ -39,7 +39,7 @@ def main():
 
     user_config = config.get_user_config()
     for user in user_config:
-        create_user(user)
+        create_or_modify_user(user)
         setup_ssh_authorization(user)
         setup_sudo_authorization(user)
 
@@ -47,13 +47,14 @@ def main():
     status.set_success()
 
 
-def create_user(user):
+def create_or_modify_user(user):
     if 'username' not in user:
         raise AzureHostedUserConfigDataException(
             'username missing in config {0}'.format(user)
         )
     options = []
     system_users = Users()
+    user_exists = system_users.user_exists(user['username'])
     if 'group' in user:
         if not system_users.group_exists(user['group']):
             system_users.group_add(user['group'], [])
@@ -69,21 +70,23 @@ def create_user(user):
         options += [
             '-s', '/sbin/nologin'
         ]
-    if 'home_dir' in user:
+    if not user_exists:
+        home_dir = user.get('home_dir') or '/home/{0}'.format(user['username'])
         options += [
-            '-m', '-d', user['home_dir']
-        ]
-    else:
-        options += [
-            '-m', '-d', '/home/{0}'.format(user['username'])
+            '-m', '-d', home_dir
         ]
     if 'id' in user:
         options += [
             '-u', '{0}'.format(user['id'])
         ]
-    system_users.user_add(
-        user['username'], options
-    )
+    if user_exists:
+        system_users.user_modify(
+            user['username'], options
+        )
+    else:
+        system_users.user_add(
+            user['username'], options
+        )
 
 
 def setup_ssh_authorization(user):
@@ -100,7 +103,7 @@ def setup_ssh_authorization(user):
 
 
 def setup_sudo_authorization(user):
-    if 'shadow_hash' in user:
+    if 'shadow_hash' in user and user['username'] != 'root':
         system_users = Users()
         if not system_users.group_exists('admin'):
             system_users.group_add('admin', [])
