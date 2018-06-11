@@ -101,6 +101,10 @@ class RuntimeConfig(object):
         if self.config_data and 'networking' in self.config_data:
             return self.config_data['networking']
 
+    def get_machine_constraints(self):
+        if self.config_data and 'machine_constraints' in self.config_data:
+            return self.config_data['machine_constraints']
+
     def get_user_config(self):
         if self.config_data and 'credentials' in self.config_data:
             return self.config_data['credentials']

@@ -1,0 +1,12 @@
+[Unit]
+Description=Validation of Azure Li/VLi machine constraints
+ConditionPathExists=/.azure-li-machine-constraints.trigger
+After=azure-li-config-lookup.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/azure-li-machine-constraints
+ExecStartPost=/bin/bash -c 'rm -f /.azure-li-machine-constraints.trigger'
+
+[Install]
+WantedBy=multi-user.target
