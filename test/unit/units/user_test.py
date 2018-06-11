@@ -86,7 +86,19 @@ class TestUser(object):
     @patch('azure_li_services.units.user.Defaults.get_config_file')
     @patch('azure_li_services.units.user.RuntimeConfig')
     @patch('azure_li_services.units.user.StatusReport')
-    def test_main_raises(
+    def test_main_raises_on_missing_credentials(
+        self, mock_StatusReport, mock_RuntimConfig, mock_get_config_file
+    ):
+        config = Mock()
+        config.get_user_config.return_value = None
+        mock_RuntimConfig.return_value = config
+        with raises(AzureHostedUserConfigDataException):
+            main()
+
+    @patch('azure_li_services.units.user.Defaults.get_config_file')
+    @patch('azure_li_services.units.user.RuntimeConfig')
+    @patch('azure_li_services.units.user.StatusReport')
+    def test_main_raises_on_incomplete_credentials(
         self, mock_StatusReport, mock_RuntimConfig, mock_get_config_file
     ):
         config = Mock()

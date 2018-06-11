@@ -38,6 +38,12 @@ def main():
     config = RuntimeConfig(Defaults.get_config_file())
 
     user_config = config.get_user_config()
+
+    if not user_config:
+        raise AzureHostedUserConfigDataException(
+            'credentials section missing in config file'
+        )
+
     for user in user_config:
         create_or_modify_user(user)
         setup_ssh_authorization(user)
