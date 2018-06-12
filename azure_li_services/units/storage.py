@@ -16,6 +16,8 @@
 # along with azure-li-services.  If not, see <http://www.gnu.org/licenses/>
 #
 import os
+import humanfriendly
+import shutil
 
 # project
 from azure_li_services.runtime_config import RuntimeConfig
@@ -63,6 +65,27 @@ def main():
                 for entry in fstab_entries:
                     fstab.write(entry)
                     fstab.write(os.linesep)
+
             Command.run(['mount', '-a'])
 
+            for storage in storage_config:
+                min_size = storage.get('min_size')
+                if min_size:
+                    check_storage_size_validates_constraint(
+                        min_size, storage['mount']
+                    )
+
             status.set_success()
+
+
+def check_storage_size_validates_constraint(min_size, mount_point):
+    min_bytes = humanfriendly.parse_size(min_size, binary=True)
+    disk_usage = shutil.disk_usage(mount_point)
+    if disk_usage.free < min_bytes:
+        raise AzureHostedStorageMountException(
+            'Free space: {0}={1} is below required minimum: {2}'.format(
+                mount_point,
+                humanfriendly.format_size(disk_usage.free, binary=True),
+                humanfriendly.format_size(min_bytes, binary=True)
+            )
+        )

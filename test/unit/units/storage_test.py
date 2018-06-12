@@ -1,3 +1,4 @@
+import humanfriendly
 from pytest import raises
 from unittest.mock import (
     patch, call, Mock
@@ -15,10 +16,14 @@ class TestStorage(object):
     @patch('azure_li_services.units.storage.RuntimeConfig')
     @patch('azure_li_services.units.storage.Defaults.get_config_file')
     @patch('azure_li_services.units.storage.StatusReport')
+    @patch('azure_li_services.units.storage.shutil.disk_usage')
     def test_main(
-        self, mock_StatusReport, mock_get_config_file,
+        self, mock_disk_usage, mock_StatusReport, mock_get_config_file,
         mock_RuntimConfig, mock_Command_run
     ):
+        disk_usage = Mock()
+        disk_usage.free = humanfriendly.parse_size('112G', binary=True)
+        mock_disk_usage.return_value = disk_usage
         status = Mock()
         mock_StatusReport.return_value = status
         mock_RuntimConfig.return_value = self.config
@@ -34,6 +39,9 @@ class TestStorage(object):
                 call('10.250.21.12:/nfs/share /mnt/foo nfs a,b,c 0 0'),
                 call('\n')
             ]
+            disk_usage.free = 0
+            with raises(AzureHostedStorageMountException):
+                main()
 
     @patch('azure_li_services.units.storage.RuntimeConfig')
     @patch('azure_li_services.units.storage.Defaults.get_config_file')
