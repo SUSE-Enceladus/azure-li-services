@@ -64,6 +64,9 @@ install -D -m 644 systemd/azure-li-call.service \
 install -D -m 644 systemd/azure-li-install.service \
     %{buildroot}%{_unitdir}/azure-li-install.service
 
+install -D -m 644 systemd/azure-li-report.service \
+    %{buildroot}%{_unitdir}/azure-li-report.service
+
 install -D -m 644 systemd/azure-li-cleanup.service \
     %{buildroot}%{_unitdir}/azure-li-cleanup.service
 
@@ -85,6 +88,9 @@ install -D -m 644 systemd/azure-li-cleanup.service \
 
 %{_bindir}/azure-li-install
 %{_unitdir}/azure-li-install.service
+
+%{_bindir}/azure-li-report
+%{_unitdir}/azure-li-report.service
 
 %{_bindir}/azure-li-cleanup
 %{_unitdir}/azure-li-cleanup.service

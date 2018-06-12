@@ -48,5 +48,5 @@ class TestStatusReport(object):
 
     def test_load(self):
         self.report.status_file = '../data/some_service.report.yaml'
-        result = self.report.load()
-        assert result['some_service']['success'] is True
+        self.report.load()
+        assert self.report.get_state() is True

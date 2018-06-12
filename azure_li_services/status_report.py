@@ -34,7 +34,7 @@ class StatusReport(object):
 
     :param str service_name: name of the service
     """
-    def __init__(self, service_name):
+    def __init__(self, service_name, init_state=True):
         self.status = {
             service_name: {
                 'success': None
@@ -48,7 +48,8 @@ class StatusReport(object):
         if not os.path.exists(self.status_directory):
             Path.create(self.status_directory)
 
-        self.set_failed()
+        if init_state:
+            self.set_failed()
 
     def set_success(self):
         self.status[self.service_name]['success'] = True
@@ -61,7 +62,10 @@ class StatusReport(object):
     def load(self):
         if os.path.exists(self.status_file):
             with open(self.status_file, 'r') as report:
-                return yaml.load(report)
+                self.status = yaml.load(report)
+
+    def get_state(self):
+        return self.status[self.service_name]['success']
 
     def _write(self):
         with open(self.status_file, 'w') as report:

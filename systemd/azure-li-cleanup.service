@@ -1,7 +1,8 @@
 [Unit]
 Description=Cleanup/Uninstall Azure Li/VLi services
 ConditionPathExists=/.azure-li-cleanup.trigger
-After=azure-li-config-lookup.service azure-li-call.service azure-li-install.service azure-li-network.service azure-li-user.service
+After=azure-li-report.service
+Before=getty.target
 
 [Service]
 Type=oneshot
