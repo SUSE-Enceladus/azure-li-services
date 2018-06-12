@@ -87,32 +87,32 @@ class RuntimeConfig(object):
                 self.config_data = yaml.load(config)
 
     def get_config_file_version(self):
-        if self.config_data and 'version' in self.config_data:
-            return self.config_data['version']
+        if self.config_data:
+            return self.config_data.get('version')
 
     def get_instance_type(self):
-        if self.config_data and 'instance_type' in self.config_data:
-            if self.config_data['instance_type'] == 'VeryLargeInstance':
+        if self.config_data:
+            if self.config_data.get('instance_type') == 'VeryLargeInstance':
                 return InstanceType.vli
             else:
                 return InstanceType.li
 
     def get_network_config(self):
-        if self.config_data and 'networking' in self.config_data:
-            return self.config_data['networking']
+        if self.config_data:
+            return self.config_data.get('networking')
 
     def get_machine_constraints(self):
-        if self.config_data and 'machine_constraints' in self.config_data:
-            return self.config_data['machine_constraints']
+        if self.config_data:
+            return self.config_data.get('machine_constraints')
 
     def get_user_config(self):
-        if self.config_data and 'credentials' in self.config_data:
-            return self.config_data['credentials']
+        if self.config_data:
+            return self.config_data.get('credentials')
 
     def get_packages_config(self):
-        if self.config_data and 'packages' in self.config_data:
-            return self.config_data['packages']
+        if self.config_data:
+            return self.config_data.get('packages')
 
     def get_call_script(self):
-        if self.config_data and 'call' in self.config_data:
-            return self.config_data['call']
+        if self.config_data:
+            return self.config_data.get('call')
