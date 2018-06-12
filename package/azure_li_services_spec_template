@@ -75,6 +75,9 @@ install -D -m 644 systemd/azure-li-cleanup.service \
 install -D -m 644 systemd/azure-li-machine-constraints.service \
     %{buildroot}%{_unitdir}/azure-li-machine-constraints.service
 
+install -D -m 644 systemd/azure-li-storage.service \
+    %{buildroot}%{_unitdir}/azure-li-storage.service
+
 %files
 %defattr(-,root,root,-)
 %{python3_sitelib}/*
@@ -102,5 +105,8 @@ install -D -m 644 systemd/azure-li-machine-constraints.service \
 
 %{_bindir}/azure-li-machine-constraints
 %{_unitdir}/azure-li-machine-constraints.service
+
+%{_bindir}/azure-li-storage
+%{_unitdir}/azure-li-storage.service
 
 %changelog

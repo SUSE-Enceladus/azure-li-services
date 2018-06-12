@@ -80,3 +80,10 @@ class AzureHostedMachineConstraintException(AzureHostedException):
     Exception raised if any of the provided machine constraints
     violates the given constraint value
     """
+
+
+class AzureHostedStorageMountException(AzureHostedException):
+    """
+    Exception raised if any of the required data to create a valid
+    fstab entry to mount some storage device is missing
+    """

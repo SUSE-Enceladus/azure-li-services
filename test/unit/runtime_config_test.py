@@ -59,3 +59,14 @@ class TestRuntimeConfig(object):
             'min_cores': 32,
             'min_memory': '20tb'
         }
+
+    def test_get_storage_config(self):
+        assert self.runtime_config.get_storage_config() == [
+            {
+                'device': '10.250.21.12:/nfs/share',
+                'min_size': '112G',
+                'file_system': 'nfs',
+                'mount': '/mnt/foo',
+                'mount_options': ['a', 'b', 'c']
+            }
+        ]
