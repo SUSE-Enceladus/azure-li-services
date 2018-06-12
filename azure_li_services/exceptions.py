@@ -73,3 +73,10 @@ class AzureHostedInstallException(AzureHostedException):
     Exception raised if any of the required data to install
     packages is missing
     """
+
+
+class AzureHostedMachineConstraintException(AzureHostedException):
+    """
+    Exception raised if any of the provided machine constraints
+    violates the given constraint value
+    """

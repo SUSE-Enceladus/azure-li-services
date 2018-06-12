@@ -29,6 +29,8 @@ BuildRequires:  python3-devel
 BuildRequires:  python3-setuptools
 Requires:       python3-PyYAML
 Requires:       python3-setuptools
+Requires:       python3-psutil
+Requires:       python3-humanfriendly
 Requires:       shadow
 Requires:       createrepo
 Requires:       zypper
@@ -70,6 +72,9 @@ install -D -m 644 systemd/azure-li-report.service \
 install -D -m 644 systemd/azure-li-cleanup.service \
     %{buildroot}%{_unitdir}/azure-li-cleanup.service
 
+install -D -m 644 systemd/azure-li-machine-constraints.service \
+    %{buildroot}%{_unitdir}/azure-li-machine-constraints.service
+
 %files
 %defattr(-,root,root,-)
 %{python3_sitelib}/*
@@ -94,5 +99,8 @@ install -D -m 644 systemd/azure-li-cleanup.service \
 
 %{_bindir}/azure-li-cleanup
 %{_unitdir}/azure-li-cleanup.service
+
+%{_bindir}/azure-li-machine-constraints
+%{_unitdir}/azure-li-machine-constraints.service
 
 %changelog

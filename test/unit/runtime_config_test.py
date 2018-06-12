@@ -53,3 +53,9 @@ class TestRuntimeConfig(object):
             ],
             'repository_name': 'azure_packages'
         }
+
+    def test_get_machine_constraints(self):
+        assert self.runtime_config.get_machine_constraints() == {
+            'min_cores': 32,
+            'min_memory': '20tb'
+        }
