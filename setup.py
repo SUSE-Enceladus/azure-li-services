@@ -30,6 +30,7 @@ config = {
             'azure-li-user=azure_li_services.units.user:main',
             'azure-li-call=azure_li_services.units.call:main',
             'azure-li-install=azure_li_services.units.install:main',
+            'azure-li-report=azure_li_services.units.report:main',
             'azure-li-cleanup=azure_li_services.units.cleanup:main'
         ]
     },
