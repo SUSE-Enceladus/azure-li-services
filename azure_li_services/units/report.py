@@ -39,7 +39,9 @@ def main():
         'network':
             'azure-li-network',
         'call':
-            'azure-li-call'
+            'azure-li-call',
+        'machine_constraints':
+            'azure-li-machine-constraints'
     }
     unit_to_service_map_ordered = OrderedDict(
         sorted(unit_to_service_map.items())
