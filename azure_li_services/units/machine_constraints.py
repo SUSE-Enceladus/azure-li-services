@@ -63,12 +63,16 @@ def check_cpu_count_validates_constraint(machine_constraints):
 def check_main_memory_validates_constraint(machine_constraints):
     min_memory = machine_constraints.get('min_memory')
     if min_memory:
-        min_bytes = humanfriendly.parse_size(min_memory)
+        min_bytes = humanfriendly.parse_size(min_memory, binary=True)
         existing_memory = virtual_memory()
         if existing_memory.total < min_bytes:
             raise AzureHostedMachineConstraintException(
                 'Main memory: {0} is below required minimum: {1}'.format(
-                    humanfriendly.format_size(existing_memory.total),
-                    humanfriendly.format_size(min_bytes)
+                    humanfriendly.format_size(
+                        existing_memory.total, binary=True
+                    ),
+                    humanfriendly.format_size(
+                        min_bytes, binary=True
+                    )
                 )
             )

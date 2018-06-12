@@ -21,7 +21,7 @@ class TestMachineConstraints(object):
         mock_get_config_file.return_value = '../data/config.yaml'
         mock_cpu_count.return_value = 42
         existing_memory = Mock()
-        existing_memory.total = humanfriendly.parse_size('20tb')
+        existing_memory.total = humanfriendly.parse_size('20tb', binary=True)
         mock_virtual_memory.return_value = existing_memory
         main()
         mock_StatusReport.assert_called_once_with('machine_constraints')
@@ -30,6 +30,6 @@ class TestMachineConstraints(object):
         with raises(AzureHostedMachineConstraintException):
             main()
         mock_cpu_count.return_value = 42
-        existing_memory.total = humanfriendly.parse_size('1gb')
+        existing_memory.total = humanfriendly.parse_size('1gb', binary=True)
         with raises(AzureHostedMachineConstraintException):
             main()
