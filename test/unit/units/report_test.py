@@ -24,6 +24,7 @@ class TestReport(object):
                 call('install', init_state=False),
                 call('machine_constraints', init_state=False),
                 call('network', init_state=False),
+                call('storage', init_state=False),
                 call('user', init_state=False)
             ]
             assert file_handle.write.call_args_list == [
@@ -34,7 +35,7 @@ class TestReport(object):
                     'For details see: "systemctl status '
                     'azure-li-call azure-li-config-lookup '
                     'azure-li-install azure-li-machine-constraints '
-                    'azure-li-network azure-li-user"'
+                    'azure-li-network azure-li-storage azure-li-user"'
                 ),
                 call('\n'),
                 call('\n')

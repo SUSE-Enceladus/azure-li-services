@@ -116,3 +116,7 @@ class RuntimeConfig(object):
     def get_call_script(self):
         if self.config_data:
             return self.config_data.get('call')
+
+    def get_storage_config(self):
+        if self.config_data:
+            return self.config_data.get('storage')
