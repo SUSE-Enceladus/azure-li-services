@@ -17,9 +17,10 @@ class TestStorage(object):
     @patch('azure_li_services.units.storage.Defaults.get_config_file')
     @patch('azure_li_services.units.storage.StatusReport')
     @patch('azure_li_services.units.storage.shutil.disk_usage')
+    @patch('azure_li_services.units.storage.Path.create')
     def test_main(
-        self, mock_disk_usage, mock_StatusReport, mock_get_config_file,
-        mock_RuntimConfig, mock_Command_run
+        self, mock_Path_create, mock_disk_usage, mock_StatusReport,
+        mock_get_config_file, mock_RuntimConfig, mock_Command_run
     ):
         disk_usage = Mock()
         disk_usage.free = humanfriendly.parse_size('112G', binary=True)
@@ -32,6 +33,7 @@ class TestStorage(object):
             file_handle = mock_open.return_value.__enter__.return_value
             mock_StatusReport.assert_called_once_with('storage')
             status.set_success.assert_called_once_with()
+            mock_Path_create.assert_called_once_with('/mnt/foo')
             mock_open.assert_called_once_with('/etc/fstab', 'a')
             mock_Command_run.assert_called_once_with(['mount', '-a'])
             assert file_handle.write.call_args_list == [

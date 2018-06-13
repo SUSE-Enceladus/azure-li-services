@@ -24,6 +24,7 @@ from azure_li_services.runtime_config import RuntimeConfig
 from azure_li_services.defaults import Defaults
 from azure_li_services.command import Command
 from azure_li_services.status_report import StatusReport
+from azure_li_services.path import Path
 
 from azure_li_services.exceptions import AzureHostedStorageMountException
 
@@ -48,6 +49,7 @@ def main():
                         ('device', 'mount'), storage
                     )
                 )
+            Path.create(storage['mount'])
             fstab_entries.append(
                 '{device} {mount} {fstype} {options} 0 0'.format(
                     device=storage['device'],
