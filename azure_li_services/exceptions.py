@@ -39,6 +39,12 @@ class AzureHostedConfigFileNotFoundException(AzureHostedException):
     """
 
 
+class AzureHostedConfigDataException(AzureHostedException):
+    """
+    Exception raised if reading or validating the yaml config file failed
+    """
+
+
 class AzureHostedCommandException(AzureHostedException):
     """
     Exception raised if an external command called via a Command

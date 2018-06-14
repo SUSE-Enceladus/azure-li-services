@@ -1,0 +1,5 @@
+version: 2017-11-15
+instance_type: LargeInstance
+sku: "SR92"
+
+# sections missing...

@@ -1,10 +1,24 @@
+from pytest import raises
+from unittest.mock import patch
 from azure_li_services.runtime_config import RuntimeConfig
 from azure_li_services.instance_type import InstanceType
+
+from azure_li_services.exceptions import AzureHostedConfigDataException
 
 
 class TestRuntimeConfig(object):
     def setup(self):
         self.runtime_config = RuntimeConfig('../data/config.yaml')
+
+    @patch('yaml.load')
+    def test_init_raises_on_invalid_format(self, mock_yaml_load):
+        mock_yaml_load.side_effect = Exception
+        with raises(AzureHostedConfigDataException):
+            RuntimeConfig('../data/config.yaml')
+
+    def test_init_raises_on_schema_validation(self):
+        with raises(AzureHostedConfigDataException):
+            RuntimeConfig('../data/config_invalid.yaml')
 
     def test_get_config_file_version(self):
         assert self.runtime_config.get_config_file_version().isoformat() == \
