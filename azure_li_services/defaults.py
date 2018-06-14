@@ -16,7 +16,9 @@
 # along with azure-li-services.  If not, see <http://www.gnu.org/licenses/>
 #
 import os
+from collections import namedtuple
 
+from azure_li_services.command import Command
 from azure_li_services.exceptions import AzureHostedConfigFileNotFoundException
 
 
@@ -51,3 +53,22 @@ class Defaults(object):
             raise AzureHostedConfigFileNotFoundException(
                 'No Azure Li/VLi file found: {0}'.format(config_file)
             )
+
+    @classmethod
+    def mount_config_source(self):
+        config_type = namedtuple(
+            'config_type', ['name', 'location', 'label']
+        )
+        azure_config = config_type(
+            name=os.path.basename(Defaults.get_config_file_name()),
+            location='/mnt', label='azconfig'
+        )
+        try:
+            Command.run(
+                ['mount', '--label', azure_config.label, azure_config.location]
+            )
+        except Exception:
+            Command.run(
+                ['mount', '/dev/dvd', azure_config.location]
+            )
+        return azure_config

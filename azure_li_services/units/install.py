@@ -16,7 +16,6 @@
 # along with azure-li-services.  If not, see <http://www.gnu.org/licenses/>
 #
 import glob
-from collections import namedtuple
 
 # project
 from azure_li_services.runtime_config import RuntimeConfig
@@ -40,22 +39,14 @@ def main():
     config = RuntimeConfig(Defaults.get_config_file())
     packages_config = config.get_packages_config()
 
-    source_type = namedtuple(
-        'source_type', ['location', 'label']
-    )
-    call_source = source_type(
-        location='/mnt', label='azconfig'
-    )
-
     if packages_config:
         if 'directory' not in packages_config:
             raise AzureHostedInstallException(
                 'directory list missing in config {0}'.format(packages_config)
             )
 
-        Command.run(
-            ['mount', '--label', call_source.label, call_source.location]
-        )
+        install_source = Defaults.mount_config_source()
+
         try:
             repository_name = packages_config.get('repository_name') or \
                 'azure_{0}'.format(config.get_instance_type())
@@ -67,7 +58,7 @@ def main():
                 ['rsync', '-zav'] + list(
                     map(
                         lambda dir_name: '{0}/{1}/*'.format(
-                            call_source.location, dir_name
+                            install_source.location, dir_name
                         ), packages_config['directory']
                     )
                 ) + [
@@ -107,4 +98,4 @@ def main():
                 )
             status.set_success()
         finally:
-            Command.run(['umount', call_source.location])
+            Command.run(['umount', install_source.location])

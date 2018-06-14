@@ -16,7 +16,6 @@
 # along with azure-li-services.  If not, see <http://www.gnu.org/licenses/>
 #
 import os
-from collections import namedtuple
 
 # project
 from azure_li_services.command import Command
@@ -35,17 +34,7 @@ def main():
     Defaults.get_config_file_name()
     """
     status = StatusReport('config_lookup')
-    config_type = namedtuple(
-        'config_type', ['name', 'location', 'label']
-    )
-    azure_config = config_type(
-        name=os.path.basename(Defaults.get_config_file_name()),
-        location='/mnt', label='azconfig'
-    )
-
-    Command.run(
-        ['mount', '--label', azure_config.label, azure_config.location]
-    )
+    azure_config = Defaults.mount_config_source()
 
     try:
         azure_config_lookup_paths = [azure_config.location]
