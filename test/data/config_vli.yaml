@@ -1,4 +1,4 @@
-version: 2017-11-15
+version: "20180614"
 instance_type: VeryLargeInstance
 sku: "SR92"
 

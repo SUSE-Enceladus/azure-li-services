@@ -1,10 +1,10 @@
 schema = {
     'version': {
         'required': True,
-        'type': 'date'
+        'type': 'string'
     },
     'instance_type': {
-        'required': False,
+        'required': True,
         'type': 'string',
         'nullable': False,
         'regex': '^(LargeInstance|VeryLargeInstance)$'
@@ -28,7 +28,7 @@ schema = {
         }
     },
     'networking': {
-        'required': True,
+        'required': False,
         'type': 'list',
         'schema': {
             'type': 'dict',

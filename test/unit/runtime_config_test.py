@@ -21,8 +21,7 @@ class TestRuntimeConfig(object):
             RuntimeConfig('../data/config_invalid.yaml')
 
     def test_get_config_file_version(self):
-        assert self.runtime_config.get_config_file_version().isoformat() == \
-            '2017-11-15'
+        assert self.runtime_config.get_config_file_version() == "20180614"
 
     def test_get_instance_type(self):
         assert self.runtime_config.get_instance_type() == InstanceType.li
