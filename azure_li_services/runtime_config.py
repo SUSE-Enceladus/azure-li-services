@@ -17,9 +17,13 @@
 #
 import os
 import yaml
+from cerberus import Validator
 
 # project
+from azure_li_services.schema import schema
 from azure_li_services.instance_type import InstanceType
+
+from azure_li_services.exceptions import AzureHostedConfigDataException
 
 
 class RuntimeConfig(object):
@@ -84,7 +88,22 @@ class RuntimeConfig(object):
 
         if os.path.exists(config_file):
             with open(config_file, 'r') as config:
-                self.config_data = yaml.load(config)
+                try:
+                    self.config_data = yaml.load(config)
+                except Exception as e:
+                    raise AzureHostedConfigDataException(
+                        'Loading yaml format raises: {0}: {1}'.format(
+                            type(e).__name__, e
+                        )
+                    )
+            validator = Validator(schema)
+            validator.validate(self.config_data, schema)
+            if validator.errors:
+                raise AzureHostedConfigDataException(
+                    'Config file validation failed with: {0}'.format(
+                        validator.errors
+                    )
+                )
 
     def get_config_file_version(self):
         if self.config_data:

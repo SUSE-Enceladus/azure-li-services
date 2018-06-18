@@ -31,6 +31,7 @@ Requires:       python3-PyYAML
 Requires:       python3-setuptools
 Requires:       python3-psutil
 Requires:       python3-humanfriendly
+Requires:       python3-Cerberus
 Requires:       shadow
 Requires:       createrepo
 Requires:       zypper
