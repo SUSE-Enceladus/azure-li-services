@@ -28,7 +28,7 @@ schema = {
         }
     },
     'networking': {
-        'required': False,
+        'required': True,
         'type': 'list',
         'schema': {
             'type': 'dict',
