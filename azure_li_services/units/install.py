@@ -96,6 +96,7 @@ def main():
                         'install', '--auto-agree-with-licenses'
                     ] + install_items
                 )
-            status.set_success()
         finally:
             Command.run(['umount', install_source.location])
+
+    status.set_success()
