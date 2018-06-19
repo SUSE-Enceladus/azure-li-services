@@ -35,6 +35,10 @@ credentials:
     id: 495
     group: nogroup
     home_dir: /var/lib/empty
+  -
+    username: root
+    shadow_hash: "sha-512-cipher"
+    ssh-key: "ssh-rsa foo"
 
 packages:
   repository_name: azure_packages

@@ -16,6 +16,8 @@
 # along with azure-li-services.  If not, see <http://www.gnu.org/licenses/>
 #
 import os
+import pwd
+import grp
 
 # project
 from azure_li_services.runtime_config import RuntimeConfig
@@ -97,15 +99,24 @@ def create_or_modify_user(user):
 
 def setup_ssh_authorization(user):
     if 'ssh-key' in user:
-        ssh_auth_dir = '/home/{0}/.ssh/'.format(
-            user['username']
-        )
+        if user['username'] == 'root':
+            ssh_auth_dir = '/root/.ssh/'
+        else:
+            ssh_auth_dir = '/home/{0}/.ssh/'.format(
+                user['username']
+            )
+        ssh_auth_file = ssh_auth_dir + 'authorized_keys'
         Path.create(ssh_auth_dir)
         os.chmod(ssh_auth_dir, 0o700)
-        with open(ssh_auth_dir + 'authorized_keys', 'a') as ssh:
+        with open(ssh_auth_file, 'a') as ssh:
             ssh.write(os.linesep)
             ssh.write(user['ssh-key'])
-        os.chmod(ssh_auth_dir + 'authorized_keys', 0o600)
+        os.chmod(ssh_auth_file, 0o600)
+        if user['username'] != 'root':
+            uid = pwd.getpwnam(user['username']).pw_uid
+            gid = grp.getgrnam(user.get('group') or 'users').gr_gid
+            os.chown(ssh_auth_dir, uid, gid)
+            os.chown(ssh_auth_file, uid, gid)
 
 
 def setup_sudo_authorization(user):
