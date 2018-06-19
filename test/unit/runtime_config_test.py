@@ -51,6 +51,11 @@ class TestRuntimeConfig(object):
                 'home_dir': '/var/lib/empty',
                 'username': 'rpc',
                 'id': 495
+            },
+            {
+                'ssh-key': 'ssh-rsa foo',
+                'username': 'root',
+                'shadow_hash': 'sha-512-cipher'
             }
         ]
 

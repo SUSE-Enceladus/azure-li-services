@@ -18,12 +18,16 @@ class TestUser(object):
     @patch('azure_li_services.units.user.StatusReport')
     @patch('os.path.exists')
     @patch('os.chmod')
+    @patch('os.chown')
+    @patch('pwd.getpwnam')
+    @patch('grp.getgrnam')
     def test_main(
-        self, mock_chmod, mock_path_exists, mock_StatusReport, mock_Path_create,
+        self, mock_getgrnam, mock_getpwnam, mock_chown, mock_chmod,
+        mock_path_exists, mock_StatusReport, mock_Path_create,
         mock_Users, mock_RuntimConfig, mock_get_config_file
     ):
         group_exists = [True, False, False]
-        user_exists = [True, False]
+        user_exists = [True, True, False]
 
         def side_effect_group_exists(group):
             return group_exists.pop()
@@ -62,6 +66,9 @@ class TestUser(object):
                         '-s', '/sbin/nologin',
                         '-u', '495'
                     ]
+                ),
+                call(
+                    'root', ['-p', 'sha-512-cipher', '-s', '/bin/bash']
                 )
             ]
             assert system_users.group_add.call_args_list == [
@@ -70,9 +77,12 @@ class TestUser(object):
             ]
             assert mock_open.call_args_list == [
                 call('/home/hanauser/.ssh/authorized_keys', 'a'),
+                call('/root/.ssh/authorized_keys', 'a'),
                 call('/etc/sudoers', 'a')
             ]
             assert file_handle.write.call_args_list == [
+                call('\n'),
+                call('ssh-rsa foo'),
                 call('\n'),
                 call('ssh-rsa foo'),
                 call('\n'),
@@ -80,7 +90,21 @@ class TestUser(object):
             ]
             assert mock_chmod.call_args_list == [
                 call('/home/hanauser/.ssh/', 0o700),
-                call('/home/hanauser/.ssh/authorized_keys', 0o600)
+                call('/home/hanauser/.ssh/authorized_keys', 0o600),
+                call('/root/.ssh/', 0o700),
+                call('/root/.ssh/authorized_keys', 0o600)
+            ]
+            assert mock_chown.call_args_list == [
+                call(
+                    '/home/hanauser/.ssh/',
+                    mock_getpwnam.return_value.pw_uid,
+                    mock_getgrnam.return_value.gr_gid
+                ),
+                call(
+                    '/home/hanauser/.ssh/authorized_keys',
+                    mock_getpwnam.return_value.pw_uid,
+                    mock_getgrnam.return_value.gr_gid
+                )
             ]
 
     @patch('azure_li_services.units.user.Defaults.get_config_file')
