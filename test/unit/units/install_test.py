@@ -12,9 +12,10 @@ class TestInstall(object):
     @patch('azure_li_services.units.install.Path.create')
     @patch('azure_li_services.units.install.glob.iglob')
     @patch('azure_li_services.units.install.StatusReport')
+    @patch('azure_li_services.defaults.Defaults.mount_config_source')
     def test_main(
-        self, mock_StatusReport, mock_iglob, mock_Path_create,
-        mock_get_config_file, mock_Command_run
+        self, mock_mount_config_source, mock_StatusReport, mock_iglob,
+        mock_Path_create, mock_get_config_file, mock_Command_run
     ):
         status = Mock()
         mock_StatusReport.return_value = status
@@ -30,12 +31,13 @@ class TestInstall(object):
             '/var/lib/localrepos/azure_packages'
         )
         assert mock_Command_run.call_args_list == [
-            call(['mount', '--label', 'azconfig', '/mnt']),
             call(
                 [
-                    'bash', '-c', 'rsync -zav /mnt/directory-with-rpm-files/* '
-                    '/mnt/another-directory-with-rpm-files/* '
-                    '/var/lib/localrepos/azure_packages'
+                    'bash', '-c', 'rsync -zav {0}/directory-with-rpm-files/* '
+                    '{0}/another-directory-with-rpm-files/* '
+                    '/var/lib/localrepos/azure_packages'.format(
+                        mock_mount_config_source.return_value.location
+                    )
                 ]
             ),
             call(['createrepo', '/var/lib/localrepos/azure_packages']),
@@ -61,7 +63,7 @@ class TestInstall(object):
                     '--auto-agree-with-licenses', 'foo'
                 ]
             ),
-            call(['umount', '/mnt'])
+            call(['umount', mock_mount_config_source.return_value.location])
         ]
 
     @patch('azure_li_services.units.install.Defaults.get_config_file')

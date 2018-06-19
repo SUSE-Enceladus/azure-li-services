@@ -19,7 +19,10 @@ import os
 from collections import namedtuple
 
 from azure_li_services.command import Command
-from azure_li_services.exceptions import AzureHostedConfigFileNotFoundException
+from azure_li_services.exceptions import (
+    AzureHostedConfigFileNotFoundException,
+    AzureHostedConfigFileSourceMountException
+)
 
 
 class Defaults(object):
@@ -63,12 +66,20 @@ class Defaults(object):
             name=os.path.basename(Defaults.get_config_file_name()),
             location='/mnt', label='azconfig'
         )
-        try:
-            Command.run(
-                ['mount', '--label', azure_config.label, azure_config.location]
+        lun_result = Command.run(
+            ['mount', '--label', azure_config.label, azure_config.location],
+            raise_on_error=False
+        )
+        if lun_result.returncode != 0:
+            iso_result = Command.run(
+                ['mount', '/dev/dvd', azure_config.location],
+                raise_on_error=False
             )
-        except Exception:
-            Command.run(
-                ['mount', '/dev/dvd', azure_config.location]
-            )
+            if iso_result.returncode != 0:
+                raise AzureHostedConfigFileSourceMountException(
+                    'Source mount failed with: primary:{0}, fallback{1}'.format(
+                        lun_result.error, iso_result.error
+                    )
+                )
+
         return azure_config

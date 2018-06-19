@@ -1,10 +1,13 @@
 from unittest.mock import (
-    patch, call
+    patch, call, Mock
 )
 from pytest import raises
 
 from azure_li_services.defaults import Defaults
-from azure_li_services.exceptions import AzureHostedConfigFileNotFoundException
+from azure_li_services.exceptions import (
+    AzureHostedConfigFileNotFoundException,
+    AzureHostedConfigFileSourceMountException
+)
 
 
 class TestDefaults(object):
@@ -21,16 +24,24 @@ class TestDefaults(object):
             '/var/lib/azure_li_services'
 
     @patch('azure_li_services.defaults.Command.run')
-    def test_mount_config_source_fallback(self, mock_Command_run):
-        command_result = [True, False]
+    def test_mount_config_source(self, mock_Command_run):
+        mount_result = Mock()
+        mount_result.returncode = 0
+        mock_Command_run.return_value = mount_result
 
-        def side_effect(self):
-            if not command_result.pop():
-                raise Exception
+        result = Defaults.mount_config_source()
+        assert result.name == 'suse_firstboot_config.yaml'
+        assert result.location == '/mnt'
+        assert result.label == 'azconfig'
 
-        mock_Command_run.side_effect = side_effect
-        Defaults.mount_config_source()
-        assert mock_Command_run.call_args_list == [
-            call(['mount', '--label', 'azconfig', '/mnt']),
-            call(['mount', '/dev/dvd', '/mnt'])
-        ]
+        mount_result.returncode = 1
+
+        with raises(AzureHostedConfigFileSourceMountException):
+            Defaults.mount_config_source()
+            assert mock_Command_run.call_args_list == [
+                call(
+                    ['mount', '--label', 'azconfig', '/mnt'],
+                    raise_on_error=False
+                ),
+                call(['mount', '/dev/dvd', '/mnt'])
+            ]

@@ -8,7 +8,11 @@ class TestCall(object):
     @patch('azure_li_services.command.Command.run')
     @patch('azure_li_services.units.call.Defaults.get_config_file')
     @patch('azure_li_services.units.call.StatusReport')
-    def test_main(self, mock_StatusReport, mock_get_config_file, mock_Command_run):
+    @patch('azure_li_services.defaults.Defaults.mount_config_source')
+    def test_main(
+        self, mock_mount_config_source, mock_StatusReport,
+        mock_get_config_file, mock_Command_run
+    ):
         status = Mock()
         mock_StatusReport.return_value = status
         mock_get_config_file.return_value = '../data/config.yaml'
@@ -16,7 +20,14 @@ class TestCall(object):
         mock_StatusReport.assert_called_once_with('call')
         status.set_success.assert_called_once_with()
         assert mock_Command_run.call_args_list == [
-            call(['mount', '--label', 'azconfig', '/mnt']),
-            call(['bash', '-c', '/mnt/path/to/executable/file']),
-            call(['umount', '/mnt'])
+            call(
+                [
+                    'bash', '-c', '{0}/path/to/executable/file'.format(
+                        mock_mount_config_source.return_value.location
+                    )
+                ]
+            ),
+            call(
+                ['umount', mock_mount_config_source.return_value.location]
+            )
         ]

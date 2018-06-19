@@ -45,6 +45,14 @@ class AzureHostedConfigDataException(AzureHostedException):
     """
 
 
+class AzureHostedConfigFileSourceMountException(AzureHostedException):
+    """
+    Exception raised if none of the methods to mount the external
+    source location which contains the Azure Li/VLi config file
+    were successful
+    """
+
+
 class AzureHostedCommandException(AzureHostedException):
     """
     Exception raised if an external command called via a Command
