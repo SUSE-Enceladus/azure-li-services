@@ -42,6 +42,7 @@ def main():
                     )
                 ]
             )
-            status.set_success()
         finally:
             Command.run(['umount', call_source.location])
+
+    status.set_success()

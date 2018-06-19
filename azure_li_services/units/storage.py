@@ -77,7 +77,7 @@ def main():
                         min_size, storage['mount']
                     )
 
-            status.set_success()
+    status.set_success()
 
 
 def check_storage_size_validates_constraint(min_size, mount_point):
