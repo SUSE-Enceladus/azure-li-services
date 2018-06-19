@@ -15,8 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with azure-li-services.  If not, see <http://www.gnu.org/licenses/>
 #
-from collections import namedtuple
-
 # project
 from azure_li_services.runtime_config import RuntimeConfig
 from azure_li_services.defaults import Defaults
@@ -34,16 +32,8 @@ def main():
     config = RuntimeConfig(Defaults.get_config_file())
     call_script = config.get_call_script()
 
-    source_type = namedtuple(
-        'source_type', ['location', 'label']
-    )
-    call_source = source_type(
-        location='/mnt', label='azconfig'
-    )
     if call_script:
-        Command.run(
-            ['mount', '--label', call_source.label, call_source.location]
-        )
+        call_source = Defaults.mount_config_source()
         try:
             Command.run(
                 [
