@@ -41,6 +41,7 @@ class RuntimeConfig(object):
         version: some_version_identifier
         instance_type: LargeInstance|VeryLargeInstance
         sku: identifier_string
+        hostname: name_string
 
         machine_constraints:
           min_cores: number_of_cores
@@ -115,6 +116,10 @@ class RuntimeConfig(object):
                 return InstanceType.vli
             else:
                 return InstanceType.li
+
+    def get_hostname(self):
+        if self.config_data:
+            return self.config_data.get('hostname')
 
     def get_network_config(self):
         if self.config_data:

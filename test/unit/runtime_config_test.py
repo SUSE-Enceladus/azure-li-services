@@ -88,3 +88,6 @@ class TestRuntimeConfig(object):
                 'mount_options': ['a', 'b', 'c']
             }
         ]
+
+    def test_get_hostname(self):
+        assert self.runtime_config.get_hostname() == 'azure'
