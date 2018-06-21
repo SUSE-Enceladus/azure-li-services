@@ -25,6 +25,7 @@ class TestReport(object):
                 call('machine_constraints', init_state=False),
                 call('network', init_state=False),
                 call('storage', init_state=False),
+                call('system_setup', init_state=False),
                 call('user', init_state=False)
             ]
             assert file_handle.write.call_args_list == [
@@ -32,10 +33,11 @@ class TestReport(object):
                 call('!!! DEPLOYMENT ERROR !!!'),
                 call('\n'),
                 call(
-                    'For details see: "systemctl status '
+                    'For details see: "systemctl status -l '
                     'azure-li-call azure-li-config-lookup '
                     'azure-li-install azure-li-machine-constraints '
-                    'azure-li-network azure-li-storage azure-li-user"'
+                    'azure-li-network azure-li-storage azure-li-system-setup '
+                    'azure-li-user"'
                 ),
                 call('\n'),
                 call('\n')

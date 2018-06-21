@@ -42,6 +42,8 @@ def main():
             'azure-li-call',
         'machine_constraints':
             'azure-li-machine-constraints',
+        'system_setup':
+            'azure-li-system-setup',
         'storage':
             'azure-li-storage'
     }
@@ -66,7 +68,7 @@ def report_services_failed(failed_services):
         issue.write('!!! DEPLOYMENT ERROR !!!')
         issue.write(os.linesep)
         issue.write(
-            'For details see: "systemctl status {0}"'.format(
+            'For details see: "systemctl status -l {0}"'.format(
                 ' '.join(failed_services)
             )
         )

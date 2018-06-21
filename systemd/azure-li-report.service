@@ -1,7 +1,7 @@
 [Unit]
 Description=Report status of Azure Li/VLi services
 ConditionPathExists=/.azure-li-report.trigger
-After=azure-li-config-lookup.service azure-li-call.service azure-li-install.service azure-li-network.service azure-li-user.service azure-li-machine-constraints.service azure-li-storage.service
+After=azure-li-config-lookup.service azure-li-call.service azure-li-install.service azure-li-network.service azure-li-user.service azure-li-machine-constraints.service azure-li-storage.service azure-li-system-setup.service
 Before=getty.target azure-li-cleanup.service
 
 [Service]
