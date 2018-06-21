@@ -18,6 +18,7 @@
 import os
 import pwd
 import grp
+import base64
 
 # project
 from azure_li_services.runtime_config import RuntimeConfig
@@ -98,25 +99,37 @@ def create_or_modify_user(user):
 
 
 def setup_ssh_authorization(user):
-    if 'ssh-key' in user:
+    if 'ssh-key' in user or 'ssh-private-key' in user:
         if user['username'] == 'root':
             ssh_auth_dir = '/root/.ssh/'
         else:
             ssh_auth_dir = '/home/{0}/.ssh/'.format(
                 user['username']
             )
-        ssh_auth_file = ssh_auth_dir + 'authorized_keys'
         Path.create(ssh_auth_dir)
+        uid = pwd.getpwnam(user['username']).pw_uid
+        gid = grp.getgrnam(user.get('group') or 'users').gr_gid
         os.chmod(ssh_auth_dir, 0o700)
-        with open(ssh_auth_file, 'a') as ssh:
-            ssh.write(os.linesep)
-            ssh.write(user['ssh-key'])
-        os.chmod(ssh_auth_file, 0o600)
         if user['username'] != 'root':
-            uid = pwd.getpwnam(user['username']).pw_uid
-            gid = grp.getgrnam(user.get('group') or 'users').gr_gid
             os.chown(ssh_auth_dir, uid, gid)
-            os.chown(ssh_auth_file, uid, gid)
+        if 'ssh-key' in user:
+            ssh_auth_file = ssh_auth_dir + 'authorized_keys'
+            with open(ssh_auth_file, 'a') as ssh:
+                ssh.write(os.linesep)
+                ssh.write(user['ssh-key'])
+            os.chmod(ssh_auth_file, 0o600)
+            if user['username'] != 'root':
+                os.chown(ssh_auth_file, uid, gid)
+        if 'ssh-private-key' in user:
+            private_key = user['ssh-private-key']
+            ssh_key_file = ssh_auth_dir + private_key['name']
+            with open(ssh_key_file, 'w') as ssh_private_key:
+                ssh_private_key.write(
+                    base64.b64decode(private_key['key'])
+                )
+            os.chmod(ssh_key_file, 0o600)
+            if user['username'] != 'root':
+                os.chown(ssh_key_file, uid, gid)
 
 
 def setup_sudo_authorization(user):
