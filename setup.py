@@ -33,7 +33,8 @@ config = {
             'azure-li-report=azure_li_services.units.report:main',
             'azure-li-cleanup=azure_li_services.units.cleanup:main',
             'azure-li-machine-constraints=azure_li_services.units.machine_constraints:main',
-            'azure-li-storage=azure_li_services.units.storage:main'
+            'azure-li-storage=azure_li_services.units.storage:main',
+            'azure-li-system-setup=azure_li_services.units.system_setup:main'
         ]
     },
     'include_package_data': True,

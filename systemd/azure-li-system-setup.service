@@ -1,0 +1,12 @@
+[Unit]
+Description=System Setup of Azure Li/VLi machine
+ConditionPathExists=/.azure-li-system-setup.trigger
+After=azure-li-config-lookup.service systemd-hostnamed.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/azure-li-system-setup
+ExecStartPost=/bin/bash -c 'rm -f /.azure-li-system-setup.trigger'
+
+[Install]
+WantedBy=multi-user.target

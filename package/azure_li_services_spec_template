@@ -79,6 +79,9 @@ install -D -m 644 systemd/azure-li-machine-constraints.service \
 install -D -m 644 systemd/azure-li-storage.service \
     %{buildroot}%{_unitdir}/azure-li-storage.service
 
+install -D -m 644 systemd/azure-li-system-setup.service \
+    %{buildroot}%{_unitdir}/azure-li-system-setup.service
+
 %files
 %defattr(-,root,root,-)
 %{python3_sitelib}/*
@@ -109,5 +112,8 @@ install -D -m 644 systemd/azure-li-storage.service \
 
 %{_bindir}/azure-li-storage
 %{_unitdir}/azure-li-storage.service
+
+%{_bindir}/azure-li-system-setup
+%{_unitdir}/azure-li-system-setup.service
 
 %changelog

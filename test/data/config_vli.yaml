@@ -1,6 +1,7 @@
 version: "20180614"
 instance_type: VeryLargeInstance
 sku: "SR92"
+hostname: "azure"
 
 machine_constraints:
   min_cores: 32

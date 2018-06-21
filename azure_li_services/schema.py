@@ -13,6 +13,10 @@ schema = {
         'required': True,
         'type': 'string'
     },
+    'hostname': {
+        'required': False,
+        'type': 'string'
+    },
     'machine_constraints': {
         'required': False,
         'type': 'dict',
