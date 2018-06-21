@@ -14,7 +14,7 @@ schema = {
         'type': 'string'
     },
     'hostname': {
-        'required': True,
+        'required': False,
         'type': 'string'
     },
     'machine_constraints': {
