@@ -77,12 +77,18 @@ class TestUser(object):
             ]
             assert mock_open.call_args_list == [
                 call('/home/hanauser/.ssh/authorized_keys', 'a'),
+                call('/home/hanauser/.ssh/id_rsa', 'w'),
                 call('/root/.ssh/authorized_keys', 'a'),
                 call('/etc/sudoers', 'a')
             ]
             assert file_handle.write.call_args_list == [
                 call('\n'),
                 call('ssh-rsa foo'),
+                call(
+                    b'-----BEGIN RSA PRIVATE KEY-----\n'
+                    b'XXXX\n'
+                    b'-----END RSA PRIVATE KEY-----\n'
+                ),
                 call('\n'),
                 call('ssh-rsa foo'),
                 call('\n'),
@@ -91,6 +97,7 @@ class TestUser(object):
             assert mock_chmod.call_args_list == [
                 call('/home/hanauser/.ssh/', 0o700),
                 call('/home/hanauser/.ssh/authorized_keys', 0o600),
+                call('/home/hanauser/.ssh/id_rsa', 0o600),
                 call('/root/.ssh/', 0o700),
                 call('/root/.ssh/authorized_keys', 0o600)
             ]
@@ -102,6 +109,11 @@ class TestUser(object):
                 ),
                 call(
                     '/home/hanauser/.ssh/authorized_keys',
+                    mock_getpwnam.return_value.pw_uid,
+                    mock_getgrnam.return_value.gr_gid
+                ),
+                call(
+                    '/home/hanauser/.ssh/id_rsa',
                     mock_getpwnam.return_value.pw_uid,
                     mock_getgrnam.return_value.gr_gid
                 )
