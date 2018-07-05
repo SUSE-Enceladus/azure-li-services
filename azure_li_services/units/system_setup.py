@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with azure-li-services.  If not, see <http://www.gnu.org/licenses/>
 #
+import os
+
 # project
 from azure_li_services.runtime_config import RuntimeConfig
 from azure_li_services.defaults import Defaults
@@ -35,6 +37,9 @@ def main():
     if hostname:
         set_hostname(hostname)
 
+    set_kernel_samepage_merging_mode()
+    set_energy_performance_settings()
+
     status.set_success()
 
 
@@ -42,3 +47,33 @@ def set_hostname(hostname):
     Command.run(
         ['hostnamectl', 'set-hostname', hostname]
     )
+
+
+def set_kernel_samepage_merging_mode():
+    same_page_mode = '/sys/kernel/mm/ksm/run'
+    with open(same_page_mode, 'w') as ksm_run:
+        # stop ksmd from running but keep merged pages
+        ksm_run.write('0{0}'.format(os.linesep))
+    _write_boot_local(
+        [['echo', '0', '>', same_page_mode]]
+    )
+
+
+def set_energy_performance_settings():
+    cpupower_calls = [
+        # set CPU Frequency/Voltage scaling
+        ['cpupower', 'frequency-set', '-g', 'performance'],
+        # set low latency and maximum performance
+        ['cpupower', 'set', '-b', '0']
+    ]
+    for cpupower_call in cpupower_calls:
+        Command.run(cpupower_call)
+    _write_boot_local(cpupower_calls)
+
+
+def _write_boot_local(entries):
+    permanent_boot_setup_file = '/etc/init.d/boot.local'
+    with open(permanent_boot_setup_file, 'a') as boot_local:
+        for entry in entries:
+            boot_local.write(' '.join(entry) + os.linesep)
+    os.chmod(permanent_boot_setup_file, 0o755)
