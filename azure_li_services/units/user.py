@@ -28,6 +28,7 @@ from azure_li_services.status_report import StatusReport
 
 from azure_li_services.exceptions import AzureHostedUserConfigDataException
 from azure_li_services.path import Path
+from azure_li_services.command import Command
 
 
 def main():
@@ -99,7 +100,7 @@ def create_or_modify_user(user):
 
 
 def setup_ssh_authorization(user):
-    if 'ssh-key' in user or 'ssh-private-key' in user:
+    if 'ssh-key' in user or 'authorize' in user:
         if user['username'] == 'root':
             ssh_auth_dir = '/root/.ssh/'
         else:
@@ -120,16 +121,63 @@ def setup_ssh_authorization(user):
             os.chmod(ssh_auth_file, 0o600)
             if user['username'] != 'root':
                 os.chown(ssh_auth_file, uid, gid)
-        if 'ssh-private-key' in user:
-            private_key = user['ssh-private-key']
-            ssh_key_file = ssh_auth_dir + private_key['name']
-            with open(ssh_key_file, 'w') as ssh_private_key:
-                ssh_private_key.write(
-                    base64.b64decode(private_key['key'])
+
+        if 'authorize' in user:
+            # setup hop access to host for ssh authorization
+            authorize = user['authorize']
+            ssh_hop_key_file = '{0}id_hop'.format(ssh_auth_dir)
+            with open(ssh_hop_key_file, 'w') as ssh_hop_private_key:
+                ssh_hop_private_key.write(
+                    base64.b64decode(authorize['hop_key'])
                 )
-            os.chmod(ssh_key_file, 0o600)
+            os.chmod(ssh_hop_key_file, 0o600)
             if user['username'] != 'root':
-                os.chown(ssh_key_file, uid, gid)
+                os.chown(ssh_hop_key_file, uid, gid)
+
+            # create keypair and copy id to authorization host
+            ssh_key_file = '{0}id_rsa'.format(ssh_auth_dir)
+            ssh_pub_key_file = '{0}id_rsa.pub'.format(ssh_auth_dir)
+            Path.wipe(ssh_key_file)
+            Path.wipe(ssh_pub_key_file)
+            Command.run(
+                [
+                    'ssh-keygen', '-t', 'rsa', '-b', '4096',
+                    '-f', ssh_key_file, '-N', '""', '-q'
+                ]
+            )
+            Command.run(
+                [
+                    'scp', '-i', ssh_hop_key_file, ssh_pub_key_file,
+                    '{0}@{1}:/tmp/instance_key'.format(
+                        user['username'], authorize['host']
+                    )
+                ]
+            )
+            Command.run(
+                [
+                    'ssh', '-i', ssh_hop_key_file, '{0}@{1}'.format(
+                        user['username'], authorize['host']
+                    ),
+                    'cat {0} >> ~/.ssh/authorized_keys;rm -f {0}'.format(
+                        '/tmp/instance_key'
+                    )
+                ]
+            )
+
+            # delete hop key pair
+            Path.wipe(ssh_hop_key_file)
+            with open(ssh_pub_key_file) as pub_key:
+                pub_key_id = pub_key.read().split()[2]
+                Command.run(
+                    [
+                        'ssh', '{0}@{1}'.format(
+                            user['username'], authorize['host']
+                        ),
+                        'sed -i "/{0}/{{d}}" ~/.ssh/authorized_keys'.format(
+                            pub_key_id
+                        )
+                    ]
+                )
 
 
 def setup_sudo_authorization(user):

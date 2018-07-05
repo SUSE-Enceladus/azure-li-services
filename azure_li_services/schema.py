@@ -108,15 +108,15 @@ schema = {
                     'required': False,
                     'type': 'string'
                 },
-                'ssh-private-key': {
+                'authorize': {
                     'required': False,
                     'type': 'dict',
                     'schema': {
-                        'name': {
+                        'host': {
                             'required': True,
                             'type': 'string'
                         },
-                        'key': {
+                        'hop_key': {
                             'required': True,
                             'type': 'string'
                         }

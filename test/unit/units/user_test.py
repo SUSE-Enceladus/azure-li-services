@@ -16,6 +16,7 @@ class TestUser(object):
     @patch('azure_li_services.units.user.Users')
     @patch('azure_li_services.units.user.Path.create')
     @patch('azure_li_services.units.user.StatusReport')
+    @patch('azure_li_services.units.user.Command.run')
     @patch('os.path.exists')
     @patch('os.chmod')
     @patch('os.chown')
@@ -23,7 +24,7 @@ class TestUser(object):
     @patch('grp.getgrnam')
     def test_main(
         self, mock_getgrnam, mock_getpwnam, mock_chown, mock_chmod,
-        mock_path_exists, mock_StatusReport, mock_Path_create,
+        mock_path_exists, mock_Command_run, mock_StatusReport, mock_Path_create,
         mock_Users, mock_RuntimConfig, mock_get_config_file
     ):
         group_exists = [True, False, False]
@@ -77,7 +78,8 @@ class TestUser(object):
             ]
             assert mock_open.call_args_list == [
                 call('/home/hanauser/.ssh/authorized_keys', 'a'),
-                call('/home/hanauser/.ssh/id_rsa', 'w'),
+                call('/home/hanauser/.ssh/id_hop', 'w'),
+                call('/home/hanauser/.ssh/id_rsa.pub'),
                 call('/root/.ssh/authorized_keys', 'a'),
                 call('/etc/sudoers', 'a')
             ]
@@ -97,7 +99,7 @@ class TestUser(object):
             assert mock_chmod.call_args_list == [
                 call('/home/hanauser/.ssh/', 0o700),
                 call('/home/hanauser/.ssh/authorized_keys', 0o600),
-                call('/home/hanauser/.ssh/id_rsa', 0o600),
+                call('/home/hanauser/.ssh/id_hop', 0o600),
                 call('/root/.ssh/', 0o700),
                 call('/root/.ssh/authorized_keys', 0o600)
             ]
@@ -113,11 +115,12 @@ class TestUser(object):
                     mock_getgrnam.return_value.gr_gid
                 ),
                 call(
-                    '/home/hanauser/.ssh/id_rsa',
+                    '/home/hanauser/.ssh/id_hop',
                     mock_getpwnam.return_value.pw_uid,
                     mock_getgrnam.return_value.gr_gid
                 )
             ]
+            print(mock_Command_run.call_args_list)
 
     @patch('azure_li_services.units.user.Defaults.get_config_file')
     @patch('azure_li_services.units.user.RuntimeConfig')
