@@ -37,6 +37,9 @@ def main():
     if hostname:
         set_hostname(hostname)
 
+    set_kdump_service(
+        config.get_crash_kernel_high(), config.get_crash_kernel_low()
+    )
     set_kernel_samepage_merging_mode()
     set_energy_performance_settings()
 
@@ -69,6 +72,53 @@ def set_energy_performance_settings():
     for cpupower_call in cpupower_calls:
         Command.run(cpupower_call)
     _write_boot_local(cpupower_calls)
+
+
+def set_kdump_service(high, low):
+    calibrated = _kdump_calibrate()
+    grub_defaults = '/etc/default/grub'
+    Command.run(
+        [
+            'sed', '-ie',
+            's@crashkernel=[0-9]\+M,low@crashkernel={0}M,low@'.format(
+                low or calibrated['Low']
+            ),
+            grub_defaults
+        ]
+    )
+    Command.run(
+        [
+            'sed', '-ie',
+            's@crashkernel=[0-9]\+M,high@crashkernel={0}M,high@'.format(
+                high or calibrated['High']
+            ),
+            grub_defaults
+        ]
+    )
+    Command.run(
+        ['grub2-mkconfig', '-o', '/boot/grub2/grub.cfg']
+    )
+    Command.run(
+        ['systemctl', 'restart', 'kdump']
+    )
+
+
+def _kdump_calibrate():
+    kdumptool_call = Command.run(
+        ['kdumptool', 'calibrate']
+    )
+    calibration_values = {
+        'Low': 80,
+        'High': 160
+    }
+    for setting in kdumptool_call.output.split(os.linesep):
+        try:
+            (key, value) = setting.split(':')
+        except Exception:
+            # ignore setting not in key:value format
+            pass
+        calibration_values[key] = int(value)
+    return calibration_values
 
 
 def _write_boot_local(entries):

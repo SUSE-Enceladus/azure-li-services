@@ -121,6 +121,14 @@ class RuntimeConfig(object):
         if self.config_data:
             return self.config_data.get('hostname')
 
+    def get_crash_kernel_high(self):
+        if self.config_data:
+            return self.config_data.get('crash_kernel_high')
+
+    def get_crash_kernel_low(self):
+        if self.config_data:
+            return self.config_data.get('crash_kernel_low')
+
     def get_network_config(self):
         if self.config_data:
             return self.config_data.get('networking')
