@@ -75,13 +75,13 @@ def set_energy_performance_settings():
 
 
 def set_kdump_service(high, low):
-    calibrated = _kdump_calibrate()
+    calibrated = _kdump_calibrate(high, low)
     grub_defaults = '/etc/default/grub'
     Command.run(
         [
             'sed', '-ie',
             's@crashkernel=[0-9]\+M,low@crashkernel={0}M,low@'.format(
-                low or calibrated['Low']
+                calibrated['Low']
             ),
             grub_defaults
         ]
@@ -90,7 +90,7 @@ def set_kdump_service(high, low):
         [
             'sed', '-ie',
             's@crashkernel=[0-9]\+M,high@crashkernel={0}M,high@'.format(
-                high or calibrated['High']
+                calibrated['High']
             ),
             grub_defaults
         ]
@@ -103,21 +103,22 @@ def set_kdump_service(high, low):
     )
 
 
-def _kdump_calibrate():
-    kdumptool_call = Command.run(
-        ['kdumptool', 'calibrate']
-    )
+def _kdump_calibrate(high, low):
     calibration_values = {
-        'Low': 80,
-        'High': 160
+        'Low': low,
+        'High': high
     }
-    for setting in kdumptool_call.output.split(os.linesep):
-        try:
-            (key, value) = setting.split(':')
-        except Exception:
-            # ignore setting not in key:value format
-            pass
-        calibration_values[key] = int(value)
+    if not high and not low:
+        kdumptool_call = Command.run(
+            ['kdumptool', 'calibrate']
+        )
+        for setting in kdumptool_call.output.split(os.linesep):
+            try:
+                (key, value) = setting.split(':')
+            except Exception:
+                # ignore setting not in key:value format
+                pass
+            calibration_values[key] = int(value)
     return calibration_values
 
 
