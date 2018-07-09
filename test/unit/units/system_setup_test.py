@@ -18,11 +18,13 @@ class TestSystemSetup(object):
     @patch.object(system_setup, 'set_kdump_service')
     @patch.object(system_setup, 'set_kernel_samepage_merging_mode')
     @patch.object(system_setup, 'set_energy_performance_settings')
+    @patch.object(system_setup, 'set_saptune_service')
     @patch.object(system_setup.Defaults, 'get_config_file')
     @patch.object(system_setup, 'RuntimeConfig')
     @patch.object(system_setup, 'StatusReport')
     def test_main(
         self, mock_StatusReport, mock_RuntimConfig, mock_get_config_file,
+        mock_set_saptune_service,
         mock_set_energy_performance_settings,
         mock_set_kernel_samepage_merging_mode,
         mock_set_kdump_service, mock_set_hostname
@@ -35,6 +37,7 @@ class TestSystemSetup(object):
         mock_set_kdump_service.assert_called_once_with(160, 80)
         mock_set_kernel_samepage_merging_mode.assert_called_once_with()
         mock_set_energy_performance_settings.assert_called_once_with()
+        mock_set_saptune_service.assert_called_once_with()
         mock_StatusReport.assert_called_once_with('system_setup')
         status.set_success.assert_called_once_with()
 
@@ -119,4 +122,15 @@ class TestSystemSetup(object):
             ),
             call(['grub2-mkconfig', '-o', '/boot/grub2/grub.cfg']),
             call(['systemctl', 'restart', 'kdump'])
+        ]
+
+    @patch('azure_li_services.command.Command.run')
+    def test_set_saptune_service(self, mock_Command_run):
+        system_setup.set_saptune_service()
+        assert mock_Command_run.call_args_list == [
+            call(['saptune', 'daemon', 'start']),
+            call(['saptune', 'solution', 'apply', 'HANA']),
+            call(['tuned-adm', 'profile', 'sap-hana']),
+            call(['systemctl', 'enable', 'tuned']),
+            call(['systemctl', 'start', 'tuned'])
         ]

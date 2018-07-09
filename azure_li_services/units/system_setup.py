@@ -42,6 +42,7 @@ def main():
     )
     set_kernel_samepage_merging_mode()
     set_energy_performance_settings()
+    set_saptune_service()
 
     status.set_success()
 
@@ -72,6 +73,24 @@ def set_energy_performance_settings():
     for cpupower_call in cpupower_calls:
         Command.run(cpupower_call)
     _write_boot_local(cpupower_calls)
+
+
+def set_saptune_service():
+    Command.run(
+        ['saptune', 'daemon', 'start']
+    )
+    Command.run(
+        ['saptune', 'solution', 'apply', 'HANA']
+    )
+    Command.run(
+        ['tuned-adm', 'profile', 'sap-hana']
+    )
+    Command.run(
+        ['systemctl', 'enable', 'tuned']
+    )
+    Command.run(
+        ['systemctl', 'start', 'tuned']
+    )
 
 
 def set_kdump_service(high, low):
