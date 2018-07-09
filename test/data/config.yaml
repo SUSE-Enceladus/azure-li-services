@@ -2,6 +2,8 @@ version: "20180614"
 instance_type: LargeInstance
 sku: "SR92"
 hostname: "azure"
+crash_kernel_low: 80
+crash_kernel_high: 160
 
 machine_constraints:
   min_cores: 32

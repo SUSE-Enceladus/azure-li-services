@@ -17,6 +17,14 @@ schema = {
         'required': False,
         'type': 'string'
     },
+    'crash_kernel_high': {
+        'required': False,
+        'type': 'number'
+    },
+    'crash_kernel_low': {
+        'required': False,
+        'type': 'number'
+    },
     'machine_constraints': {
         'required': False,
         'type': 'dict',
