@@ -5,6 +5,7 @@ from unittest.mock import (
     patch, Mock, MagicMock, call
 )
 from azure_li_services.runtime_config import RuntimeConfig
+from azure_li_services.instance_type import InstanceType
 from azure_li_services.units.system_setup import main
 
 import azure_li_services.units.system_setup as system_setup
@@ -19,11 +20,13 @@ class TestSystemSetup(object):
     @patch.object(system_setup, 'set_kernel_samepage_merging_mode')
     @patch.object(system_setup, 'set_energy_performance_settings')
     @patch.object(system_setup, 'set_saptune_service')
+    @patch.object(system_setup, 'set_reboot_intervention')
     @patch.object(system_setup.Defaults, 'get_config_file')
     @patch.object(system_setup, 'RuntimeConfig')
     @patch.object(system_setup, 'StatusReport')
     def test_main(
         self, mock_StatusReport, mock_RuntimConfig, mock_get_config_file,
+        mock_set_reboot_intervention,
         mock_set_saptune_service,
         mock_set_energy_performance_settings,
         mock_set_kernel_samepage_merging_mode,
@@ -40,6 +43,12 @@ class TestSystemSetup(object):
         mock_set_saptune_service.assert_called_once_with()
         mock_StatusReport.assert_called_once_with('system_setup')
         status.set_success.assert_called_once_with()
+
+        self.config.get_instance_type = Mock(
+            return_value=InstanceType.vli
+        )
+        main()
+        mock_set_reboot_intervention.assert_called_once_with()
 
     @patch('azure_li_services.command.Command.run')
     def test_set_hostname(self, mock_Command_run):
@@ -134,3 +143,15 @@ class TestSystemSetup(object):
             call(['systemctl', 'enable', 'tuned']),
             call(['systemctl', 'start', 'tuned'])
         ]
+
+    @patch('os.path.exists')
+    def test_set_reboot_intervention(self, mock_exists):
+        mock_exists.return_value = True
+        with patch('builtins.open', create=True) as mock_open:
+            mock_open.return_value = MagicMock(spec=io.IOBase)
+            file_handle = mock_open.return_value.__enter__.return_value
+            system_setup.set_reboot_intervention()
+            mock_open.assert_called_once_with('/boot/efi/startup.nsh', 'w')
+            assert file_handle.write.call_args_list == [
+                call('fs0:\\efi\\sles_sap\\grubx64.efi\n')
+            ]
