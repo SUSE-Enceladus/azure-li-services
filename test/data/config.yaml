@@ -35,7 +35,7 @@ credentials:
     ssh-key: "ssh-rsa foo"
     ssh-private-key:
         name: "id_rsa"
-        key: "LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpYWFhYCi0tLS0tRU5EIFJTQSBQUklWQVRFIEtFWS0tLS0tCg=="
+        key: "path/to/private/key"
   -
     username: rpc
     id: 495

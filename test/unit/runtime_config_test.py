@@ -47,8 +47,7 @@ class TestRuntimeConfig(object):
                 'shadow_hash': 'sha-512-cipher',
                 'ssh-private-key': {
                     'name': 'id_rsa',
-                    'key': 'LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0'
-                    'tLQpYWFhYCi0tLS0tRU5EIFJTQSBQUklWQVRFIEtFWS0tLS0tCg=='
+                    'key': 'path/to/private/key'
                 }
             },
             {
