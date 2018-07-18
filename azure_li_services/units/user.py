@@ -123,14 +123,18 @@ def setup_ssh_authorization(user):
         if 'ssh-private-key' in user:
             try:
                 ssh_key_source = Defaults.mount_config_source()
-                private_key = user['ssh-private-key']
-                ssh_key_file = ssh_auth_dir + private_key['name']
+                private_key_file = user['ssh-private-key']
                 Command.run(
                     [
                         'cp', os.sep.join(
-                            [ssh_key_source.location, private_key.get('key')]
-                        ), ssh_key_file
+                            [ssh_key_source.location, private_key_file]
+                        ), ssh_auth_dir
                     ]
+                )
+                ssh_key_file = os.path.normpath(
+                    os.sep.join(
+                        [ssh_auth_dir, os.path.basename(private_key_file)]
+                    )
                 )
                 os.chmod(ssh_key_file, 0o600)
                 if user['username'] != 'root':

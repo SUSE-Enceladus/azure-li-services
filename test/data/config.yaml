@@ -33,9 +33,7 @@ credentials:
     username: hanauser
     shadow_hash: "sha-512-cipher"
     ssh-key: "ssh-rsa foo"
-    ssh-private-key:
-        name: "id_rsa"
-        key: "path/to/private/key"
+    ssh-private-key: "path/to/private/key/id_dsa"
   -
     username: rpc
     id: 495

@@ -97,8 +97,8 @@ class TestUser(object):
             assert mock_Command_run.call_args_list == [
                 call(
                     [
-                        'cp', 'config_mount/path/to/private/key',
-                        '/home/hanauser/.ssh/id_rsa'
+                        'cp', 'config_mount/path/to/private/key/id_dsa',
+                        '/home/hanauser/.ssh/'
                     ]
                 ),
                 call(['umount', 'config_mount'])
@@ -106,7 +106,7 @@ class TestUser(object):
             assert mock_chmod.call_args_list == [
                 call('/home/hanauser/.ssh/', 0o700),
                 call('/home/hanauser/.ssh/authorized_keys', 0o600),
-                call('/home/hanauser/.ssh/id_rsa', 0o600),
+                call('/home/hanauser/.ssh/id_dsa', 0o600),
                 call('/root/.ssh/', 0o700),
                 call('/root/.ssh/authorized_keys', 0o600)
             ]
@@ -122,7 +122,7 @@ class TestUser(object):
                     mock_getgrnam.return_value.gr_gid
                 ),
                 call(
-                    '/home/hanauser/.ssh/id_rsa',
+                    '/home/hanauser/.ssh/id_dsa',
                     mock_getpwnam.return_value.pw_uid,
                     mock_getgrnam.return_value.gr_gid
                 )

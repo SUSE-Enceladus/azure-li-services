@@ -45,10 +45,7 @@ class TestRuntimeConfig(object):
                 'ssh-key': 'ssh-rsa foo',
                 'username': 'hanauser',
                 'shadow_hash': 'sha-512-cipher',
-                'ssh-private-key': {
-                    'name': 'id_rsa',
-                    'key': 'path/to/private/key'
-                }
+                'ssh-private-key': 'path/to/private/key/id_dsa'
             },
             {
                 'group': 'nogroup',
