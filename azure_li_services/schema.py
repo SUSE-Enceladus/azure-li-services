@@ -118,17 +118,7 @@ schema = {
                 },
                 'ssh-private-key': {
                     'required': False,
-                    'type': 'dict',
-                    'schema': {
-                        'name': {
-                            'required': True,
-                            'type': 'string'
-                        },
-                        'key': {
-                            'required': True,
-                            'type': 'string'
-                        }
-                    }
+                    'type': 'string'
                 },
                 'id': {
                     'required': False,

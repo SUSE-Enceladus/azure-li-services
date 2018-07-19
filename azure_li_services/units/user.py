@@ -18,7 +18,6 @@
 import os
 import pwd
 import grp
-import base64
 
 # project
 from azure_li_services.runtime_config import RuntimeConfig
@@ -28,6 +27,7 @@ from azure_li_services.status_report import StatusReport
 
 from azure_li_services.exceptions import AzureHostedUserConfigDataException
 from azure_li_services.path import Path
+from azure_li_services.command import Command
 
 
 def main():
@@ -121,15 +121,26 @@ def setup_ssh_authorization(user):
             if user['username'] != 'root':
                 os.chown(ssh_auth_file, uid, gid)
         if 'ssh-private-key' in user:
-            private_key = user['ssh-private-key']
-            ssh_key_file = ssh_auth_dir + private_key['name']
-            with open(ssh_key_file, 'w') as ssh_private_key:
-                ssh_private_key.write(
-                    base64.b64decode(private_key['key'])
+            try:
+                ssh_key_source = Defaults.mount_config_source()
+                private_key_file = user['ssh-private-key']
+                Command.run(
+                    [
+                        'cp', os.sep.join(
+                            [ssh_key_source.location, private_key_file]
+                        ), ssh_auth_dir
+                    ]
                 )
-            os.chmod(ssh_key_file, 0o600)
-            if user['username'] != 'root':
-                os.chown(ssh_key_file, uid, gid)
+                ssh_key_file = os.path.normpath(
+                    os.sep.join(
+                        [ssh_auth_dir, os.path.basename(private_key_file)]
+                    )
+                )
+                os.chmod(ssh_key_file, 0o600)
+                if user['username'] != 'root':
+                    os.chown(ssh_key_file, uid, gid)
+            finally:
+                Command.run(['umount', ssh_key_source.location])
 
 
 def setup_sudo_authorization(user):
