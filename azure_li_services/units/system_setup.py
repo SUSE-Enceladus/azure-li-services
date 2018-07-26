@@ -82,19 +82,16 @@ def set_energy_performance_settings():
 
 def set_saptune_service():
     Command.run(
-        ['saptune', 'daemon', 'start']
-    )
-    Command.run(
-        ['saptune', 'solution', 'apply', 'HANA']
-    )
-    Command.run(
-        ['tuned-adm', 'profile', 'sap-hana']
-    )
-    Command.run(
         ['systemctl', 'enable', 'tuned']
     )
     Command.run(
         ['systemctl', 'start', 'tuned']
+    )
+    Command.run(
+        ['saptune', 'daemon', 'start']
+    )
+    Command.run(
+        ['saptune', 'solution', 'apply', 'HANA']
     )
 
 

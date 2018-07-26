@@ -137,11 +137,10 @@ class TestSystemSetup(object):
     def test_set_saptune_service(self, mock_Command_run):
         system_setup.set_saptune_service()
         assert mock_Command_run.call_args_list == [
+            call(['systemctl', 'enable', 'tuned']),
+            call(['systemctl', 'start', 'tuned']),
             call(['saptune', 'daemon', 'start']),
             call(['saptune', 'solution', 'apply', 'HANA']),
-            call(['tuned-adm', 'profile', 'sap-hana']),
-            call(['systemctl', 'enable', 'tuned']),
-            call(['systemctl', 'start', 'tuned'])
         ]
 
     @patch('os.path.exists')
