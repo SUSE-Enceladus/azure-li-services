@@ -16,10 +16,9 @@
 # along with azure-li-services.  If not, see <http://www.gnu.org/licenses/>
 #
 import os
-from collections import OrderedDict
 
 # project
-from azure_li_services.status_report import StatusReport
+from azure_li_services.defaults import Defaults
 
 
 def main():
@@ -29,34 +28,13 @@ def main():
     Report overall service status in an update to /etc/issue
     if not all services were successful
     """
-    unit_to_service_map = {
-        'config_lookup':
-            'azure-li-config-lookup',
-        'user':
-            'azure-li-user',
-        'install':
-            'azure-li-install',
-        'network':
-            'azure-li-network',
-        'call':
-            'azure-li-call',
-        'machine_constraints':
-            'azure-li-machine-constraints',
-        'system_setup':
-            'azure-li-system-setup',
-        'storage':
-            'azure-li-storage'
-    }
-    unit_to_service_map_ordered = OrderedDict(
-        sorted(unit_to_service_map.items())
-    )
+    service_reports = Defaults.get_service_reports()
+
     failed_services = []
-    for unit, service in unit_to_service_map_ordered.items():
-        report = StatusReport(unit, init_state=False)
-        report.load()
+    for report in service_reports:
         success = report.get_state()
         if not success:
-            failed_services.append(service)
+            failed_services.append(report.get_systemd_service())
 
     if failed_services:
         report_services_failed(failed_services)

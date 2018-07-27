@@ -17,6 +17,7 @@
 #
 # project
 from azure_li_services.command import Command
+from azure_li_services.defaults import Defaults
 
 
 def main():
@@ -24,6 +25,7 @@ def main():
     Azure Li/Vli cleanup
 
     Uninstall azure-li-services package and its dependencies
+    and check for potential reboot request
     """
     Command.run(
         [
@@ -32,3 +34,39 @@ def main():
             'azure-li-services'
         ]
     )
+
+    service_reports = Defaults.get_service_reports()
+
+    reboot_system = False
+    for report in service_reports:
+        if not report.get_state():
+            # in case a service has unknown or failed state we will
+            # not consider to reboot the machine
+            return
+        if report.get_reboot():
+            reboot_system = True
+
+    if reboot_system:
+        Command.run(
+            [
+                'kexec',
+                '--load', '/boot/vmlinuz',
+                '--initrd', '/boot/initrd',
+                '--command-line', get_boot_cmdline()
+            ]
+        )
+        Command.run(
+            ['kexec', '--exec']
+        )
+
+
+def get_boot_cmdline():
+    effective_boot_options = []
+    with open('/proc/cmdline') as cmdline_handle:
+        boot_cmdline = cmdline_handle.read().split()
+
+    for option in boot_cmdline:
+        if 'vmlinuz' not in option:
+            effective_boot_options.append(option)
+
+    return ' '.join(effective_boot_options)

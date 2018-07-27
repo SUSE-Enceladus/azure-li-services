@@ -6,11 +6,12 @@ from azure_li_services.units.report import main
 
 
 class TestReport(object):
-    @patch('azure_li_services.units.report.StatusReport')
-    def test_main(self, mock_StatusReport):
+    @patch('azure_li_services.units.report.Defaults.get_service_reports')
+    def test_main(self, mock_get_service_reports):
         report = Mock()
+        report.get_systemd_service.return_value = 'service-name'
         report.get_state.return_value = False
-        mock_StatusReport.return_value = report
+        mock_get_service_reports.return_value = [report]
         with patch('builtins.open', create=True) as mock_open:
             mock_open.return_value = MagicMock(spec=io.IOBase)
             main()
@@ -18,27 +19,11 @@ class TestReport(object):
             mock_open.assert_called_once_with(
                 '/etc/issue', 'w'
             )
-            assert mock_StatusReport.call_args_list == [
-                call('call', init_state=False),
-                call('config_lookup', init_state=False),
-                call('install', init_state=False),
-                call('machine_constraints', init_state=False),
-                call('network', init_state=False),
-                call('storage', init_state=False),
-                call('system_setup', init_state=False),
-                call('user', init_state=False)
-            ]
             assert file_handle.write.call_args_list == [
                 call('\n'),
                 call('!!! DEPLOYMENT ERROR !!!'),
                 call('\n'),
-                call(
-                    'For details see: "systemctl status -l '
-                    'azure-li-call azure-li-config-lookup '
-                    'azure-li-install azure-li-machine-constraints '
-                    'azure-li-network azure-li-storage azure-li-system-setup '
-                    'azure-li-user"'
-                ),
+                call('For details see: "systemctl status -l service-name"'),
                 call('\n'),
                 call('\n')
             ]

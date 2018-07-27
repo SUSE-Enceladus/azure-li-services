@@ -16,6 +16,9 @@
 # along with azure-li-services.  If not, see <http://www.gnu.org/licenses/>
 #
 import os
+import hashlib
+import re
+from psutil import virtual_memory
 
 # project
 from azure_li_services.runtime_config import RuntimeConfig
@@ -40,7 +43,7 @@ def main():
         set_hostname(hostname)
 
     set_kdump_service(
-        config.get_crash_kernel_high(), config.get_crash_kernel_low()
+        config.get_crash_kernel_high(), config.get_crash_kernel_low(), status
     )
     set_kernel_samepage_merging_mode()
     set_energy_performance_settings()
@@ -104,27 +107,36 @@ def set_reboot_intervention():
             )
 
 
-def set_kdump_service(high, low):
+def set_kdump_service(high, low, status):
     calibrated = _kdump_calibrate(high, low)
-    grub_defaults = '/etc/default/grub'
-    Command.run(
-        [
-            'sed', '-ie',
-            's@crashkernel=[0-9]\+M,low@crashkernel={0}M,low@'.format(
-                calibrated['Low']
-            ),
-            grub_defaults
-        ]
+    grub_defaults_file = '/etc/default/grub'
+    grub_defaults_data = None
+    grub_defaults_digest = hashlib.sha256()
+    with open(grub_defaults_file, 'r') as grub_defaults_handle:
+        grub_defaults_data = grub_defaults_handle.read()
+
+    grub_defaults_digest.update(format(grub_defaults_data).encode())
+    grub_defaults_shasum_orig = grub_defaults_digest.hexdigest()
+
+    grub_defaults_data = re.sub(
+        r'crashkernel=[0-9]+M,low', 'crashkernel={0}M,low'.format(
+            calibrated['Low']
+        ), grub_defaults_data
     )
-    Command.run(
-        [
-            'sed', '-ie',
-            's@crashkernel=[0-9]\+M,high@crashkernel={0}M,high@'.format(
-                calibrated['High']
-            ),
-            grub_defaults
-        ]
+    grub_defaults_data = re.sub(
+        r'crashkernel=[0-9]+M,high', 'crashkernel={0}M,high'.format(
+            calibrated['High']
+        ), grub_defaults_data
     )
+
+    grub_defaults_digest.update(format(grub_defaults_data).encode())
+    grub_defaults_shasum_new = grub_defaults_digest.hexdigest()
+
+    if grub_defaults_shasum_orig != grub_defaults_shasum_new:
+        with open(grub_defaults_file, 'w') as grub_defaults_handle:
+            grub_defaults_handle.write(grub_defaults_data)
+        status.set_reboot_required()
+
     Command.run(
         ['grub2-mkconfig', '-o', '/boot/grub2/grub.cfg']
     )
@@ -149,6 +161,12 @@ def _kdump_calibrate(high, low):
                 # ignore setting not in key:value format
                 pass
             calibration_values[key] = int(value)
+
+        # update High value on machines with more than 1TB of main memory
+        machine_memory = virtual_memory()
+        machine_memory_tbytes = int(machine_memory.total / 1024**4)
+        if machine_memory_tbytes > 1:
+            calibration_values['High'] *= machine_memory_tbytes
     return calibration_values
 
 

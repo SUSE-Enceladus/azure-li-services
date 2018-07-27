@@ -1,0 +1,1 @@
+GRUB_CMDLINE_LINUX_DEFAULT="quiet splash=silent crashkernel=160M,high crashkernel=80M,low"
