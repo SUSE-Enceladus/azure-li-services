@@ -45,3 +45,49 @@ class TestDefaults(object):
                 ),
                 call(['mount', '/dev/dvd', '/mnt'])
             ]
+
+    @patch('azure_li_services.status_report.StatusReport')
+    def test_get_service_reports(self, mock_StatusReport):
+        Defaults.get_service_reports()
+        assert mock_StatusReport.call_args_list == [
+            call(
+                'call',
+                systemd_service_name='azure-li-call',
+                init_state=False
+            ),
+            call(
+                'config_lookup',
+                systemd_service_name='azure-li-config-lookup',
+                init_state=False
+            ),
+            call(
+                'install',
+                systemd_service_name='azure-li-install',
+                init_state=False
+            ),
+            call(
+                'machine_constraints',
+                systemd_service_name='azure-li-machine-constraints',
+                init_state=False
+            ),
+            call(
+                'network',
+                systemd_service_name='azure-li-network',
+                init_state=False
+            ),
+            call(
+                'storage',
+                systemd_service_name='azure-li-storage',
+                init_state=False
+            ),
+            call(
+                'system_setup',
+                systemd_service_name='azure-li-system-setup',
+                init_state=False
+            ),
+            call(
+                'user',
+                systemd_service_name='azure-li-user',
+                init_state=False
+            )
+        ]

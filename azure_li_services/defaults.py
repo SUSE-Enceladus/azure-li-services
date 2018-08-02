@@ -17,8 +17,10 @@
 #
 import os
 from collections import namedtuple
+from collections import OrderedDict
 
 from azure_li_services.command import Command
+
 from azure_li_services.exceptions import (
     AzureHostedConfigFileNotFoundException,
     AzureHostedConfigFileSourceMountException
@@ -38,6 +40,39 @@ class Defaults(object):
     @classmethod
     def get_status_report_directory(self):
         return '/var/lib/azure_li_services'
+
+    @classmethod
+    def get_service_reports(self):
+        from azure_li_services.status_report import StatusReport
+        service_reports = []
+        unit_to_service_map = {
+            'config_lookup':
+                'azure-li-config-lookup',
+            'user':
+                'azure-li-user',
+            'install':
+                'azure-li-install',
+            'network':
+                'azure-li-network',
+            'call':
+                'azure-li-call',
+            'machine_constraints':
+                'azure-li-machine-constraints',
+            'system_setup':
+                'azure-li-system-setup',
+            'storage':
+                'azure-li-storage'
+        }
+        unit_to_service_map_ordered = OrderedDict(
+            sorted(unit_to_service_map.items())
+        )
+        for unit, service in unit_to_service_map_ordered.items():
+            report = StatusReport(
+                unit, init_state=False, systemd_service_name=service
+            )
+            report.load()
+            service_reports.append(report)
+        return service_reports
 
     @classmethod
     def get_config_file(self):

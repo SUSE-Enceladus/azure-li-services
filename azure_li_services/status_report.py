@@ -34,10 +34,14 @@ class StatusReport(object):
 
     :param str service_name: name of the service
     """
-    def __init__(self, service_name, init_state=True):
+    def __init__(
+        self, service_name, init_state=True, systemd_service_name=None
+    ):
+        self.systemd_service_name = systemd_service_name
         self.status = {
             service_name: {
-                'success': None
+                'success': None,
+                'reboot': False
             }
         }
         self.service_name = service_name
@@ -59,6 +63,10 @@ class StatusReport(object):
         self.status[self.service_name]['success'] = False
         self._write()
 
+    def set_reboot_required(self):
+        self.status[self.service_name]['reboot'] = True
+        self._write()
+
     def load(self):
         if os.path.exists(self.status_file):
             with open(self.status_file, 'r') as report:
@@ -66,6 +74,12 @@ class StatusReport(object):
 
     def get_state(self):
         return self.status[self.service_name]['success']
+
+    def get_reboot(self):
+        return self.status[self.service_name]['reboot']
+
+    def get_systemd_service(self):
+        return self.systemd_service_name
 
     def _write(self):
         with open(self.status_file, 'w') as report:
