@@ -27,14 +27,6 @@ def main():
     Uninstall azure-li-services package and its dependencies
     and check for potential reboot request
     """
-    Command.run(
-        [
-            'zypper', '--non-interactive',
-            'remove', '--clean-deps', '--force-resolution',
-            'azure-li-services'
-        ]
-    )
-
     service_reports = Defaults.get_service_reports()
 
     reboot_system = False
@@ -42,9 +34,18 @@ def main():
         if not report.get_state():
             # in case a service has unknown or failed state we will
             # not consider to reboot the machine
-            return
+            reboot_system = False
+            break
         if report.get_reboot():
             reboot_system = True
+
+    Command.run(
+        [
+            'zypper', '--non-interactive',
+            'remove', '--clean-deps', '--force-resolution',
+            'azure-li-services'
+        ]
+    )
 
     if reboot_system:
         Command.run(
