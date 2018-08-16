@@ -25,9 +25,13 @@ from azure_li_services.defaults import Defaults
 from azure_li_services.users import Users
 from azure_li_services.status_report import StatusReport
 
-from azure_li_services.exceptions import AzureHostedUserConfigDataException
 from azure_li_services.path import Path
 from azure_li_services.command import Command
+
+from azure_li_services.exceptions import (
+    AzureHostedException,
+    AzureHostedUserConfigDataException
+)
 
 
 def main():
@@ -47,12 +51,28 @@ def main():
             'credentials section missing in config file'
         )
 
+    user_setup_errors = []
+
     for user in user_config:
-        create_or_modify_user(user)
-        setup_ssh_authorization(user)
-        setup_sudo_authorization(user)
+        try:
+            create_or_modify_user(user)
+        except Exception as issue:
+            user_setup_errors.append(issue)
+        else:
+            try:
+                setup_ssh_authorization(user)
+            except Exception as issue:
+                user_setup_errors.append(issue)
+            try:
+                setup_sudo_authorization(user)
+            except Exception as issue:
+                user_setup_errors.append(issue)
 
     setup_sudo_config()
+
+    if user_setup_errors:
+        raise AzureHostedException(user_setup_errors)
+
     status.set_success()
 
 

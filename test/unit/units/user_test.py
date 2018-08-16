@@ -3,8 +3,12 @@ from unittest.mock import (
     Mock, patch, call
 )
 from azure_li_services.units.user import main
-from azure_li_services.exceptions import AzureHostedUserConfigDataException
 from azure_li_services.runtime_config import RuntimeConfig
+
+from azure_li_services.exceptions import (
+    AzureHostedException,
+    AzureHostedUserConfigDataException
+)
 
 
 class TestUser(object):
@@ -128,6 +132,26 @@ class TestUser(object):
                 )
             ]
 
+            with raises(AzureHostedException):
+                group_exists = [True, False, False]
+                user_exists = [True, True, False]
+                system_users.user_modify.side_effect = Exception
+                main()
+
+            system_users.user_modify.reset_mock()
+            with raises(AzureHostedException):
+                group_exists = [True, False, False]
+                user_exists = [True, True, False]
+                mock_mount_config_source.side_effect = Exception
+                main()
+
+            mock_mount_config_source.reset_mock()
+            with raises(AzureHostedException):
+                group_exists = [True, False, False]
+                user_exists = [True, True, False]
+                system_users.group_add.side_effect = Exception
+                main()
+
     @patch('azure_li_services.units.user.Defaults.get_config_file')
     @patch('azure_li_services.units.user.RuntimeConfig')
     @patch('azure_li_services.units.user.StatusReport')
@@ -149,5 +173,6 @@ class TestUser(object):
         config = Mock()
         config.get_user_config.return_value = [{}]
         mock_RuntimConfig.return_value = config
-        with raises(AzureHostedUserConfigDataException):
-            main()
+        with patch('builtins.open', create=True):
+            with raises(AzureHostedException):
+                main()
