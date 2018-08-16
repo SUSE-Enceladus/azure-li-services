@@ -64,10 +64,11 @@ class TestAzureHostedNetworkSetup(object):
                 'VLAN_ID=10\n'
             )
 
-    def test_create_vlan_config_raises(self):
+    def test_create_vlan_config_skipped_on_missing_id(self):
         del self.network.network['vlan']
-        with raises(AzureHostedNetworkConfigDataException):
+        with patch('builtins.open', create=True) as mock_open:
             self.network.create_vlan_config()
+            assert mock_open.called is False
 
     def test_create_bridge_config(self):
         with raises(NotImplementedError):

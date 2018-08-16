@@ -97,9 +97,7 @@ class AzureHostedNetworkSetup(object):
         Setup vlan configuration on top of interface config
         """
         if 'vlan' not in self.network:
-            raise AzureHostedNetworkConfigDataException(
-                'vlan id missing in {0}'.format(self.network)
-            )
+            return
         vlan_file = '/etc/sysconfig/network/ifcfg-{0}.{1}'.format(
             self.network['interface'], self.network['vlan']
         )
