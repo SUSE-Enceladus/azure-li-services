@@ -4,7 +4,7 @@ from unittest.mock import (
     patch, Mock
 )
 from azure_li_services.units.machine_constraints import main
-from azure_li_services.exceptions import AzureHostedMachineConstraintException
+from azure_li_services.exceptions import AzureHostedException
 
 
 class TestMachineConstraints(object):
@@ -27,9 +27,9 @@ class TestMachineConstraints(object):
         mock_StatusReport.assert_called_once_with('machine_constraints')
         status.set_success.assert_called_once_with()
         mock_cpu_count.return_value = 2
-        with raises(AzureHostedMachineConstraintException):
+        with raises(AzureHostedException):
             main()
         mock_cpu_count.return_value = 42
         existing_memory.total = humanfriendly.parse_size('1gb', binary=True)
-        with raises(AzureHostedMachineConstraintException):
+        with raises(AzureHostedException):
             main()
