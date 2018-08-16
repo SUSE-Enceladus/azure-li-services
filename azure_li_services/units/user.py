@@ -121,8 +121,8 @@ def setup_ssh_authorization(user):
             if user['username'] != 'root':
                 os.chown(ssh_auth_file, uid, gid)
         if 'ssh-private-key' in user:
+            ssh_key_source = Defaults.mount_config_source()
             try:
-                ssh_key_source = Defaults.mount_config_source()
                 private_key_file = user['ssh-private-key']
                 Command.run(
                     [
