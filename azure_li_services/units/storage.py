@@ -26,7 +26,10 @@ from azure_li_services.command import Command
 from azure_li_services.status_report import StatusReport
 from azure_li_services.path import Path
 
-from azure_li_services.exceptions import AzureHostedStorageMountException
+from azure_li_services.exceptions import (
+    AzureHostedException,
+    AzureHostedStorageMountException
+)
 
 
 def main():
@@ -40,26 +43,31 @@ def main():
     config = RuntimeConfig(Defaults.get_config_file())
     storage_config = config.get_storage_config()
 
+    storage_errors = []
+
     if storage_config:
         fstab_entries = []
         for storage in storage_config:
-            if 'device' not in storage or 'mount' not in storage:
-                raise AzureHostedStorageMountException(
-                    'At least one of {0} missing in {1}'.format(
-                        ('device', 'mount'), storage
+            try:
+                if 'device' not in storage or 'mount' not in storage:
+                    raise AzureHostedStorageMountException(
+                        'At least one of {0} missing in {1}'.format(
+                            ('device', 'mount'), storage
+                        )
+                    )
+                Path.create(storage['mount'])
+                fstab_entries.append(
+                    '{device} {mount} {fstype} {options} 0 0'.format(
+                        device=storage['device'],
+                        mount=storage['mount'],
+                        fstype=storage.get('file_system') or 'auto',
+                        options=','.join(
+                            storage.get('mount_options', ['defaults'])
+                        )
                     )
                 )
-            Path.create(storage['mount'])
-            fstab_entries.append(
-                '{device} {mount} {fstype} {options} 0 0'.format(
-                    device=storage['device'],
-                    mount=storage['mount'],
-                    fstype=storage.get('file_system') or 'auto',
-                    options=','.join(
-                        storage.get('mount_options', ['defaults'])
-                    )
-                )
-            )
+            except Exception as issue:
+                storage_errors.append(issue)
 
         if fstab_entries:
             with open('/etc/fstab', 'a') as fstab:
@@ -73,9 +81,15 @@ def main():
             for storage in storage_config:
                 min_size = storage.get('min_size')
                 if min_size:
-                    check_storage_size_validates_constraint(
-                        min_size, storage['mount']
-                    )
+                    try:
+                        check_storage_size_validates_constraint(
+                            min_size, storage['mount']
+                        )
+                    except Exception as issue:
+                        storage_errors.append(issue)
+
+    if storage_errors:
+        raise AzureHostedException(storage_errors)
 
     status.set_success()
 

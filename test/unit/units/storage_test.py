@@ -5,7 +5,7 @@ from unittest.mock import (
 )
 from azure_li_services.units.storage import main
 from azure_li_services.runtime_config import RuntimeConfig
-from azure_li_services.exceptions import AzureHostedStorageMountException
+from azure_li_services.exceptions import AzureHostedException
 
 
 class TestStorage(object):
@@ -42,7 +42,7 @@ class TestStorage(object):
                 call('\n')
             ]
             disk_usage.free = 0
-            with raises(AzureHostedStorageMountException):
+            with raises(AzureHostedException):
                 main()
 
     @patch('azure_li_services.units.storage.RuntimeConfig')
@@ -54,5 +54,5 @@ class TestStorage(object):
         config = Mock()
         config.get_storage_config.return_value = [{}]
         mock_RuntimConfig.return_value = config
-        with raises(AzureHostedStorageMountException):
+        with raises(AzureHostedException):
             main()
