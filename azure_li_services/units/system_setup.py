@@ -27,6 +27,8 @@ from azure_li_services.defaults import Defaults
 from azure_li_services.command import Command
 from azure_li_services.status_report import StatusReport
 
+from azure_li_services.exceptions import AzureHostedException
+
 
 def main():
     """
@@ -39,18 +41,46 @@ def main():
     hostname = config.get_hostname()
     instance_type = config.get_instance_type()
 
-    if hostname:
-        set_hostname(hostname)
+    system_setup_errors = []
 
-    set_kdump_service(
-        config.get_crash_kernel_high(), config.get_crash_kernel_low(), status
-    )
-    set_kernel_samepage_merging_mode()
-    set_energy_performance_settings()
-    set_saptune_service()
+    if hostname:
+        try:
+            set_hostname(hostname)
+        except Exception as issue:
+            system_setup_errors.append(issue)
+
+    try:
+        set_kdump_service(
+            config.get_crash_kernel_high(),
+            config.get_crash_kernel_low(),
+            status
+        )
+    except Exception as issue:
+        system_setup_errors.append(issue)
+
+    try:
+        set_kernel_samepage_merging_mode()
+    except Exception as issue:
+        system_setup_errors.append(issue)
+
+    try:
+        set_energy_performance_settings()
+    except Exception as issue:
+        system_setup_errors.append(issue)
+
+    try:
+        set_saptune_service()
+    except Exception as issue:
+        system_setup_errors.append(issue)
 
     if instance_type == InstanceType.vli:
-        set_reboot_intervention()
+        try:
+            set_reboot_intervention()
+        except Exception as issue:
+            system_setup_errors.append(issue)
+
+    if system_setup_errors:
+        raise AzureHostedException(system_setup_errors)
 
     status.set_success()
 
