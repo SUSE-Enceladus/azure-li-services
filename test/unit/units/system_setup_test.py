@@ -1,5 +1,6 @@
 import io
 import os
+from pytest import raises
 from textwrap import dedent
 from unittest.mock import (
     patch, Mock, MagicMock, call
@@ -9,6 +10,8 @@ from azure_li_services.instance_type import InstanceType
 from azure_li_services.units.system_setup import main
 
 import azure_li_services.units.system_setup as system_setup
+
+from azure_li_services.exceptions import AzureHostedException
 
 
 class TestSystemSetup(object):
@@ -50,12 +53,42 @@ class TestSystemSetup(object):
         main()
         mock_set_reboot_intervention.assert_called_once_with()
 
+        mock_set_hostname.side_effect = Exception
+        with raises(AzureHostedException):
+            main()
+
+        mock_set_hostname.reset_mock()
+        mock_set_kdump_service.side_effect = Exception
+        with raises(AzureHostedException):
+            main()
+
+        mock_set_kdump_service.reset_mock()
+        mock_set_kernel_samepage_merging_mode.side_effect = Exception
+        with raises(AzureHostedException):
+            main()
+
+        mock_set_kernel_samepage_merging_mode.reset_mock()
+        mock_set_energy_performance_settings.side_effect = Exception
+        with raises(AzureHostedException):
+            main()
+
+        mock_set_energy_performance_settings.reset_mock()
+        mock_set_saptune_service.side_effect = Exception
+        with raises(AzureHostedException):
+            main()
+
+        mock_set_saptune_service.reset_mock()
+        mock_set_reboot_intervention.side_effect = Exception
+        with raises(AzureHostedException):
+            main()
+
     @patch('azure_li_services.command.Command.run')
     def test_set_hostname(self, mock_Command_run):
         system_setup.set_hostname('azure')
         mock_Command_run.assert_called_once_with(
             ['hostnamectl', 'set-hostname', 'azure']
         )
+        mock_Command_run.side_effect = Exception
 
     @patch('os.chmod')
     def test_set_kernel_samepage_merging_mode(self, mock_os_chmod):

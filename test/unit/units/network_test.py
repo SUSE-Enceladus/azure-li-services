@@ -3,7 +3,10 @@ from unittest.mock import (
     Mock, patch
 )
 from azure_li_services.units.network import main
-from azure_li_services.exceptions import AzureHostedNetworkConfigDataException
+from azure_li_services.exceptions import (
+    AzureHostedException,
+    AzureHostedNetworkConfigDataException
+)
 
 
 class TestNetwork(object):
@@ -25,6 +28,9 @@ class TestNetwork(object):
         li_network.create_interface_config.assert_called_once_with()
         li_network.create_vlan_config.assert_called_once_with()
         li_network.create_default_route_config.assert_called_once_with()
+        mock_AzureHostedNetworkSetup.side_effect = Exception
+        with raises(AzureHostedException):
+            main()
 
     @patch('azure_li_services.units.network.Defaults.get_config_file')
     @patch('azure_li_services.units.network.StatusReport')

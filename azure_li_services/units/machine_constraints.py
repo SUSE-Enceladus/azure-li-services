@@ -24,7 +24,10 @@ from azure_li_services.runtime_config import RuntimeConfig
 from azure_li_services.defaults import Defaults
 from azure_li_services.status_report import StatusReport
 
-from azure_li_services.exceptions import AzureHostedMachineConstraintException
+from azure_li_services.exceptions import (
+    AzureHostedException,
+    AzureHostedMachineConstraintException
+)
 
 
 def main():
@@ -37,13 +40,20 @@ def main():
     config = RuntimeConfig(Defaults.get_config_file())
     machine_constraints = config.get_machine_constraints()
 
+    constraint_errors = []
+
     if machine_constraints:
-        check_cpu_count_validates_constraint(
-            machine_constraints
-        )
-        check_main_memory_validates_constraint(
-            machine_constraints
-        )
+        try:
+            check_cpu_count_validates_constraint(machine_constraints)
+        except Exception as issue:
+            constraint_errors.append(issue)
+        try:
+            check_main_memory_validates_constraint(machine_constraints)
+        except Exception as issue:
+            constraint_errors.append(issue)
+
+    if constraint_errors:
+        raise AzureHostedException(constraint_errors)
 
     status.set_success()
 

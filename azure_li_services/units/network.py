@@ -22,7 +22,10 @@ from azure_li_services.network import AzureHostedNetworkSetup
 from azure_li_services.instance_type import InstanceType
 from azure_li_services.status_report import StatusReport
 
-from azure_li_services.exceptions import AzureHostedNetworkConfigDataException
+from azure_li_services.exceptions import (
+    AzureHostedException,
+    AzureHostedNetworkConfigDataException
+)
 
 
 def main():
@@ -36,13 +39,22 @@ def main():
     config = RuntimeConfig(Defaults.get_config_file())
     network_config = config.get_network_config()
     instance_type = config.get_instance_type()
+
     if network_config:
+        network_errors = []
         if instance_type == InstanceType.li:
             for network in network_config:
-                li_network = AzureHostedNetworkSetup(network)
-                li_network.create_interface_config()
-                li_network.create_vlan_config()
-                li_network.create_default_route_config()
+                try:
+                    li_network = AzureHostedNetworkSetup(network)
+                    li_network.create_interface_config()
+                    li_network.create_vlan_config()
+                    li_network.create_default_route_config()
+                except Exception as issue:
+                    network_errors.append(issue)
+
+            if network_errors:
+                raise AzureHostedException(network_errors)
+
             status.set_success()
         else:
             raise AzureHostedNetworkConfigDataException(
