@@ -101,6 +101,13 @@ class Defaults(object):
             name=os.path.basename(Defaults.get_config_file_name()),
             location='/mnt', label='azconfig'
         )
+        mountpoint_result = Command.run(
+            ['mountpoint', azure_config.location], raise_on_error=False
+        )
+        if mountpoint_result.returncode == 0:
+            # The azure_config location is already mounted
+            return azure_config
+
         lun_result = Command.run(
             ['mount', '--label', azure_config.label, azure_config.location],
             raise_on_error=False

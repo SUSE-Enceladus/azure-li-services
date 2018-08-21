@@ -26,25 +26,64 @@ class TestDefaults(object):
     @patch('azure_li_services.defaults.Command.run')
     def test_mount_config_source(self, mock_Command_run):
         mount_result = Mock()
-        mount_result.returncode = 0
-        mock_Command_run.return_value = mount_result
+        mount_result_codes = [0, 1]
+
+        def command_result(self, **args):
+            mount_result.returncode = mount_result_codes.pop()
+            return mount_result
+
+        mock_Command_run.side_effect = command_result
 
         result = Defaults.mount_config_source()
         assert result.name == 'suse_firstboot_config.yaml'
         assert result.location == '/mnt'
         assert result.label == 'azconfig'
 
+        assert mock_Command_run.call_args_list == [
+            call(
+                ['mountpoint', '/mnt'], raise_on_error=False
+            ),
+            call(
+                ['mount', '--label', 'azconfig', '/mnt'],
+                raise_on_error=False
+            )
+        ]
+
         mount_result.returncode = 1
+        mock_Command_run.side_effect = None
+        mock_Command_run.reset_mock()
 
         with raises(AzureHostedConfigFileSourceMountException):
             Defaults.mount_config_source()
-            assert mock_Command_run.call_args_list == [
-                call(
-                    ['mount', '--label', 'azconfig', '/mnt'],
-                    raise_on_error=False
-                ),
-                call(['mount', '/dev/dvd', '/mnt'])
-            ]
+
+        assert mock_Command_run.call_args_list == [
+            call(
+                ['mountpoint', '/mnt'], raise_on_error=False
+            ),
+            call(
+                ['mount', '--label', 'azconfig', '/mnt'],
+                raise_on_error=False
+            ),
+            call(
+                ['mount', '/dev/dvd', '/mnt'],
+                raise_on_error=False
+            )
+        ]
+
+    @patch('azure_li_services.defaults.Command.run')
+    def test_mount_config_source_already_mounted(self, mock_Command_run):
+        mountpoint_result = Mock()
+        mountpoint_result.returncode = 0
+        mock_Command_run.return_value = mountpoint_result
+
+        result = Defaults.mount_config_source()
+        assert result.name == 'suse_firstboot_config.yaml'
+        assert result.location == '/mnt'
+        assert result.label == 'azconfig'
+
+        mock_Command_run.assert_called_once_with(
+            ['mountpoint', '/mnt'], raise_on_error=False
+        )
 
     @patch('azure_li_services.status_report.StatusReport')
     def test_get_service_reports(self, mock_StatusReport):
