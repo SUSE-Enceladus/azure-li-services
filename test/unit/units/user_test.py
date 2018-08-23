@@ -105,7 +105,9 @@ class TestUser(object):
                         '/home/hanauser/.ssh/'
                     ]
                 ),
-                call(['umount', 'config_mount'])
+                call(
+                    ['umount', '--lazy', 'config_mount'], raise_on_error=False
+                )
             ]
             assert mock_chmod.call_args_list == [
                 call('/home/hanauser/.ssh/', 0o700),

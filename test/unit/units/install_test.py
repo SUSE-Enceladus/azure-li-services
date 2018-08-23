@@ -63,7 +63,12 @@ class TestInstall(object):
                     '--auto-agree-with-licenses', 'foo'
                 ]
             ),
-            call(['umount', mock_mount_config_source.return_value.location])
+            call(
+                [
+                    'umount', '--lazy',
+                    mock_mount_config_source.return_value.location
+                ], raise_on_error=False
+            )
         ]
 
     @patch('azure_li_services.units.install.Defaults.get_config_file')

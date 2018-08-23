@@ -56,4 +56,4 @@ def main():
         os.chmod(Defaults.get_config_file_name(), 0o600)
         status.set_success()
     finally:
-        Command.run(['umount', azure_config.location])
+        Defaults.umount_config_source(azure_config)

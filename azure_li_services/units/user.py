@@ -160,7 +160,7 @@ def setup_ssh_authorization(user):
                 if user['username'] != 'root':
                     os.chown(ssh_key_file, uid, gid)
             finally:
-                Command.run(['umount', ssh_key_source.location])
+                Defaults.umount_config_source(ssh_key_source)
 
 
 def setup_sudo_authorization(user):

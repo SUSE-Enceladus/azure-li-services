@@ -43,6 +43,6 @@ def main():
                 ]
             )
         finally:
-            Command.run(['umount', call_source.location])
+            Defaults.umount_config_source(call_source)
 
     status.set_success()

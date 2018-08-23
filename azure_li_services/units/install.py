@@ -97,6 +97,6 @@ def main():
                     ] + install_items
                 )
         finally:
-            Command.run(['umount', install_source.location])
+            Defaults.umount_config_source(install_source)
 
     status.set_success()
