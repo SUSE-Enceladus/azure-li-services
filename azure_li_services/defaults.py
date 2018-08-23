@@ -125,3 +125,9 @@ class Defaults(object):
                 )
 
         return azure_config
+
+    @classmethod
+    def umount_config_source(self, azure_config):
+        Command.run(
+            ['umount', '--lazy', azure_config.location], raise_on_error=False
+        )

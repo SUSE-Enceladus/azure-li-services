@@ -23,11 +23,18 @@ class TestConfigLookup(object):
         mock_StatusReport.assert_called_once_with('config_lookup')
         status.set_success.assert_called_once_with()
         assert mock_Command_run.call_args_list == [
-            call([
-                'cp', mock_Path_which.return_value,
-                '/etc/suse_firstboot_config.yaml'
-            ]),
-            call(['umount', mock_mount_config_source.return_value.location])
+            call(
+                [
+                    'cp', mock_Path_which.return_value,
+                    '/etc/suse_firstboot_config.yaml'
+                ]
+            ),
+            call(
+                [
+                    'umount', '--lazy',
+                    mock_mount_config_source.return_value.location
+                ], raise_on_error=False
+            )
         ]
         mock_chmod.assert_called_once_with(
             '/etc/suse_firstboot_config.yaml', 0o600
