@@ -93,8 +93,7 @@ class TestRuntimeConfig(object):
     def test_get_hostname(self):
         assert self.runtime_config.get_hostname() == 'azure'
 
-    def test_get_crash_kernel_high(self):
-        assert self.runtime_config.get_crash_kernel_high() == 160
-
-    def test_get_crash_kernel_low(self):
-        assert self.runtime_config.get_crash_kernel_low() == 80
+    def test_get_crash_dump_config(self):
+        assert self.runtime_config.get_crash_dump_config() == {
+            'activate': True, 'crash_kernel_low': 80, 'crash_kernel_high': 160
+        }
