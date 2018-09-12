@@ -51,9 +51,7 @@ def main():
 
     try:
         set_kdump_service(
-            config.get_crash_kernel_high(),
-            config.get_crash_kernel_low(),
-            status
+            config.get_crash_dump_config(), status
         )
     except Exception as issue:
         system_setup_errors.append(issue)
@@ -137,8 +135,15 @@ def set_reboot_intervention():
             )
 
 
-def set_kdump_service(high, low, status):
-    calibrated = _kdump_calibrate(high, low)
+def set_kdump_service(config, status):
+    if config and config.get('activate') is False:
+        # activation of kernel crash dump setup is unwanted
+        return
+
+    calibrated = _kdump_calibrate(
+        config.get('crash_kernel_high') if config else None,
+        config.get('crash_kernel_low') if config else None
+    )
     grub_defaults_file = '/etc/default/grub'
     grub_defaults_data = None
     grub_defaults_digest = hashlib.sha256()

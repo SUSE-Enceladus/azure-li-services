@@ -40,7 +40,13 @@ class TestSystemSetup(object):
         mock_RuntimConfig.return_value = self.config
         main()
         mock_set_hostname.assert_called_once_with('azure')
-        mock_set_kdump_service.assert_called_once_with(160, 80, status)
+        mock_set_kdump_service.assert_called_once_with(
+            {
+                'activate': True,
+                'crash_kernel_low': 80,
+                'crash_kernel_high': 160
+            }, status
+        )
         mock_set_kernel_samepage_merging_mode.assert_called_once_with()
         mock_set_energy_performance_settings.assert_called_once_with()
         mock_set_saptune_service.assert_called_once_with()
@@ -133,6 +139,13 @@ class TestSystemSetup(object):
             )
 
     @patch('azure_li_services.command.Command.run')
+    def test_set_kdump_service_disabled(self, mock_Command_run):
+        with patch('builtins.open', create=True) as mock_open:
+            system_setup.set_kdump_service({'activate': False}, Mock())
+            assert mock_open.called is False
+            assert mock_Command_run.called is False
+
+    @patch('azure_li_services.command.Command.run')
     @patch('azure_li_services.units.system_setup.virtual_memory')
     def test_set_kdump_service(self, mock_virtual_memory, mock_Command_run):
         memory = Mock()
@@ -156,7 +169,7 @@ class TestSystemSetup(object):
             file_handle = mock_open.return_value.__enter__.return_value
             file_handle.read.return_value = grub_defaults_data
             status = Mock()
-            system_setup.set_kdump_service(None, None, status)
+            system_setup.set_kdump_service(None, status)
             assert file_handle.write.call_args_list == [
                 call(
                     'GRUB_CMDLINE_LINUX_DEFAULT="quiet splash=silent '
