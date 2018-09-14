@@ -16,27 +16,30 @@
 #
 
 
-Name:           azure-li-services
-Version:        %%VERSION
-Release:        0
-Url:            https://github.com/SUSE/azure-li-services
-Summary:        azure-li-services - Azure Large Instance Services
-License:        GPL-3.0+
-Group:          System/Management
-Source:         azure_li_services.tar.gz
-BuildRoot:      %{_tmppath}/%{name}-%{version}-build
-BuildRequires:  python3-devel
-BuildRequires:  python3-setuptools
-Requires:       python3-PyYAML
-Requires:       python3-setuptools
-Requires:       python3-psutil
-Requires:       python3-humanfriendly
-Requires:       python3-Cerberus
-Requires:       shadow
-Requires:       createrepo
-Requires:       zypper
-Requires:       rsync
-BuildArch:      noarch
+Name:             azure-li-services
+Version:          %%VERSION
+Release:          0
+Url:              https://github.com/SUSE/azure-li-services
+Summary:          azure-li-services - Azure Large Instance Services
+License:          GPL-3.0+
+Group:            System/Management
+Source:           azure_li_services.tar.gz
+BuildRoot:        %{_tmppath}/%{name}-%{version}-build
+BuildRequires:    python3-devel
+BuildRequires:    python3-setuptools
+BuildRequires:    systemd-rpm-macros
+Requires:         python3-PyYAML
+Requires:         python3-setuptools
+Requires:         python3-psutil
+Requires:         python3-humanfriendly
+Requires:         python3-Cerberus
+Requires:         shadow
+Requires(preun):  systemd
+Requires(postun): systemd
+Requires:         createrepo
+Requires:         zypper
+Requires:         rsync
+BuildArch:        noarch
 
 %description
 Systemd services reading and processing the sections of a
@@ -81,6 +84,12 @@ install -D -m 644 systemd/azure-li-storage.service \
 
 install -D -m 644 systemd/azure-li-system-setup.service \
     %{buildroot}%{_unitdir}/azure-li-system-setup.service
+
+%preun
+%service_del_preun azure-li-config-lookup.service azure-li-network.service azure-li-user.service azure-li-call.service azure-li-install.service azure-li-report.service azure-li-cleanup.service azure-li-machine-constraints.service azure-li-storage.service azure-li-system-setup.service
+
+%postun
+%service_del_postun azure-li-config-lookup.service azure-li-network.service azure-li-user.service azure-li-call.service azure-li-install.service azure-li-report.service azure-li-cleanup.service azure-li-machine-constraints.service azure-li-storage.service azure-li-system-setup.service
 
 %files
 %defattr(-,root,root,-)
