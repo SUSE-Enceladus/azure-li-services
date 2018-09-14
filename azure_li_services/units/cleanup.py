@@ -46,6 +46,11 @@ def main():
             'azure-li-services'
         ]
     )
+    Command.run(
+        [
+            'systemctl', 'reset-failed'
+        ]
+    )
 
     if reboot_system:
         Command.run(
