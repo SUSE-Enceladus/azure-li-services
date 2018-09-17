@@ -31,6 +31,11 @@ class TestCleanup(object):
                 ),
                 call(
                     [
+                        'systemctl', 'reset-failed'
+                    ]
+                ),
+                call(
+                    [
                         'kexec',
                         '--load', '/boot/vmlinuz',
                         '--initrd', '/boot/initrd',
@@ -45,10 +50,17 @@ class TestCleanup(object):
         report.get_state.return_value = False
         mock_Command_run.reset_mock()
         main()
-        mock_Command_run.assert_called_once_with(
-            [
-                'zypper', '--non-interactive',
-                'remove', '--clean-deps', '--force-resolution',
-                'azure-li-services'
-            ]
-        )
+        assert mock_Command_run.call_args_list == [
+            call(
+                [
+                    'zypper', '--non-interactive',
+                    'remove', '--clean-deps', '--force-resolution',
+                    'azure-li-services'
+                ]
+            ),
+            call(
+                [
+                    'systemctl', 'reset-failed'
+                ]
+            )
+        ]
