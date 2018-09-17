@@ -88,10 +88,10 @@ install -D -m 644 systemd/azure-li-system-setup.service \
 # %preun / %postun
 # While the package provides services all services are one-shot.
 # Additionally upon initial run, i.e. on first boot the package
-# itself gets removed vi the azure-li-cleanup implementation.
+# itself gets removed via the azure-li-cleanup implementation.
 # This means there is no package update path as the package will
 # be gone after initial boot. Therefore there is no need for
-# us of the "standard" systemd service handling macros.
+# use of the "standard" systemd service handling macros.
 
 %files
 %defattr(-,root,root,-)
