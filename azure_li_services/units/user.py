@@ -86,7 +86,12 @@ def create_or_modify_user(user):
     user_exists = system_users.user_exists(user['username'])
     if 'group' in user:
         if not system_users.group_exists(user['group']):
-            system_users.group_add(user['group'], [])
+            group_options = []
+            if 'group_id' in user:
+                group_options += [
+                    '-g', '{0}'.format(user['group_id'])
+                ]
+            system_users.group_add(user['group'], group_options)
         options += [
             '-g', user['group']
         ]

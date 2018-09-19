@@ -49,6 +49,7 @@ class TestRuntimeConfig(object):
             },
             {
                 'group': 'nogroup',
+                'group_id': 4711,
                 'home_dir': '/var/lib/empty',
                 'username': 'rpc',
                 'id': 495

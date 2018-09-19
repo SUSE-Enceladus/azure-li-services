@@ -138,6 +138,10 @@ schema = {
                     'required': False,
                     'type': 'string'
                 },
+                'group_id': {
+                    'required': False,
+                    'type': 'number'
+                },
                 'home_dir': {
                     'required': False,
                     'type': 'string'

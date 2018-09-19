@@ -41,6 +41,7 @@ credentials:
     username: rpc
     id: 495
     group: nogroup
+    group_id: 4711
     home_dir: /var/lib/empty
   -
     username: root
