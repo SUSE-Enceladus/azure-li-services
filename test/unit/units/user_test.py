@@ -83,7 +83,7 @@ class TestUser(object):
             ]
             assert system_users.group_add.call_args_list == [
                 call('admin', []),
-                call('nogroup', [])
+                call('nogroup', ['-g', '4711'])
             ]
             assert mock_open.call_args_list == [
                 call('/home/hanauser/.ssh/authorized_keys', 'a'),

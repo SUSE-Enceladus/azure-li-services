@@ -48,7 +48,10 @@ class TestRuntimeConfig(object):
                 'ssh-private-key': 'path/to/private/key/id_dsa'
             },
             {
-                'group': 'nogroup',
+                'group': {
+                    'name': 'nogroup',
+                    'id': 4711
+                },
                 'home_dir': '/var/lib/empty',
                 'username': 'rpc',
                 'id': 495

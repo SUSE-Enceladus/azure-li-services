@@ -74,7 +74,8 @@ class RuntimeConfig(object):
           -
             username: rpc
             id: 495
-            group: nogroup
+            group:
+              name: nogroup
             home_dir: /var/lib/empty
 
         packages:
