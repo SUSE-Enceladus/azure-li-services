@@ -136,11 +136,18 @@ schema = {
                 },
                 'group': {
                     'required': False,
-                    'type': 'string'
-                },
-                'group_id': {
-                    'required': False,
-                    'type': 'number'
+                    'type': 'dict',
+                    'schema': {
+                        'name': {
+                            'required': True,
+                            'type': 'string',
+                            'nullable': False
+                        },
+                        'id': {
+                            'required': False,
+                            'type': 'number'
+                        }
+                    }
                 },
                 'home_dir': {
                     'required': False,

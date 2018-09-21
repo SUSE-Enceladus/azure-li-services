@@ -81,45 +81,47 @@ def create_or_modify_user(user):
         raise AzureHostedUserConfigDataException(
             'username missing in config {0}'.format(user)
         )
-    options = []
+    user_options = []
     system_users = Users()
     user_exists = system_users.user_exists(user['username'])
     if 'group' in user:
-        if not system_users.group_exists(user['group']):
+        group_setup = user['group']
+        if not system_users.group_exists(group_setup['name']):
             group_options = []
-            if 'group_id' in user:
+            if 'id' in group_setup:
                 group_options += [
-                    '-g', '{0}'.format(user['group_id'])
+                    '-g', '{0}'.format(group_setup['id'])
                 ]
-            system_users.group_add(user['group'], group_options)
-        options += [
-            '-g', user['group']
+            system_users.group_add(group_setup['name'], group_options)
+
+        user_options += [
+            '-g', group_setup['name']
         ]
     if 'shadow_hash' in user:
-        options += [
+        user_options += [
             '-p', user['shadow_hash'],
             '-s', '/bin/bash'
         ]
     else:
-        options += [
+        user_options += [
             '-s', '/sbin/nologin'
         ]
     if not user_exists:
         home_dir = user.get('home_dir') or '/home/{0}'.format(user['username'])
-        options += [
+        user_options += [
             '-m', '-d', home_dir
         ]
     if 'id' in user:
-        options += [
+        user_options += [
             '-u', '{0}'.format(user['id'])
         ]
     if user_exists:
         system_users.user_modify(
-            user['username'], options
+            user['username'], user_options
         )
     else:
         system_users.user_add(
-            user['username'], options
+            user['username'], user_options
         )
 
 
