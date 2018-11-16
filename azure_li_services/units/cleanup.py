@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with azure-li-services.  If not, see <http://www.gnu.org/licenses/>
 #
+import os
+
 # project
 from azure_li_services.command import Command
 from azure_li_services.defaults import Defaults
@@ -30,14 +32,31 @@ def main():
     service_reports = Defaults.get_service_reports()
 
     reboot_system = False
+    all_services_successful = True
     for report in service_reports:
         if not report.get_state():
             # in case a service has unknown or failed state we will
             # not consider to reboot the machine
+            all_services_successful = False
             reboot_system = False
             break
         if report.get_reboot():
             reboot_system = True
+
+    install_source = Defaults.mount_config_source()
+    try:
+        state_file = os.sep.join(
+            [
+                install_source.location,
+                'workload_success_is_{}'.format(
+                    all_services_successful
+                ).lower()
+            ]
+        )
+        with open(state_file, 'w'):
+            pass
+    finally:
+        Defaults.umount_config_source(install_source)
 
     Command.run(
         [
