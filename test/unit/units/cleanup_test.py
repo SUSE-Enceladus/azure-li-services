@@ -69,6 +69,12 @@ class TestCleanup(object):
             assert mock_Command_run.call_args_list == [
                 call(
                     [
+                        'bash', '-c',
+                        'systemctl status -l --all &> lun_location/workload.log'
+                    ], raise_on_error=False
+                ),
+                call(
+                    [
                         'zypper', '--non-interactive',
                         'remove', '--clean-deps', '--force-resolution',
                         'azure-li-services'

@@ -55,6 +55,8 @@ def main():
         )
         with open(state_file, 'w'):
             pass
+        if not all_services_successful:
+            write_service_log(install_source)
     finally:
         Defaults.umount_config_source(install_source)
 
@@ -95,3 +97,15 @@ def get_boot_cmdline():
             effective_boot_options.append(option)
 
     return ' '.join(effective_boot_options)
+
+
+def write_service_log(install_source):
+    log_file = os.sep.join(
+        [install_source.location, 'workload.log']
+    )
+    bash_command = ' '.join(
+        ['systemctl', 'status', '-l', '--all', '&>', log_file]
+    )
+    Command.run(
+        ['bash', '-c', bash_command], raise_on_error=False
+    )
