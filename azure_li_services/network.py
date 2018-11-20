@@ -29,11 +29,8 @@ class AzureHostedNetworkSetup(object):
     Implements methods to create Network interface configuration files
     """
     def __init__(self, network):
-        if (
-            'ip' not in network or
-            'interface' not in network or
-            'subnet_mask' not in network
-        ):
+        if 'ip' not in network or 'interface' not in network or \
+           'subnet_mask' not in network:
             raise AzureHostedNetworkConfigDataException(
                 'At least one of {0} missing in {1}'.format(
                     ('ip', 'interface', 'subnet_mask'), network
