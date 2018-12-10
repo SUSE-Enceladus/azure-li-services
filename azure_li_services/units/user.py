@@ -129,13 +129,16 @@ def setup_ssh_authorization(user):
     if 'ssh-key' in user or 'ssh-private-key' in user:
         if user['username'] == 'root':
             ssh_auth_dir = '/root/.ssh/'
+            default_group = 'root'
         else:
             ssh_auth_dir = '/home/{0}/.ssh/'.format(
                 user['username']
             )
+            default_group = 'users'
         Path.create(ssh_auth_dir)
+        group_setup = user['group'] if 'group' in user else {}
         uid = pwd.getpwnam(user['username']).pw_uid
-        gid = grp.getgrnam(user.get('group') or 'users').gr_gid
+        gid = grp.getgrnam(group_setup.get('name') or default_group).gr_gid
         os.chmod(ssh_auth_dir, 0o700)
         if user['username'] != 'root':
             os.chown(ssh_auth_dir, uid, gid)
