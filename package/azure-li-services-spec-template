@@ -20,10 +20,10 @@ Name:             azure-li-services
 Version:          %%VERSION
 Release:          0
 Url:              https://github.com/SUSE/azure-li-services
-Summary:          azure-li-services - Azure Large Instance Services
+Summary:          Azure Large Instance Services
 License:          GPL-3.0+
 Group:            System/Management
-Source:           azure_li_services.tar.gz
+Source:           azure-li-services.tar.gz
 BuildRoot:        %{_tmppath}/%{name}-%{version}-build
 BuildRequires:    python3-devel
 BuildRequires:    python3-setuptools
@@ -85,7 +85,7 @@ install -D -m 644 systemd/azure-li-storage.service \
 install -D -m 644 systemd/azure-li-system-setup.service \
     %{buildroot}%{_unitdir}/azure-li-system-setup.service
 
-# %preun / %postun
+# preun / postun
 # While the package provides services all services are one-shot.
 # Additionally upon initial run, i.e. on first boot the package
 # itself gets removed via the azure-li-cleanup implementation.

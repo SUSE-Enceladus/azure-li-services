@@ -1,0 +1,22 @@
+# While the package provides services all services are one-shot.
+# Additionally upon initial run, i.e. on first boot the package
+# itself gets removed via the azure-li-cleanup implementation.
+# This means there is no package update path as the package will
+# be gone after initial boot. Therefore there is no need for
+# use of the "standard" systemd service handling macros.
+addFilter("systemd-service-without-service_add_pre .*")
+addFilter("systemd-service-without-service_add_post .*")
+addFilter("systemd-service-without-service_del_postun .*")
+addFilter("systemd-service-without-service_del_preun .*")
+
+# Large Instance services runs once and never manually
+addFilter("suse-missing-rclink .*")
+
+# Large Instance systemd service binaries are no user tools
+# and fully controlled by systemd. There is no need to provide
+# a manual page for a one-shot binary that gets removed
+# from the system after it has done its job
+addFilter("no-manual-page-for-binary .*")
+
+# Don't complain about how python packages its modules
+addFilter("files-duplicate /usr/lib/python.*")

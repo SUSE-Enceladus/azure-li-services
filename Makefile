@@ -12,14 +12,16 @@ build: check test
 	# restore original setup.py backed up from sed
 	mv setup.pye setup.py
 	# provide rpm source tarball
-	mv dist/azure_li_services-${version}.tar.gz dist/azure_li_services.tar.gz
+	mv dist/azure_li_services-${version}.tar.gz dist/azure-li-services.tar.gz
 	# provide rpm changelog from git changelog
 	git log | helper/changelog_generator |\
-		helper/changelog_descending > dist/azure_li_services.changes
+		helper/changelog_descending > dist/azure-li-services.changes
 	# update package version in spec file
-	cat package/azure_li_services_spec_template \
+	cat package/azure-li-services-spec-template \
 		| sed -e s'@%%VERSION@${version}@' \
-		> dist/azure_li_services.spec
+		> dist/azure-li-services.spec
+	# provide rpm rpmlintrc
+	cp package/azure-li-services-rpmlintrc dist
 
 .PHONY: test
 test:
