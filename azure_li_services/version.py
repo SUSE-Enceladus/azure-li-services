@@ -18,4 +18,4 @@
 """
 Global version information used in azure-li-services and the package
 """
-__VERSION__ = '1.1.16'
+__VERSION__ = '1.1.17'
