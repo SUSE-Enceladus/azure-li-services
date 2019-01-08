@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with azure-li-services.  If not, see <http://www.gnu.org/licenses/>
 #
+import os
 import ipaddress
 from textwrap import dedent
 
@@ -61,6 +62,10 @@ class AzureHostedNetworkSetup(object):
                     netmask=self.network['subnet_mask']
                 )
             )
+            if 'mtu' in self.network:
+                ifcfg.write(
+                    'MTU={0}{1}'.format(self.network['mtu'], os.linesep)
+                )
 
     def create_default_route_config(self):
         """
@@ -118,6 +123,10 @@ class AzureHostedNetworkSetup(object):
                     netmask=self.network['subnet_mask']
                 )
             )
+            if 'vlan_mtu' in self.network:
+                ifcfg_vlan.write(
+                    'MTU={0}{1}'.format(self.network['vlan_mtu'], os.linesep)
+                )
 
     def create_bridge_config(self):
         """

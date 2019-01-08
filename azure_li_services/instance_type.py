@@ -20,9 +20,10 @@ from collections import namedtuple
 
 class InstanceType(object):
     Constants = namedtuple(
-        'Constants', ['li', 'vli']
+        'Constants', ['li', 'vli', 'vli_gen3']
     )
-    constants = Constants('li', 'vli')
+    constants = Constants('li', 'vli', 'vli_gen3')
 
     li = constants.li
     vli = constants.vli
+    vli_gen3 = constants.vli_gen3

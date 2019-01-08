@@ -16,9 +16,11 @@ networking:
   -
     interface: eth0
     vlan: 10
+    vlan_mtu: 1500
     ip: 10.250.10.51
     gateway: 10.250.10.1
     subnet_mask: 255.255.255.0
+    mtu: 9000
 
 storage:
   -

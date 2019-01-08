@@ -25,17 +25,23 @@ class TestRuntimeConfig(object):
 
     def test_get_instance_type(self):
         assert self.runtime_config.get_instance_type() == InstanceType.li
-        self.runtime_config.config_data['instance_type'] = 'VeryLargeInstance'
+        self.runtime_config.config_data['instance_type'] = \
+            'VeryLargeInstance'
         assert self.runtime_config.get_instance_type() == InstanceType.vli
+        self.runtime_config.config_data['instance_type'] = \
+            'VeryLargeInstanceGen3'
+        assert self.runtime_config.get_instance_type() == InstanceType.vli_gen3
 
     def test_get_network_config(self):
         assert self.runtime_config.get_network_config() == [
             {
                 'interface': 'eth0',
                 'vlan': 10,
+                'vlan_mtu': 1500,
                 'subnet_mask': '255.255.255.0',
                 'ip': '10.250.10.51',
-                'gateway': '10.250.10.1'
+                'gateway': '10.250.10.1',
+                'mtu': 9000
             }
         ]
 
