@@ -1,0 +1,45 @@
+version: "20180614"
+instance_type: VeryLargeInstanceGen3
+sku: "SR92"
+hostname: "azure"
+
+machine_constraints:
+  min_cores: 32
+  min_memory: "20tb"
+
+networking:
+  -
+    interface: eth0
+    ip: 10.250.10.51
+    subnet_mask: 255.255.255.0
+
+storage:
+  -
+    file_system: nfs
+    min_size:  112G
+    device: "10.250.21.12:/nfs/share"
+    mount: "/mnt/foo"
+    mount_options:
+      - a
+      - b
+      - c
+
+credentials:
+   -
+     username: hanauser
+     shadow_hash: "sha-512-cipher"
+     ssh-key: "ssh-rsa foo"
+   -
+     username: rpc
+     id: 495
+     group:
+       name: nogroup
+     home_dir: /var/lib/empty
+
+packages:
+  repository_name: azure_packages
+  directory:
+    - "/directory-with-rpm-files"
+    - "/another-directory-with-rpm-files"
+
+call: "path/to/executable/file"

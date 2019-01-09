@@ -7,7 +7,7 @@ schema = {
         'required': True,
         'type': 'string',
         'nullable': False,
-        'regex': '^(LargeInstance|VeryLargeInstance)$'
+        'regex': '^(LargeInstance|VeryLargeInstance|VeryLargeInstanceGen3)$'
     },
     'sku': {
         'required': True,
@@ -63,6 +63,11 @@ schema = {
                     'required': False,
                     'type': 'number'
                 },
+                'vlan_mtu': {
+                    'required': False,
+                    'type': 'number',
+                    'nullable': False
+                },
                 'ip': {
                     'required': True,
                     'type': 'string'
@@ -74,6 +79,11 @@ schema = {
                 'subnet_mask': {
                     'required': True,
                     'type': 'string'
+                },
+                'mtu': {
+                    'required': False,
+                    'type': 'number',
+                    'nullable': False
                 }
             }
         }

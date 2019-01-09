@@ -39,7 +39,7 @@ class RuntimeConfig(object):
 
     .. code:: yaml
         version: some_version_identifier
-        instance_type: LargeInstance|VeryLargeInstance
+        instance_type: LargeInstance|VeryLargeInstance|VeryLargeInstanceGen3
         sku: identifier_string
         hostname: name_string
 
@@ -51,9 +51,11 @@ class RuntimeConfig(object):
           -
             interface: eth0
             vlan: vlan_number
+            vlan_mtu: 1500
             ip: 10.250.10.51
             gateway: 10.250.10.1
             subnet_mask: 255.255.255.0
+            mtu: 9000
 
         storage:
           -
@@ -113,8 +115,11 @@ class RuntimeConfig(object):
 
     def get_instance_type(self):
         if self.config_data:
-            if self.config_data.get('instance_type') == 'VeryLargeInstance':
+            instance_type = self.config_data.get('instance_type')
+            if instance_type == 'VeryLargeInstance':
                 return InstanceType.vli
+            elif instance_type == 'VeryLargeInstanceGen3':
+                return InstanceType.vli_gen3
             else:
                 return InstanceType.li
 

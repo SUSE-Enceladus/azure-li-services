@@ -42,7 +42,7 @@ def main():
 
     if network_config:
         network_errors = []
-        if instance_type == InstanceType.li:
+        if instance_type is not InstanceType.vli_gen3:
             for network in network_config:
                 try:
                     li_network = AzureHostedNetworkSetup(network)

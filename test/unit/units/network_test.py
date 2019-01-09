@@ -13,7 +13,7 @@ class TestNetwork(object):
     @patch('azure_li_services.units.network.AzureHostedNetworkSetup')
     @patch('azure_li_services.units.network.Defaults.get_config_file')
     @patch('azure_li_services.units.network.StatusReport')
-    def test_main_li_network(
+    def test_main_li_vli_network(
         self, mock_StatusReport, mock_get_config_file,
         mock_AzureHostedNetworkSetup
     ):
@@ -34,7 +34,9 @@ class TestNetwork(object):
 
     @patch('azure_li_services.units.network.Defaults.get_config_file')
     @patch('azure_li_services.units.network.StatusReport')
-    def test_main_vli_network(self, mock_StatusReport, mock_get_config_file):
-        mock_get_config_file.return_value = '../data/config_vli.yaml'
+    def test_main_vli_gen3_network(
+        self, mock_StatusReport, mock_get_config_file
+    ):
+        mock_get_config_file.return_value = '../data/config_vli_gen3.yaml'
         with raises(AzureHostedNetworkConfigDataException):
             main()

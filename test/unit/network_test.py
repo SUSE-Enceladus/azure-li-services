@@ -1,7 +1,7 @@
 import io
 from pytest import raises
 from unittest.mock import (
-    MagicMock, patch
+    MagicMock, patch, call
 )
 from azure_li_services.runtime_config import RuntimeConfig
 from azure_li_services.network import AzureHostedNetworkSetup
@@ -25,12 +25,15 @@ class TestAzureHostedNetworkSetup(object):
             mock_open.assert_called_once_with(
                 '/etc/sysconfig/network/ifcfg-eth0', 'w'
             )
-            file_handle.write.assert_called_once_with(
-                'BOOTPROTO=static\n'
-                'BROADCAST=10.250.10.255\n'
-                'NETMASK=255.255.255.0\n'
-                'STARTMODE=auto\n'
-            )
+            assert file_handle.write.call_args_list == [
+                call(
+                    'BOOTPROTO=static\n'
+                    'BROADCAST=10.250.10.255\n'
+                    'NETMASK=255.255.255.0\n'
+                    'STARTMODE=auto\n'
+                ),
+                call('MTU=9000\n')
+            ]
 
     def test_create_default_route_config(self):
         with patch('builtins.open', create=True) as mock_open:
@@ -52,17 +55,20 @@ class TestAzureHostedNetworkSetup(object):
             mock_open.assert_called_once_with(
                 '/etc/sysconfig/network/ifcfg-eth0.10', 'w'
             )
-            file_handle.write.assert_called_once_with(
-                'BOOTPROTO=static\n'
-                'DEVICE=eth0.10\n'
-                'ETHERDEVICE=eth0\n'
-                'IPADDR=10.250.10.51\n'
-                'NETMASK=255.255.255.0\n'
-                'ONBOOT=yes\n'
-                'STARTMODE=auto\n'
-                'VLAN=yes\n'
-                'VLAN_ID=10\n'
-            )
+            assert file_handle.write.call_args_list == [
+                call(
+                    'BOOTPROTO=static\n'
+                    'DEVICE=eth0.10\n'
+                    'ETHERDEVICE=eth0\n'
+                    'IPADDR=10.250.10.51\n'
+                    'NETMASK=255.255.255.0\n'
+                    'ONBOOT=yes\n'
+                    'STARTMODE=auto\n'
+                    'VLAN=yes\n'
+                    'VLAN_ID=10\n'
+                ),
+                call('MTU=1500\n')
+            ]
 
     def test_create_vlan_config_skipped_on_missing_id(self):
         del self.network.network['vlan']
