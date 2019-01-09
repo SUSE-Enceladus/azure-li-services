@@ -36,7 +36,11 @@ Requires:         python3-Cerberus
 Requires:         shadow
 Requires(preun):  systemd
 Requires(postun): systemd
+%if 0%{?suse_version} > 1320
+Requires:         createrepo-implementation
+%else
 Requires:         createrepo
+%endif
 Requires:         zypper
 Requires:         rsync
 BuildArch:        noarch
