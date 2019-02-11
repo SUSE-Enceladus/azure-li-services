@@ -48,6 +48,7 @@ def main():
                     li_network = AzureHostedNetworkSetup(network)
                     li_network.create_interface_config()
                     li_network.create_vlan_config()
+                    li_network.create_bond_config()
                     li_network.create_default_route_config()
                 except Exception as issue:
                     network_errors.append(issue)

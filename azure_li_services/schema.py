@@ -57,7 +57,8 @@ schema = {
             'schema': {
                 'interface': {
                     'required': True,
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': False
                 },
                 'vlan': {
                     'required': False,
@@ -69,20 +70,33 @@ schema = {
                     'nullable': False
                 },
                 'ip': {
-                    'required': True,
-                    'type': 'string'
+                    'required': False,
+                    'type': 'string',
+                    'nullable': False
                 },
                 'gateway': {
                     'required': False,
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': False
                 },
                 'subnet_mask': {
-                    'required': True,
-                    'type': 'string'
+                    'required': False,
+                    'type': 'string',
+                    'nullable': False
                 },
                 'mtu': {
                     'required': False,
                     'type': 'number',
+                    'nullable': False
+                },
+                'bonding_slaves': {
+                    'required': False,
+                    'type': 'list',
+                    'nullable': False
+                },
+                'bonding_options': {
+                    'required': False,
+                    'type': 'list',
                     'nullable': False
                 }
             }

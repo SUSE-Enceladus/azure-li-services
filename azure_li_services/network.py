@@ -19,9 +19,6 @@ import os
 import ipaddress
 from textwrap import dedent
 
-# project
-from azure_li_services.exceptions import AzureHostedNetworkConfigDataException
-
 
 class AzureHostedNetworkSetup(object):
     """
@@ -30,38 +27,42 @@ class AzureHostedNetworkSetup(object):
     Implements methods to create Network interface configuration files
     """
     def __init__(self, network):
-        if 'ip' not in network or 'interface' not in network or \
-           'subnet_mask' not in network:
-            raise AzureHostedNetworkConfigDataException(
-                'At least one of {0} missing in {1}'.format(
-                    ('ip', 'interface', 'subnet_mask'), network
-                )
-            )
         self.network = network
 
     def create_interface_config(self):
         """
         Setup interface configuration
         """
+        if 'vlan' in self.network or 'bonding_slaves' in self.network:
+            return
         interface_file = '/etc/sysconfig/network/ifcfg-{0}'.format(
             self.network['interface']
         )
         setup = dedent('''
             BOOTPROTO=static
-            BROADCAST={broadcast}
-            NETMASK={netmask}
             STARTMODE=auto
         ''').lstrip()
-        net4 = ipaddress.IPv4Network(
-            '/'.join([self.network['ip'], self.network['subnet_mask']]), False
-        )
         with open(interface_file, 'w') as ifcfg:
-            ifcfg.write(
-                setup.format(
-                    broadcast=net4.broadcast_address,
-                    netmask=self.network['subnet_mask']
+            ifcfg.write(setup)
+            if 'ip' in self.network and 'subnet_mask' in self.network:
+                net4 = ipaddress.IPv4Network(
+                    '/'.join(
+                        [self.network['ip'], self.network['subnet_mask']]
+                    ), False
                 )
-            )
+                ifcfg.write(
+                    'BROADCAST={0}{1}'.format(
+                        net4.broadcast_address, os.linesep
+                    )
+                )
+                ifcfg.write(
+                    'NETMASK={0}{1}'.format(
+                        self.network['subnet_mask'], os.linesep
+                    )
+                )
+                ifcfg.write(
+                    'IPADDR={0}{1}'.format(self.network['ip'], os.linesep)
+                )
             if 'mtu' in self.network:
                 ifcfg.write(
                     'MTU={0}{1}'.format(self.network['mtu'], os.linesep)
@@ -127,6 +128,55 @@ class AzureHostedNetworkSetup(object):
                 ifcfg_vlan.write(
                     'MTU={0}{1}'.format(self.network['vlan_mtu'], os.linesep)
                 )
+
+    def create_bond_config(self):
+        """
+        Setup bond configuraton on top of interface config
+        """
+        if 'bonding_slaves' not in self.network:
+            return
+        bond_file = '/etc/sysconfig/network/ifcfg-{0}'.format(
+            self.network['interface']
+        )
+        setup = dedent('''
+            BOOTPROTO=none
+            DEVICE={interface}
+            ONBOOT=yes
+            STARTMODE=auto
+            BONDING_MASTER=yes
+        ''').lstrip()
+        with open(bond_file, 'w') as ifcfg_bond:
+            ifcfg_bond.write(
+                setup.format(interface=self.network['interface'])
+            )
+            if 'vlan' not in self.network:
+                # bond takes IP setup if no vlan is requested
+                ifcfg_bond.write(
+                    'IPADDR={0}{1}'.format(self.network['ip'], os.linesep)
+                )
+                ifcfg_bond.write(
+                    'NETMASK={0}{1}'.format(
+                        self.network['subnet_mask'], os.linesep
+                    )
+                )
+            if 'mtu' in self.network:
+                ifcfg_bond.write(
+                    'MTU={0}{1}'.format(self.network['mtu'], os.linesep)
+                )
+            if 'bonding_options' in self.network:
+                ifcfg_bond.write(
+                    'BONDING_MODULE_OPTS="{0}"{1}'.format(
+                        ' '.join(self.network['bonding_options']), os.linesep
+                    )
+                )
+            slave_index = 0
+            for bonding_slave in self.network['bonding_slaves']:
+                ifcfg_bond.write(
+                    'BONDING_SLAVE{0}={1}{2}'.format(
+                        slave_index, bonding_slave, os.linesep
+                    )
+                )
+                slave_index += 1
 
     def create_bridge_config(self):
         """

@@ -27,6 +27,7 @@ class TestNetwork(object):
         status.set_success.assert_called_once_with()
         li_network.create_interface_config.assert_called_once_with()
         li_network.create_vlan_config.assert_called_once_with()
+        li_network.create_bond_config.assert_called_once_with()
         li_network.create_default_route_config.assert_called_once_with()
         mock_AzureHostedNetworkSetup.side_effect = Exception
         with raises(AzureHostedException):
