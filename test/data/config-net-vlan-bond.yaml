@@ -1,0 +1,30 @@
+version: "20180614"
+instance_type: LargeInstance
+sku: "SR92"
+
+networking:
+  -
+    interface: eth0
+
+  -
+    interface: eth1
+
+  -
+    interface: bond0
+    vlan: 10
+    vlan_mtu: 1500
+    ip: 10.250.10.51
+    gateway: 10.250.10.1
+    subnet_mask: 255.255.255.0
+    bonding_slaves:
+      - eth0
+      - eth1
+    bonding_options:
+      - opt=value
+    mtu: 9000
+
+credentials:
+  -
+    username: root
+    shadow_hash: "sha-512-cipher"
+    ssh-key: "ssh-rsa foo"
