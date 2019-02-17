@@ -77,6 +77,20 @@ class Users(object):
             ['usermod'] + options + [user_name]
         )
 
+    def setup_change_password_on_logon(self, user_name):
+        """
+        Setup when a user must change his/her password.
+
+        The method sets the number of days when the password was
+        last changed to zero. This causes a must change password
+        request on next login
+
+        :param str user_name: user name
+        """
+        Command.run(
+            ['chage', '-d', '0', user_name]
+        )
+
     def setup_home_for_user(self, user_name, group_name, home_path):
         """
         Setup user home directory

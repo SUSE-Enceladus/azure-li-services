@@ -39,6 +39,7 @@ credentials:
     shadow_hash: "sha-512-cipher"
     ssh-key: "ssh-rsa foo"
     ssh-private-key: "path/to/private/key/id_dsa"
+    require_password_change: true
   -
     username: rpc
     id: 495

@@ -54,3 +54,10 @@ class TestUsers(object):
         mock_command.assert_called_once_with(
             ['chown', '-R', 'user:group', '/home/path']
         )
+
+    @patch('azure_li_services.users.Command.run')
+    def test_setup_change_password_on_logon(self, mock_command):
+        self.users.setup_change_password_on_logon('user')
+        mock_command.assert_called_once_with(
+            ['chage', '-d', '0', 'user']
+        )
