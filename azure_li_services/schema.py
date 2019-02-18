@@ -184,12 +184,50 @@ schema = {
         'required': False,
         'type': 'dict',
         'schema': {
-            'repository_name': {
-                'required': True,
-                'type': 'string'
+            'repository': {
+                'type': 'list',
+                'required': False,
+                'nullable': False,
+                'schema': {
+                    'type': 'dict',
+                    'schema': {
+                        'name': {
+                            'required': True,
+                            'type': 'string',
+                            'nullable': False
+                        },
+                        'source': {
+                            'required': True,
+                            'type': 'string',
+                            'nullable': False
+                        },
+                        'source_prefix': {
+                            'required': False,
+                            'type': 'string',
+                            'nullable': False
+                        }
+                    }
+                },
             },
-            'directory': {
-                'required': True,
+            'raw': {
+                'type': 'dict',
+                'required': False,
+                'nullable': False,
+                'schema': {
+                    'name': {
+                        'type': 'string',
+                        'required': True,
+                        'nullable': False
+                    },
+                    'directory': {
+                        'type': 'list',
+                        'required': True,
+                        'nullable': False
+                    }
+                }
+            },
+            'install': {
+                'required': False,
                 'type': 'list',
                 'nullable': False
             }

@@ -52,9 +52,24 @@ credentials:
     ssh-key: "ssh-rsa foo"
 
 packages:
-  repository_name: azure_packages
-  directory:
-    - "directory-with-rpm-files"
-    - "another-directory-with-rpm-files"
+  repository:
+    -
+      name: fsf
+      source: /path/to/file.iso
+      source_prefix: iso:/?iso=
+
+    -
+      name: some_repo
+      source: /path/to/repo
+
+  raw:
+    name: azure_packages
+    directory:
+      - "directory-with-rpm-files"
+      - "another-directory-with-rpm-files"
+
+  install:
+    - package_a
+    - package_b
 
 call: "path/to/executable/file"

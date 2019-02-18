@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with azure-li-services.  If not, see <http://www.gnu.org/licenses/>
 #
-import glob
+import os
 
 # project
 from azure_li_services.runtime_config import RuntimeConfig
@@ -23,8 +23,6 @@ from azure_li_services.defaults import Defaults
 from azure_li_services.command import Command
 from azure_li_services.path import Path
 from azure_li_services.status_report import StatusReport
-
-from azure_li_services.exceptions import AzureHostedInstallException
 
 
 def main():
@@ -40,63 +38,97 @@ def main():
     packages_config = config.get_packages_config()
 
     if packages_config:
-        if 'directory' not in packages_config:
-            raise AzureHostedInstallException(
-                'directory list missing in config {0}'.format(packages_config)
-            )
-
         install_source = Defaults.mount_config_source()
 
         try:
-            repository_name = packages_config.get('repository_name') or \
-                'azure_{0}'.format(config.get_instance_type())
-            repository_location = '/var/lib/localrepos/{0}'.format(
-                repository_name
+            local_repos = {}
+            local_repos.update(
+                import_raw_sources(packages_config, install_source)
             )
-            Path.create(repository_location)
-            bash_command = ' '.join(
-                ['rsync', '-zav'] + list(
-                    map(
-                        lambda dir_name: '{0}/{1}/*'.format(
-                            install_source.location, dir_name
-                        ), packages_config['directory']
-                    )
-                ) + [
-                    repository_location
-                ]
+            local_repos.update(
+                import_repository_sources(packages_config, install_source)
             )
-            Command.run(
-                ['bash', '-c', bash_command]
-            )
-            Command.run(
-                ['createrepo', repository_location]
-            )
-            Command.run(
-                [
-                    'zypper', 'removerepo', repository_name
-                ], raise_on_error=False
-            )
-            Command.run(
-                [
-                    'zypper', 'addrepo', '--no-gpgcheck',
-                    repository_location, repository_name
-                ]
-            )
-            install_items = []
-            for package in glob.iglob('{0}/*.rpm'.format(repository_location)):
-                install_items.append(
-                    Command.run(
-                        ['rpm', '-qp', '--qf', '%{NAME}', package]
-                    ).output
+            for repository_name, repository_location in local_repos.items():
+                Command.run(
+                    [
+                        'zypper', 'removerepo', repository_name
+                    ], raise_on_error=False
                 )
-            if install_items:
+                Command.run(
+                    [
+                        'zypper', 'addrepo', '--no-gpgcheck',
+                        repository_location, repository_name
+                    ]
+                )
+            if 'install' in packages_config:
                 Command.run(
                     [
                         'zypper', '--non-interactive',
-                        'install', '--auto-agree-with-licenses'
-                    ] + install_items
+                        'install', '--auto-agree-with-licenses',
+                        ' '.join(packages_config['install'])
+                    ]
                 )
         finally:
             Defaults.umount_config_source(install_source)
 
     status.set_success()
+
+
+def import_raw_sources(packages_config, source_provider):
+    raw_sources = packages_config.get('raw')
+    import_data = {}
+    if raw_sources:
+        repository_name = raw_sources['name']
+        repository_location = '/var/lib/localrepos/{0}'.format(
+            repository_name
+        )
+        Path.create(repository_location)
+        bash_command = ' '.join(
+            ['rsync', '-zav'] + list(
+                map(
+                    lambda dir_name: '{0}/{1}/*'.format(
+                        source_provider.location, dir_name
+                    ), raw_sources['directory']
+                )
+            ) + [
+                repository_location
+            ]
+        )
+        Command.run(
+            ['bash', '-c', bash_command]
+        )
+        Command.run(
+            ['createrepo', repository_location]
+        )
+        import_data[repository_name] = repository_location
+    return import_data
+
+
+def import_repository_sources(packages_config, source_provider):
+    repo_sources = packages_config.get('repository') or []
+    import_data = {}
+    for repository in repo_sources:
+        repository_name = repository['name']
+        repository_location = '/var/lib/localrepos/{0}'.format(
+            repository_name
+        )
+        Path.create(repository_location)
+        sync_source = repository['source']
+        if os.path.isdir(sync_source):
+            # normalize source path for rsync, make sure a '/'
+            # is appended at the end of the directory specification
+            # This impacts the behavior of rsync to sync the contents
+            # of the directory into the new location but not the
+            # directory itself.
+            sync_source = os.path.normpath(sync_source)
+            sync_source += os.sep
+        Command.run(
+            ['rsync', '-zav', sync_source, repository_location]
+        )
+        if repository.get('source_prefix'):
+            import_data[repository_name] = ''.join(
+                [repository['source_prefix'], repository_location]
+            )
+        else:
+            import_data[repository_name] = repository_location
+    return import_data
