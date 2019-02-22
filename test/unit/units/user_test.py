@@ -81,6 +81,9 @@ class TestUser(object):
                     'root', ['-p', 'sha-512-cipher', '-s', '/bin/bash']
                 )
             ]
+            system_users.setup_change_password_on_logon.assert_called_once_with(
+                'hanauser'
+            )
             assert system_users.group_add.call_args_list == [
                 call('admin', []),
                 call('nogroup', ['-g', '4711'])
@@ -145,6 +148,14 @@ class TestUser(object):
                 group_exists = [True, False, False]
                 user_exists = [True, True, False]
                 mock_mount_config_source.side_effect = Exception
+                main()
+
+            system_users.setup_change_password_on_logon.reset_mock()
+            with raises(AzureHostedException):
+                group_exists = [True, False, False]
+                user_exists = [True, True, False]
+                system_users.setup_change_password_on_logon.side_effect = \
+                    Exception
                 main()
 
             mock_mount_config_source.reset_mock()

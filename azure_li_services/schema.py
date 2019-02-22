@@ -142,6 +142,10 @@ schema = {
                     'required': True,
                     'type': 'string'
                 },
+                'require_password_change': {
+                    'required': False,
+                    'type': 'boolean'
+                },
                 'shadow_hash': {
                     'required': False,
                     'type': 'string'

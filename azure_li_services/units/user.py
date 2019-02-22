@@ -67,6 +67,10 @@ def main():
                 setup_sudo_authorization(user)
             except Exception as issue:
                 user_setup_errors.append(issue)
+            try:
+                setup_user_attributes(user)
+            except Exception as issue:
+                user_setup_errors.append(issue)
 
     setup_sudo_config()
 
@@ -190,3 +194,11 @@ def setup_sudo_config():
         with open(sudo_config, 'a') as sudo:
             sudo.write(os.linesep)
             sudo.write('%admin ALL=(ALL) NOPASSWD: ALL')
+
+
+def setup_user_attributes(user):
+    if user.get('require_password_change'):
+        system_users = Users()
+        system_users.setup_change_password_on_logon(
+            user['username']
+        )
