@@ -205,9 +205,14 @@ schema = {
                             'required': False,
                             'type': 'string',
                             'nullable': False
+                        },
+                        'install': {
+                            'required': False,
+                            'type': 'list',
+                            'nullable': False
                         }
                     }
-                },
+                }
             },
             'raw': {
                 'type': 'dict',
@@ -225,11 +230,6 @@ schema = {
                         'nullable': False
                     }
                 }
-            },
-            'install': {
-                'required': False,
-                'type': 'list',
-                'nullable': False
             }
         }
     },

@@ -79,11 +79,13 @@ class TestRuntimeConfig(object):
                 {
                     'name': 'fsf',
                     'source': '/path/to/file.iso',
-                    'source_prefix': 'iso:/?iso='
+                    'source_prefix': 'iso:/?iso=',
+                    'install': ['package_a']
                 },
                 {
                     'name': 'some_repo',
-                    'source': '/path/to/repo'
+                    'source': '/path/to/repo',
+                    'install': ['package_b']
                 }
             ],
             'raw': {
@@ -92,8 +94,7 @@ class TestRuntimeConfig(object):
                     'directory-with-rpm-files',
                     'another-directory-with-rpm-files'
                 ]
-            },
-            'install': ['package_a', 'package_b']
+            }
         }
 
     def test_get_machine_constraints(self):

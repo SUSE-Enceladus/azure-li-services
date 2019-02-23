@@ -16,6 +16,7 @@
 # along with azure-li-services.  If not, see <http://www.gnu.org/licenses/>
 #
 import os
+import glob
 
 # project
 from azure_li_services.runtime_config import RuntimeConfig
@@ -48,7 +49,8 @@ def main():
             local_repos.update(
                 import_repository_sources(packages_config, install_source)
             )
-            for repository_name, repository_location in local_repos.items():
+            for repository_name, repository_metadata in local_repos.items():
+                repository_location = repository_metadata[0]
                 Command.run(
                     [
                         'zypper', 'removerepo', repository_name
@@ -60,14 +62,19 @@ def main():
                         repository_location, repository_name
                     ]
                 )
-            if 'install' in packages_config:
+
+            packages_to_install = []
+            for repository_metadata in local_repos.values():
+                packages_to_install.append(repository_metadata[1])
+            if packages_to_install:
                 Command.run(
                     [
                         'zypper', '--non-interactive',
                         'install', '--auto-agree-with-licenses',
-                        ' '.join(packages_config['install'])
+                        ' '.join(filter(None, packages_to_install))
                     ]
                 )
+
         finally:
             Defaults.umount_config_source(install_source)
 
@@ -100,7 +107,18 @@ def import_raw_sources(packages_config, source_provider):
         Command.run(
             ['createrepo', repository_location]
         )
-        import_data[repository_name] = repository_location
+        import_data[repository_name] = [repository_location]
+
+        install_items = []
+        for package in glob.iglob('{0}/*.rpm'.format(repository_location)):
+            install_items.append(
+                Command.run(
+                    ['rpm', '-qp', '--qf', '%{NAME}', package]
+                ).output
+            )
+        import_data[repository_name].append(
+            ' '.join(install_items)
+        )
     return import_data
 
 
@@ -126,9 +144,14 @@ def import_repository_sources(packages_config, source_provider):
             ['rsync', '-zav', sync_source, repository_location]
         )
         if repository.get('source_prefix'):
-            import_data[repository_name] = ''.join(
-                [repository['source_prefix'], repository_location]
-            )
+            import_data[repository_name] = [
+                ''.join([repository['source_prefix'], repository_location])
+            ]
         else:
-            import_data[repository_name] = repository_location
+            import_data[repository_name] = [repository_location]
+
+        install_items = repository.get('install') or []
+        import_data[repository_name].append(
+            ' '.join(install_items)
+        )
     return import_data

@@ -10,10 +10,12 @@ class TestInstall(object):
     @patch('azure_li_services.units.install.Path.create')
     @patch('azure_li_services.units.install.StatusReport')
     @patch('azure_li_services.defaults.Defaults.mount_config_source')
+    @patch('azure_li_services.units.install.glob.iglob')
     @patch('os.path.isdir')
     def test_main(
-        self, mock_os_path_isdir, mock_mount_config_source, mock_StatusReport,
-        mock_Path_create, mock_get_config_file, mock_Command_run
+        self, mock_os_path_isdir, mock_iglob, mock_mount_config_source,
+        mock_StatusReport, mock_Path_create, mock_get_config_file,
+        mock_Command_run
     ):
         status = Mock()
         mock_StatusReport.return_value = status
@@ -21,6 +23,10 @@ class TestInstall(object):
         command_result.output = 'foo'
         mock_Command_run.return_value = command_result
         mock_get_config_file.return_value = '../data/config.yaml'
+
+        mock_iglob.return_value = [
+            '/var/lib/localrepos/azure_packages/foo.rpm'
+        ]
 
         def os_path_isdir(path):
             if path == '/path/to/repo':
@@ -39,7 +45,6 @@ class TestInstall(object):
             call('/var/lib/localrepos/fsf'),
             call('/var/lib/localrepos/some_repo')
         ]
-        print(mock_Command_run.call_args_list)
         assert mock_Command_run.call_args_list == [
             call(
                 [
@@ -50,7 +55,17 @@ class TestInstall(object):
                     )
                 ]
             ),
-            call(['createrepo', '/var/lib/localrepos/azure_packages']),
+            call(
+                [
+                    'createrepo', '/var/lib/localrepos/azure_packages'
+                ]
+            ),
+            call(
+                [
+                    'rpm', '-qp', '--qf', '%{NAME}',
+                    '/var/lib/localrepos/azure_packages/foo.rpm'
+                ]
+            ),
             call(
                 [
                     'rsync', '-zav', '/path/to/file.iso',
@@ -99,7 +114,7 @@ class TestInstall(object):
             call(
                 [
                     'zypper', '--non-interactive', 'install',
-                    '--auto-agree-with-licenses', 'package_a package_b'
+                    '--auto-agree-with-licenses', 'foo package_a package_b'
                 ]
             ),
             call(
