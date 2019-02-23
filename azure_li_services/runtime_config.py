@@ -81,7 +81,10 @@ class RuntimeConfig(object):
             home_dir: /var/lib/empty
 
         packages:
-          directory: path_to_a_package_repository
+          raw:
+            name: repo_name
+            directory:
+              - directory-with-rpm-files
 
         call: path/to/executable/file
 

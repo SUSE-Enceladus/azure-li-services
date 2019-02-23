@@ -76,11 +76,26 @@ class TestRuntimeConfig(object):
 
     def test_get_packages_config(self):
         assert self.runtime_config.get_packages_config() == {
-            'directory': [
-                'directory-with-rpm-files',
-                'another-directory-with-rpm-files'
+            'repository': [
+                {
+                    'name': 'fsf',
+                    'source': '/path/to/file.iso',
+                    'source_prefix': 'iso:/?iso=',
+                    'install': ['package_a']
+                },
+                {
+                    'name': 'some_repo',
+                    'source': '/path/to/repo',
+                    'install': ['package_b']
+                }
             ],
-            'repository_name': 'azure_packages'
+            'raw': {
+                'name': 'azure_packages',
+                'directory': [
+                    'directory-with-rpm-files',
+                    'another-directory-with-rpm-files'
+                ]
+            }
         }
 
     def test_get_machine_constraints(self):
