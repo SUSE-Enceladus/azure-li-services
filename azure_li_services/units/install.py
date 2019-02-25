@@ -65,7 +65,7 @@ def main():
 
             packages_to_install = []
             for repository_metadata in local_repos.values():
-                packages_to_install.append(repository_metadata[1])
+                packages_to_install += repository_metadata[1]
             if packages_to_install:
                 Command.run(
                     [
@@ -116,7 +116,7 @@ def import_raw_sources(packages_config, source_provider):
                 ).output
             )
         import_data[repository_name].append(
-            ' '.join(install_items)
+            list(install_items)
         )
     return import_data
 
@@ -151,6 +151,6 @@ def import_repository_sources(packages_config, source_provider):
 
         install_items = repository.get('install') or []
         import_data[repository_name].append(
-            ' '.join(install_items)
+            list(install_items)
         )
     return import_data
