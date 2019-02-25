@@ -68,13 +68,10 @@ class TestAzureHostedNetworkSetup(object):
             assert file_handle.write.call_args_list == [
                 call(
                     'BOOTPROTO=static\n'
-                    'DEVICE=eth0.10\n'
                     'ETHERDEVICE=eth0\n'
                     'IPADDR=10.250.10.51\n'
                     'NETMASK=255.255.255.0\n'
-                    'ONBOOT=yes\n'
                     'STARTMODE=auto\n'
-                    'VLAN=yes\n'
                     'VLAN_ID=10\n'
                 ),
                 call('MTU=1500\n')
@@ -107,8 +104,6 @@ class TestAzureHostedNetworkSetup(object):
                 # bond0
                 call(
                     'BOOTPROTO=none\n'
-                    'DEVICE=bond0\n'
-                    'ONBOOT=yes\n'
                     'STARTMODE=auto\n'
                     'BONDING_MASTER=yes\n'
                 ),
@@ -141,21 +136,16 @@ class TestAzureHostedNetworkSetup(object):
                 # vlan interface bond0.10
                 call(
                     'BOOTPROTO=static\n'
-                    'DEVICE=bond0.10\n'
                     'ETHERDEVICE=bond0\n'
                     'IPADDR=10.250.10.51\n'
                     'NETMASK=255.255.255.0\n'
-                    'ONBOOT=yes\n'
                     'STARTMODE=auto\n'
-                    'VLAN=yes\n'
                     'VLAN_ID=10\n'
                 ),
                 call('MTU=1500\n'),
                 # bond0
                 call(
                     'BOOTPROTO=none\n'
-                    'DEVICE=bond0\n'
-                    'ONBOOT=yes\n'
                     'STARTMODE=auto\n'
                     'BONDING_MASTER=yes\n'
                 ),

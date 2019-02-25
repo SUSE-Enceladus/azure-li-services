@@ -106,13 +106,10 @@ class AzureHostedNetworkSetup(object):
         )
         setup = dedent('''
             BOOTPROTO=static
-            DEVICE={interface}.{vlan}
             ETHERDEVICE={interface}
             IPADDR={ip}
             NETMASK={netmask}
-            ONBOOT=yes
             STARTMODE=auto
-            VLAN=yes
             VLAN_ID={vlan}
         ''').lstrip()
         with open(vlan_file, 'w') as ifcfg_vlan:
@@ -140,8 +137,6 @@ class AzureHostedNetworkSetup(object):
         )
         setup = dedent('''
             BOOTPROTO=none
-            DEVICE={interface}
-            ONBOOT=yes
             STARTMODE=auto
             BONDING_MASTER=yes
         ''').lstrip()
