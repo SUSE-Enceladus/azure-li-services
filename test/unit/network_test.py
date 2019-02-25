@@ -63,7 +63,7 @@ class TestAzureHostedNetworkSetup(object):
             network.create_vlan_config()
             file_handle = mock_open.return_value.__enter__.return_value
             mock_open.assert_called_once_with(
-                '/etc/sysconfig/network/ifcfg-eth0.10', 'w'
+                '/etc/sysconfig/network/ifcfg-vlan10', 'w'
             )
             assert file_handle.write.call_args_list == [
                 call(
@@ -130,9 +130,15 @@ class TestAzureHostedNetworkSetup(object):
                 network.create_bond_config()
             assert file_handle.write.call_args_list == [
                 # eth0
-                call('BOOTPROTO=static\nSTARTMODE=auto\n'),
+                call(
+                    'BOOTPROTO=static\n'
+                    'STARTMODE=auto\n'
+                ),
                 # eth1
-                call('BOOTPROTO=static\nSTARTMODE=auto\n'),
+                call(
+                    'BOOTPROTO=static\n'
+                    'STARTMODE=auto\n'
+                ),
                 # vlan interface bond0.10
                 call(
                     'BOOTPROTO=static\n'
@@ -157,6 +163,6 @@ class TestAzureHostedNetworkSetup(object):
             assert mock_open.call_args_list == [
                 call('/etc/sysconfig/network/ifcfg-eth0', 'w'),
                 call('/etc/sysconfig/network/ifcfg-eth1', 'w'),
-                call('/etc/sysconfig/network/ifcfg-bond0.10', 'w'),
+                call('/etc/sysconfig/network/ifcfg-vlan10', 'w'),
                 call('/etc/sysconfig/network/ifcfg-bond0', 'w')
             ]

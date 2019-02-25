@@ -101,8 +101,8 @@ class AzureHostedNetworkSetup(object):
         """
         if 'vlan' not in self.network:
             return
-        vlan_file = '/etc/sysconfig/network/ifcfg-{0}.{1}'.format(
-            self.network['interface'], self.network['vlan']
+        vlan_file = '/etc/sysconfig/network/ifcfg-vlan{0}'.format(
+            self.network['vlan']
         )
         setup = dedent('''
             BOOTPROTO=static
