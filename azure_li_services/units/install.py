@@ -70,9 +70,8 @@ def main():
                 Command.run(
                     [
                         'zypper', '--non-interactive',
-                        'install', '--auto-agree-with-licenses',
-                        ' '.join(filter(None, packages_to_install))
-                    ]
+                        'install', '--auto-agree-with-licenses'
+                    ] + list(filter(None, packages_to_install))
                 )
 
         finally:

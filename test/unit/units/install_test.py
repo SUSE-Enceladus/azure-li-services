@@ -114,7 +114,8 @@ class TestInstall(object):
             call(
                 [
                     'zypper', '--non-interactive', 'install',
-                    '--auto-agree-with-licenses', 'foo package_a package_b'
+                    '--auto-agree-with-licenses',
+                    'foo', 'package_a', 'package_b'
                 ]
             ),
             call(
