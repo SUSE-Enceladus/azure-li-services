@@ -77,20 +77,19 @@ class AzureHostedNetworkSetup(object):
         route to the correct interface
         """
         if 'gateway' in self.network:
-            vlan = '.{0}'.format(
+            interface = 'vlan{0}'.format(
                 self.network['vlan']
-            ) if 'vlan' in self.network else ''
-            route_file = '/etc/sysconfig/network/ifroute-{0}{1}'.format(
-                self.network['interface'], vlan
+            ) if 'vlan' in self.network else self.network['interface']
+            route_file = '/etc/sysconfig/network/ifroute-{0}'.format(
+                interface
             )
             setup = dedent('''
-                default {gateway} - {interface}{vlan}
+                default {gateway} - {interface}
             ''').lstrip()
             with open(route_file, 'w') as ifroute:
                 ifroute.write(
                     setup.format(
-                        interface=self.network['interface'],
-                        vlan=vlan,
+                        interface=interface,
                         gateway=self.network['gateway']
                     )
                 )
