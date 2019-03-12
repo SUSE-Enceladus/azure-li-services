@@ -27,7 +27,10 @@ from azure_li_services.defaults import Defaults
 from azure_li_services.command import Command
 from azure_li_services.status_report import StatusReport
 
-from azure_li_services.exceptions import AzureHostedException
+from azure_li_services.exceptions import (
+    AzureHostedException,
+    AzureHostedCommandOutputException
+)
 
 
 def main():
@@ -40,12 +43,19 @@ def main():
     config = RuntimeConfig(Defaults.get_config_file())
     hostname = config.get_hostname()
     instance_type = config.get_instance_type()
+    stonith_config = config.get_stonith_config()
 
     system_setup_errors = []
 
     if hostname:
         try:
             set_hostname(hostname)
+        except Exception as issue:
+            system_setup_errors.append(issue)
+
+    if stonith_config:
+        try:
+            set_stonith_service(stonith_config)
         except Exception as issue:
             system_setup_errors.append(issue)
 
@@ -178,6 +188,81 @@ def set_kdump_service(config, status):
     Command.run(
         ['systemctl', 'restart', 'kdump']
     )
+
+
+def set_stonith_service(config):
+    # 1. setup InitiatorName
+    initiator_name = 'iqn.1996-04.de.suse:01:{0}'.format(
+        config['initiatorname']
+    )
+    initiator_file = '/etc/iscsi/initiatorname.iscsi'
+    initiator_data = re.sub(
+        r'InitiatorName=.*', 'InitiatorName={0}'.format(initiator_name),
+        _read_file(initiator_file)
+    )
+    _write_file(initiator_file, initiator_data)
+
+    # 2. setup iscsi options
+    iscsi_conf = '/etc/iscsi/iscsid.conf'
+    iscsi_conf_data = _read_file(iscsi_conf)
+    iscsi_conf_data = re.sub(
+        r'node.session.timeo.replacement_timeout = .*',
+        'node.session.timeo.replacement_timeout = 5',
+        iscsi_conf_data
+    )
+    iscsi_conf_data = re.sub(
+        r'node.startup = .*', 'node.startup = automatic',
+        iscsi_conf_data
+    )
+    _write_file(iscsi_conf, iscsi_conf_data)
+
+    # 3. initialize iSCSI devices
+    discovery_output = Command.run(
+        [
+            'iscsiadm', '-m', 'discovery',
+            '-t', 'st', '-p', '{0}:3260'.format(config['ip'])
+        ]
+    ).output.splitlines()
+
+    # 4. create sbd device
+    # The first line of the iscsiadm discovery output is taken into
+    # account as we expect any group tag to respond with the same
+    # target name. We also expect the discovery output to be in the
+    # format: target_IP:port,target_portal_group_tag proper_target_name
+    discovery_format = '.*:.*,.* .*'
+    if discovery_output and re.match(discovery_format, discovery_output[0]):
+        target_name = discovery_output[0].split(' ')[1]
+        target_device = '/dev/disk/by-path/ip-{0}:3260-iscsi-{1}-lun-0'.format(
+            config['ip'], target_name
+        )
+        Command.run(
+            ['iscsiadm', '-m', 'node', '-l']
+        )
+        Command.run(
+            ['rescan-scsi-bus.sh']
+        )
+        Command.run(
+            ['sbd', '-d', target_device, 'create']
+        )
+        Command.run(
+            ['sbd', '-d', target_device, 'dump']
+        )
+    else:
+        raise AzureHostedCommandOutputException(
+            'Stonith: Unexpected iSCSI discovery information: {0}'.format(
+                discovery_output
+            )
+        )
+
+
+def _read_file(filename):
+    with open(filename, 'r') as file_handle:
+        return file_handle.read()
+
+
+def _write_file(filename, data):
+    with open(filename, 'w') as file_handle:
+        file_handle.write(data)
 
 
 def _kdump_calibrate(high, low):

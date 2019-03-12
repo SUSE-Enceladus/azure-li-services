@@ -12,6 +12,10 @@ machine_constraints:
   min_cores: 32
   min_memory: "20tb"
 
+stonith:
+  initiatorname: "t090xyzzysid4"
+  ip: "192.168.100.20"
+
 networking:
   -
     interface: eth0

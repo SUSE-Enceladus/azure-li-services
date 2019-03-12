@@ -35,6 +35,22 @@ schema = {
             }
         }
     },
+    'stonith': {
+        'required': False,
+        'type': 'dict',
+        'schema': {
+            'initiatorname': {
+                'required': True,
+                'nullable': False,
+                'type': 'string'
+            },
+            'ip': {
+                'required': True,
+                'nullable': False,
+                'type': 'string'
+            }
+        }
+    },
     'machine_constraints': {
         'required': False,
         'type': 'dict',
