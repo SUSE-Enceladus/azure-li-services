@@ -247,6 +247,9 @@ def set_stonith_service(config):
         Command.run(
             ['sbd', '-d', target_device, 'dump']
         )
+        _write_file(
+            '/etc/sysconfig/sbd', 'SBD_DEVICE="{0}"'.format(target_device)
+        )
     else:
         raise AzureHostedCommandOutputException(
             'Stonith: Unexpected iSCSI discovery information: {0}'.format(

@@ -247,12 +247,15 @@ class TestSystemSetup(object):
         with patch('builtins.open', create=True) as mock_open:
             mock_open_initiator = MagicMock(spec=io.IOBase)
             mock_open_iscsi = MagicMock(spec=io.IOBase)
+            mock_open_sbd = MagicMock(spec=io.IOBase)
 
             def open_file(filename, mode):
                 if filename == '/etc/iscsi/initiatorname.iscsi':
                     return mock_open_initiator.return_value
                 elif filename == '/etc/iscsi/iscsid.conf':
                     return mock_open_iscsi.return_value
+                elif filename == '/etc/sysconfig/sbd':
+                    return mock_open_sbd.return_value
 
             mock_open.side_effect = open_file
 
@@ -260,6 +263,8 @@ class TestSystemSetup(object):
                 mock_open_initiator.return_value.__enter__.return_value
             file_handle_iscsi = \
                 mock_open_iscsi.return_value.__enter__.return_value
+            file_handle_sbd = \
+                mock_open_sbd.return_value.__enter__.return_value
 
             file_handle_initiator.read.return_value = 'InitiatorName=name'
             file_handle_iscsi.read.return_value = dedent('''
@@ -274,7 +279,8 @@ class TestSystemSetup(object):
                 call('/etc/iscsi/initiatorname.iscsi', 'r'),
                 call('/etc/iscsi/initiatorname.iscsi', 'w'),
                 call('/etc/iscsi/iscsid.conf', 'r'),
-                call('/etc/iscsi/iscsid.conf', 'w')
+                call('/etc/iscsi/iscsid.conf', 'w'),
+                call('/etc/sysconfig/sbd', 'w')
             ]
             assert file_handle_initiator.write.call_args_list == [
                 call('InitiatorName=iqn.1996-04.de.suse:01:t090xyzzysid4')
@@ -317,3 +323,8 @@ class TestSystemSetup(object):
                     ]
                 )
             ]
+            file_handle_sbd.write.assert_called_once_with(
+                'SBD_DEVICE="/dev/disk/by-path/ip-10.20.253.31:3260-iscsi-iqn.'
+                '1992-08.com.netapp:sn.'
+                '562892c1030b11e9b8ec00a098d274e4:vs.6-lun-0"'
+            )
