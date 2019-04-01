@@ -47,6 +47,10 @@ class RuntimeConfig(object):
           min_cores: number_of_cores
           min_memory: main_memory_value_with_unit
 
+        stonith:
+          initiatorname: name
+          ip: 192.168.100.20
+
         networking:
           -
             interface: eth0
@@ -157,3 +161,7 @@ class RuntimeConfig(object):
     def get_storage_config(self):
         if self.config_data:
             return self.config_data.get('storage')
+
+    def get_stonith_config(self):
+        if self.config_data:
+            return self.config_data.get('stonith')

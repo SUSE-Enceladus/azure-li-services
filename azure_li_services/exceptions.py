@@ -101,3 +101,10 @@ class AzureHostedStorageMountException(AzureHostedException):
     Exception raised if any of the required data to create a valid
     fstab entry to mount some storage device is missing
     """
+
+
+class AzureHostedCommandOutputException(AzureHostedException):
+    """
+    Exception raised if the output of a command did not match
+    the expected format or content
+    """

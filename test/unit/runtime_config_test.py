@@ -122,3 +122,8 @@ class TestRuntimeConfig(object):
         assert self.runtime_config.get_crash_dump_config() == {
             'activate': True, 'crash_kernel_low': 80, 'crash_kernel_high': 160
         }
+
+    def test_get_stonith_config(self):
+        assert self.runtime_config.get_stonith_config() == {
+            'initiatorname': 't090xyzzysid4', 'ip': '192.168.100.20'
+        }
