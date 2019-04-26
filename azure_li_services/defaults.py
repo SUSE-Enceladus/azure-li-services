@@ -131,3 +131,11 @@ class Defaults(object):
         Command.run(
             ['umount', '--lazy', azure_config.location], raise_on_error=False
         )
+
+    @classmethod
+    def get_stonith_needed_modules(self):
+        return ['softdog']
+
+    @classmethod
+    def get_extra_kernel_modules_file_name(self):
+        return '/etc/modules-load.d/azure-extra-modules.conf'
