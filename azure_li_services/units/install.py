@@ -41,41 +41,37 @@ def main():
     if packages_config:
         install_source = Defaults.mount_config_source()
 
-        try:
-            local_repos = {}
-            local_repos.update(
-                import_raw_sources(packages_config, install_source)
+        local_repos = {}
+        local_repos.update(
+            import_raw_sources(packages_config, install_source)
+        )
+        local_repos.update(
+            import_repository_sources(packages_config, install_source)
+        )
+        for repository_name, repository_metadata in local_repos.items():
+            repository_location = repository_metadata[0]
+            Command.run(
+                [
+                    'zypper', 'removerepo', repository_name
+                ], raise_on_error=False
             )
-            local_repos.update(
-                import_repository_sources(packages_config, install_source)
+            Command.run(
+                [
+                    'zypper', 'addrepo', '--no-gpgcheck',
+                    repository_location, repository_name
+                ]
             )
-            for repository_name, repository_metadata in local_repos.items():
-                repository_location = repository_metadata[0]
-                Command.run(
-                    [
-                        'zypper', 'removerepo', repository_name
-                    ], raise_on_error=False
-                )
-                Command.run(
-                    [
-                        'zypper', 'addrepo', '--no-gpgcheck',
-                        repository_location, repository_name
-                    ]
-                )
 
-            packages_to_install = []
-            for repository_metadata in local_repos.values():
-                packages_to_install += repository_metadata[1]
-            if packages_to_install:
-                Command.run(
-                    [
-                        'zypper', '--non-interactive',
-                        'install', '--auto-agree-with-licenses'
-                    ] + list(filter(None, packages_to_install))
-                )
-
-        finally:
-            Defaults.umount_config_source(install_source)
+        packages_to_install = []
+        for repository_metadata in local_repos.values():
+            packages_to_install += repository_metadata[1]
+        if packages_to_install:
+            Command.run(
+                [
+                    'zypper', '--non-interactive',
+                    'install', '--auto-agree-with-licenses'
+                ] + list(filter(None, packages_to_install))
+            )
 
     status.set_success()
 

@@ -34,15 +34,12 @@ def main():
 
     if call_script:
         call_source = Defaults.mount_config_source()
-        try:
-            Command.run(
-                [
-                    'bash', '-c', '{0}/{1}'.format(
-                        call_source.location, call_script
-                    )
-                ]
-            )
-        finally:
-            Defaults.umount_config_source(call_source)
+        Command.run(
+            [
+                'bash', '-c', '{0}/{1}'.format(
+                    call_source.location, call_script
+                )
+            ]
+        )
 
     status.set_success()

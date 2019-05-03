@@ -107,9 +107,6 @@ class TestUser(object):
                         'cp', 'config_mount/path/to/private/key/id_dsa',
                         '/home/hanauser/.ssh/'
                     ]
-                ),
-                call(
-                    ['umount', '--lazy', 'config_mount'], raise_on_error=False
                 )
             ]
             assert mock_chmod.call_args_list == [
