@@ -21,6 +21,7 @@ class TestSystemSetup(object):
     def setup(self):
         self.config = RuntimeConfig('../data/config.yaml')
 
+    @patch.object(system_setup, 'enable_extra_kernel_modules')
     @patch.object(system_setup, 'set_hostname')
     @patch.object(system_setup, 'set_stonith_service')
     @patch.object(system_setup, 'set_kdump_service')
@@ -38,7 +39,7 @@ class TestSystemSetup(object):
         mock_set_energy_performance_settings,
         mock_set_kernel_samepage_merging_mode,
         mock_set_kdump_service, mock_set_stonith_service,
-        mock_set_hostname
+        mock_set_hostname, mock_extra_modules
     ):
         status = Mock()
         mock_StatusReport.return_value = status
@@ -48,6 +49,7 @@ class TestSystemSetup(object):
         mock_set_stonith_service.assert_called_once_with(
             {'initiatorname': 't090xyzzysid4', 'ip': '192.168.100.20'}
         )
+        mock_extra_modules.assert_called_once()
         mock_set_kdump_service.assert_called_once_with(
             {
                 'activate': True,
@@ -328,3 +330,30 @@ class TestSystemSetup(object):
                 '1992-08.com.netapp:sn.'
                 '562892c1030b11e9b8ec00a098d274e4:vs.6-lun-0"'
             )
+
+    @patch('azure_li_services.command.Command.run')
+    def test_load_stonith_needed_modules(
+        self, mock_Command_run
+    ):
+        with patch('builtins.open', create=True) as mock_open:
+            mock_open_module_load = MagicMock(spec=io.IOBase)
+
+            def open_file(filename, mode):
+                return mock_open_module_load.return_value
+
+            mock_open.side_effect = open_file
+
+            file_handle_module_load = \
+                mock_open_module_load.return_value.__enter__.return_value
+            system_setup.enable_extra_kernel_modules()
+            assert mock_open.call_args_list == [
+                call('/etc/modules-load.d/azure-extra-modules.conf', 'w')
+            ]
+            assert file_handle_module_load.write.call_args_list == [
+                call('\nsoftdog')
+            ]
+            assert mock_Command_run.call_args_list == [
+                call(
+                    ['modprobe', 'softdog']
+                )
+            ]

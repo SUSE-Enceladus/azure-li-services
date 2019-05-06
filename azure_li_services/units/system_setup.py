@@ -56,6 +56,7 @@ def main():
     if stonith_config:
         try:
             set_stonith_service(stonith_config)
+            enable_extra_kernel_modules()
         except Exception as issue:
             system_setup_errors.append(issue)
 
@@ -256,6 +257,19 @@ def set_stonith_service(config):
                 discovery_output
             )
         )
+
+
+def enable_extra_kernel_modules():
+    modules = Defaults.get_stonith_needed_modules()
+    file_content = ''
+    for module in modules:
+        file_content = ''.join([file_content, os.linesep, module])
+        Command.run(
+            ['modprobe', module]
+        )
+
+    load_module_path = Defaults.get_extra_kernel_modules_file_name()
+    _write_file(load_module_path, file_content)
 
 
 def _read_file(filename):
