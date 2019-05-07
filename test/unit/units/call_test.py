@@ -26,11 +26,5 @@ class TestCall(object):
                         mock_mount_config_source.return_value.location
                     )
                 ]
-            ),
-            call(
-                [
-                    'umount', '--lazy',
-                    mock_mount_config_source.return_value.location
-                ], raise_on_error=False
             )
         ]

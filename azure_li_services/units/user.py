@@ -156,25 +156,22 @@ def setup_ssh_authorization(user):
                 os.chown(ssh_auth_file, uid, gid)
         if 'ssh-private-key' in user:
             ssh_key_source = Defaults.mount_config_source()
-            try:
-                private_key_file = user['ssh-private-key']
-                Command.run(
-                    [
-                        'cp', os.sep.join(
-                            [ssh_key_source.location, private_key_file]
-                        ), ssh_auth_dir
-                    ]
+            private_key_file = user['ssh-private-key']
+            Command.run(
+                [
+                    'cp', os.sep.join(
+                        [ssh_key_source.location, private_key_file]
+                    ), ssh_auth_dir
+                ]
+            )
+            ssh_key_file = os.path.normpath(
+                os.sep.join(
+                    [ssh_auth_dir, os.path.basename(private_key_file)]
                 )
-                ssh_key_file = os.path.normpath(
-                    os.sep.join(
-                        [ssh_auth_dir, os.path.basename(private_key_file)]
-                    )
-                )
-                os.chmod(ssh_key_file, 0o600)
-                if user['username'] != 'root':
-                    os.chown(ssh_key_file, uid, gid)
-            finally:
-                Defaults.umount_config_source(ssh_key_source)
+            )
+            os.chmod(ssh_key_file, 0o600)
+            if user['username'] != 'root':
+                os.chown(ssh_key_file, uid, gid)
 
 
 def setup_sudo_authorization(user):

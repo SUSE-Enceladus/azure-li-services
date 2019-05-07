@@ -117,11 +117,5 @@ class TestInstall(object):
                     '--auto-agree-with-licenses',
                     'foo', 'package_a', 'package_b'
                 ]
-            ),
-            call(
-                [
-                    'umount', '--lazy',
-                    mock_mount_config_source.return_value.location
-                ], raise_on_error=False
             )
         ]
