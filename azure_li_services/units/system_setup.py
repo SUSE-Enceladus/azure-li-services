@@ -135,6 +135,14 @@ def set_saptune_service():
     Command.run(
         ['saptune', 'solution', 'apply', 'HANA']
     )
+    if os.path.exists('/usr/lib/tuned/sap-hana'):
+        Command.run(
+            ['tuned-adm', 'profile', 'sap-hana']
+        )
+    else:
+        Command.run(
+            ['tuned-adm', 'profile', 'sapconf']
+        )
 
 
 def set_reboot_intervention():
