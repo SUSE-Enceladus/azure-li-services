@@ -44,7 +44,7 @@ class TestDefaults(object):
                 ['mountpoint', '/mnt'], raise_on_error=False
             ),
             call(
-                ['mount', '--label', 'azconfig', '/mnt'],
+                ['mount', '-o', 'sync', '--label', 'azconfig', '/mnt'],
                 raise_on_error=False
             )
         ]
@@ -61,7 +61,7 @@ class TestDefaults(object):
                 ['mountpoint', '/mnt'], raise_on_error=False
             ),
             call(
-                ['mount', '--label', 'azconfig', '/mnt'],
+                ['mount', '-o', 'sync', '--label', 'azconfig', '/mnt'],
                 raise_on_error=False
             ),
             call(
