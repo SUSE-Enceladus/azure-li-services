@@ -1,6 +1,6 @@
 # azure-li-services - Azure Large Instance Services
 
-[![Build Status](https://travis-ci.org/SUSE/azure-li-services.svg?branch=master)](https://travis-ci.org/SUSE/azure-li-services)
+[![Build Status](https://travis-ci.com/SUSE-Enceladus/azure-li-services.svg?branch=master)](https://travis-ci.com/SUSE-Enceladus/azure-li-services)
 
 Systemd services reading and processing the sections of a
 configuration file provided to the system during the startup
