@@ -109,7 +109,11 @@ class Defaults(object):
             return azure_config
 
         lun_result = Command.run(
-            ['mount', '--label', azure_config.label, azure_config.location],
+            [
+                'mount', '-o', 'sync',
+                '--label', azure_config.label,
+                azure_config.location
+            ],
             raise_on_error=False
         )
         if lun_result.returncode != 0:
