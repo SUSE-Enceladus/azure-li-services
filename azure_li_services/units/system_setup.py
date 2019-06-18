@@ -143,6 +143,9 @@ def set_saptune_service():
         Command.run(
             ['tuned-adm', 'profile', 'sapconf']
         )
+    Command.run(
+        ['saptune', 'daemon', 'start']
+    )
 
 
 def set_reboot_intervention():
