@@ -55,6 +55,9 @@ credentials:
     username: root
     shadow_hash: "sha-512-cipher"
     ssh-key: "ssh-rsa foo"
+  -
+    username: nopasslogin
+    ssh-key: "ssh-rsa foo"
 
 packages:
   repository:

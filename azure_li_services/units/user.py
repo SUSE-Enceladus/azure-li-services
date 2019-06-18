@@ -106,6 +106,10 @@ def create_or_modify_user(user):
             '-p', user['shadow_hash'],
             '-s', '/bin/bash'
         ]
+    elif 'ssh-key' in user:
+        user_options += [
+            '-s', '/bin/bash'
+        ]
     else:
         user_options += [
             '-s', '/sbin/nologin'
