@@ -67,6 +67,10 @@ class TestRuntimeConfig(object):
                 'ssh-key': 'ssh-rsa foo',
                 'username': 'root',
                 'shadow_hash': 'sha-512-cipher'
+            },
+            {
+                'ssh-key': 'ssh-rsa foo',
+                'username': 'nopasslogin'
             }
         ]
 

@@ -35,7 +35,7 @@ class TestUser(object):
         mock_Command_run
     ):
         group_exists = [True, False, False]
-        user_exists = [True, True, False]
+        user_exists = [True, True, True, False]
 
         def side_effect_group_exists(group):
             return group_exists.pop()
@@ -79,6 +79,9 @@ class TestUser(object):
                 ),
                 call(
                     'root', ['-p', 'sha-512-cipher', '-s', '/bin/bash']
+                ),
+                call(
+                    'nopasslogin', ['-s', '/bin/bash']
                 )
             ]
             system_users.setup_change_password_on_logon.assert_called_once_with(
@@ -91,9 +94,12 @@ class TestUser(object):
             assert mock_open.call_args_list == [
                 call('/home/hanauser/.ssh/authorized_keys', 'a'),
                 call('/root/.ssh/authorized_keys', 'a'),
+                call('/home/nopasslogin/.ssh/authorized_keys', 'a'),
                 call('/etc/sudoers', 'a')
             ]
             assert file_handle.write.call_args_list == [
+                call('\n'),
+                call('ssh-rsa foo'),
                 call('\n'),
                 call('ssh-rsa foo'),
                 call('\n'),
@@ -114,7 +120,9 @@ class TestUser(object):
                 call('/home/hanauser/.ssh/authorized_keys', 0o600),
                 call('/home/hanauser/.ssh/id_dsa', 0o600),
                 call('/root/.ssh/', 0o700),
-                call('/root/.ssh/authorized_keys', 0o600)
+                call('/root/.ssh/authorized_keys', 0o600),
+                call('/home/nopasslogin/.ssh/', 0o700),
+                call('/home/nopasslogin/.ssh/authorized_keys', 0o600)
             ]
             assert mock_chown.call_args_list == [
                 call(
@@ -129,6 +137,16 @@ class TestUser(object):
                 ),
                 call(
                     '/home/hanauser/.ssh/id_dsa',
+                    mock_getpwnam.return_value.pw_uid,
+                    mock_getgrnam.return_value.gr_gid
+                ),
+                call(
+                    '/home/nopasslogin/.ssh/',
+                    mock_getpwnam.return_value.pw_uid,
+                    mock_getgrnam.return_value.gr_gid
+                ),
+                call(
+                    '/home/nopasslogin/.ssh/authorized_keys',
                     mock_getpwnam.return_value.pw_uid,
                     mock_getgrnam.return_value.gr_gid
                 )
