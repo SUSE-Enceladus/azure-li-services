@@ -19,12 +19,15 @@ import select
 import os
 import subprocess
 from collections import namedtuple
+import logging
 
 # project
 from .exceptions import (
     AzureHostedCommandException,
     AzureHostedCommandNotFoundException
 )
+
+logging.basicConfig(level=logging.INFO)
 
 
 class Command(object):
@@ -83,6 +86,7 @@ class Command(object):
             else:
                 raise AzureHostedCommandNotFoundException(message)
         try:
+            logging.info('Calling: {0}'.format(command))
             process = subprocess.Popen(
                 command,
                 stdout=subprocess.PIPE,
@@ -152,6 +156,7 @@ class Command(object):
                 'Command "%s" not found in the environment' % command[0]
             )
         try:
+            logging.info('Calling: {0}'.format(command))
             process = subprocess.Popen(
                 command,
                 stdout=subprocess.PIPE,
