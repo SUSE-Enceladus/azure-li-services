@@ -100,7 +100,7 @@ class RuntimeConfig(object):
         if os.path.exists(config_file):
             with open(config_file, 'r') as config:
                 try:
-                    self.config_data = yaml.load(config)
+                    self.config_data = yaml.safe_load(config)
                 except Exception as e:
                     raise AzureHostedConfigDataException(
                         'Loading yaml format raises: {0}: {1}'.format(
