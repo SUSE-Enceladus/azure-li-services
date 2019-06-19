@@ -10,7 +10,7 @@ class TestRuntimeConfig(object):
     def setup(self):
         self.runtime_config = RuntimeConfig('../data/config.yaml')
 
-    @patch('yaml.load')
+    @patch('yaml.safe_load')
     def test_init_raises_on_invalid_format(self, mock_yaml_load):
         mock_yaml_load.side_effect = Exception
         with raises(AzureHostedConfigDataException):

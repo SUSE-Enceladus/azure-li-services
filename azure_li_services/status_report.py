@@ -70,7 +70,7 @@ class StatusReport(object):
     def load(self):
         if os.path.exists(self.status_file):
             with open(self.status_file, 'r') as report:
-                self.status = yaml.load(report)
+                self.status = yaml.safe_load(report)
 
     def get_state(self):
         return self.status[self.service_name]['success']
