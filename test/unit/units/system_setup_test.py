@@ -206,9 +206,10 @@ class TestSystemSetup(object):
         assert mock_Command_run.call_args_list == [
             call(['systemctl', 'enable', 'tuned']),
             call(['systemctl', 'start', 'tuned']),
-            call(['tuned-adm', 'profile', 'sap-hana']),
             call(['saptune', 'daemon', 'start']),
-            call(['saptune', 'solution', 'apply', 'HANA'])
+            call(['saptune', 'solution', 'apply', 'HANA']),
+            call(['tuned-adm', 'profile', 'sap-hana']),
+            call(['saptune', 'daemon', 'start'])
         ]
         mock_os_path_exists.return_value = False
         mock_Command_run.reset_mock()
@@ -216,9 +217,10 @@ class TestSystemSetup(object):
         assert mock_Command_run.call_args_list == [
             call(['systemctl', 'enable', 'tuned']),
             call(['systemctl', 'start', 'tuned']),
-            call(['tuned-adm', 'profile', 'sapconf']),
             call(['saptune', 'daemon', 'start']),
-            call(['saptune', 'solution', 'apply', 'HANA'])
+            call(['saptune', 'solution', 'apply', 'HANA']),
+            call(['tuned-adm', 'profile', 'sapconf']),
+            call(['saptune', 'daemon', 'start'])
         ]
 
     @patch('os.path.exists')

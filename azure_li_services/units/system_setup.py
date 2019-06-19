@@ -129,6 +129,12 @@ def set_saptune_service():
     Command.run(
         ['systemctl', 'start', 'tuned']
     )
+    Command.run(
+        ['saptune', 'daemon', 'start']
+    )
+    Command.run(
+        ['saptune', 'solution', 'apply', 'HANA']
+    )
     if os.path.exists('/usr/lib/tuned/sap-hana'):
         Command.run(
             ['tuned-adm', 'profile', 'sap-hana']
@@ -139,9 +145,6 @@ def set_saptune_service():
         )
     Command.run(
         ['saptune', 'daemon', 'start']
-    )
-    Command.run(
-        ['saptune', 'solution', 'apply', 'HANA']
     )
 
 
