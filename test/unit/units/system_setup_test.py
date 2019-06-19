@@ -204,22 +204,24 @@ class TestSystemSetup(object):
         mock_os_path_exists.return_value = True
         system_setup.set_saptune_service()
         assert mock_Command_run.call_args_list == [
-            call(['systemctl', 'enable', 'tuned']),
-            call(['systemctl', 'start', 'tuned']),
             call(['saptune', 'daemon', 'start']),
-            call(['saptune', 'solution', 'apply', 'HANA']),
             call(['tuned-adm', 'profile', 'sap-hana']),
+            call(['systemctl', 'start', 'tuned']),
+            call(['systemctl', 'enable', 'tuned']),
+            call(['tuned-adm', 'profile', 'sap-hana']),
+            call(['saptune', 'solution', 'apply', 'HANA']),
             call(['saptune', 'daemon', 'start'])
         ]
         mock_os_path_exists.return_value = False
         mock_Command_run.reset_mock()
         system_setup.set_saptune_service()
         assert mock_Command_run.call_args_list == [
-            call(['systemctl', 'enable', 'tuned']),
-            call(['systemctl', 'start', 'tuned']),
             call(['saptune', 'daemon', 'start']),
-            call(['saptune', 'solution', 'apply', 'HANA']),
             call(['tuned-adm', 'profile', 'sapconf']),
+            call(['systemctl', 'start', 'tuned']),
+            call(['systemctl', 'enable', 'tuned']),
+            call(['tuned-adm', 'profile', 'sapconf']),
+            call(['saptune', 'solution', 'apply', 'HANA']),
             call(['saptune', 'daemon', 'start'])
         ]
 
