@@ -144,15 +144,17 @@ class AzureHostedNetworkSetup(object):
                 setup.format(interface=self.network['interface'])
             )
             if 'vlan' not in self.network:
-                # bond takes IP setup if no vlan is requested
-                ifcfg_bond.write(
-                    'IPADDR={0}{1}'.format(self.network['ip'], os.linesep)
-                )
-                ifcfg_bond.write(
-                    'NETMASK={0}{1}'.format(
-                        self.network['subnet_mask'], os.linesep
+                # bond takes IP setup if present and no vlan is requested
+                if 'ip' in self.network:
+                    ifcfg_bond.write(
+                        'IPADDR={0}{1}'.format(self.network['ip'], os.linesep)
                     )
-                )
+                if 'subnet_mask' in self.network:
+                    ifcfg_bond.write(
+                        'NETMASK={0}{1}'.format(
+                            self.network['subnet_mask'], os.linesep
+                        )
+                    )
             if 'mtu' in self.network:
                 ifcfg_bond.write(
                     'MTU={0}{1}'.format(self.network['mtu'], os.linesep)
