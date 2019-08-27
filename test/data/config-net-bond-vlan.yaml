@@ -1,0 +1,70 @@
+version: "20180614"
+instance_type: LargeInstance
+sku: "SR92"
+
+networking:
+  -
+    interface: eth3
+
+  -
+    interface: eth4
+
+  -
+    interface: eth5
+
+  -
+    interface: eth6
+
+  -
+    interface: bond0
+    bonding_slaves:
+      - eth3
+      - eth6
+    bonding_options:
+      - mode=active-backup
+      - miimon=100
+
+  -
+    interface: bond1
+    bonding_slaves:
+      - eth4
+      - eth5
+    bonding_options:
+      - mode=active-backup
+      - miimon=100
+
+  -
+    interface: bond0
+    vlan: 250
+    ip: 10.60.0.35
+    subnet_mask: 255.255.255.0
+    vlan_mtu: 9000
+    gateway: 10.60.0.1
+
+  -
+    interface: bond0
+    vlan: 251
+    ip: 10.20.251.150
+    subnet_mask: 255.255.255.0
+    vlan_mtu: 9000
+
+  -
+    interface: bond0
+    vlan: 253
+    ip: 10.20.253.150
+    subnet_mask: 255.255.255.0
+    vlan_mtu: 9000
+
+  -
+    interface: bond1
+    vlan: 252
+    ip: 10.20.252.150
+    subnet_mask: 255.255.255.0
+    vlan_mtu: 9000
+
+
+credentials:
+  -
+    username: root
+    shadow_hash: "sha-512-cipher"
+    ssh-key: "ssh-rsa foo"
