@@ -22,7 +22,6 @@ from psutil import virtual_memory
 
 # project
 from azure_li_services.runtime_config import RuntimeConfig
-from azure_li_services.instance_type import InstanceType
 from azure_li_services.defaults import Defaults
 from azure_li_services.command import Command
 from azure_li_services.status_report import StatusReport
@@ -42,7 +41,6 @@ def main():
     status = StatusReport('system_setup')
     config = RuntimeConfig(Defaults.get_config_file())
     hostname = config.get_hostname()
-    instance_type = config.get_instance_type()
     stonith_config = config.get_stonith_config()
 
     system_setup_errors = []
@@ -81,12 +79,6 @@ def main():
         set_saptune_service()
     except Exception as issue:
         system_setup_errors.append(issue)
-
-    if instance_type == InstanceType.vli:
-        try:
-            set_reboot_intervention()
-        except Exception as issue:
-            system_setup_errors.append(issue)
 
     if system_setup_errors:
         raise AzureHostedException(system_setup_errors)
@@ -147,15 +139,6 @@ def set_saptune_service():
     Command.run(
         ['saptune', 'daemon', 'start']
     )
-
-
-def set_reboot_intervention():
-    efi_boot_dir = '/boot/efi/'
-    if os.path.exists(efi_boot_dir):
-        with open(efi_boot_dir + 'startup.nsh', 'w') as efi_startup:
-            efi_startup.write(
-                'fs0:\efi\sles_sap\grubx64.efi{0}'.format(os.linesep)
-            )
 
 
 def set_kdump_service(config, status):
