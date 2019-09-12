@@ -28,13 +28,11 @@ class TestSystemSetup(object):
     @patch.object(system_setup, 'set_kernel_samepage_merging_mode')
     @patch.object(system_setup, 'set_energy_performance_settings')
     @patch.object(system_setup, 'set_saptune_service')
-    @patch.object(system_setup, 'set_reboot_intervention')
     @patch.object(system_setup.Defaults, 'get_config_file')
     @patch.object(system_setup, 'RuntimeConfig')
     @patch.object(system_setup, 'StatusReport')
     def test_main(
         self, mock_StatusReport, mock_RuntimConfig, mock_get_config_file,
-        mock_set_reboot_intervention,
         mock_set_saptune_service,
         mock_set_energy_performance_settings,
         mock_set_kernel_samepage_merging_mode,
@@ -67,7 +65,6 @@ class TestSystemSetup(object):
             return_value=InstanceType.vli
         )
         main()
-        mock_set_reboot_intervention.assert_called_once_with()
 
         mock_set_hostname.side_effect = Exception
         with raises(AzureHostedException):
@@ -95,11 +92,6 @@ class TestSystemSetup(object):
 
         mock_set_energy_performance_settings.reset_mock()
         mock_set_saptune_service.side_effect = Exception
-        with raises(AzureHostedException):
-            main()
-
-        mock_set_saptune_service.reset_mock()
-        mock_set_reboot_intervention.side_effect = Exception
         with raises(AzureHostedException):
             main()
 
@@ -224,18 +216,6 @@ class TestSystemSetup(object):
             call(['saptune', 'solution', 'apply', 'HANA']),
             call(['saptune', 'daemon', 'start'])
         ]
-
-    @patch('os.path.exists')
-    def test_set_reboot_intervention(self, mock_exists):
-        mock_exists.return_value = True
-        with patch('builtins.open', create=True) as mock_open:
-            mock_open.return_value = MagicMock(spec=io.IOBase)
-            file_handle = mock_open.return_value.__enter__.return_value
-            system_setup.set_reboot_intervention()
-            mock_open.assert_called_once_with('/boot/efi/startup.nsh', 'w')
-            assert file_handle.write.call_args_list == [
-                call('fs0:\\efi\\sles_sap\\grubx64.efi\n')
-            ]
 
     @patch('azure_li_services.command.Command.run')
     def test_set_stonith_service_discovery_failed(self, mock_Command_run):
