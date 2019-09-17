@@ -33,16 +33,20 @@ class Defaults(object):
 
     Provides class methods for default values
     """
-    @classmethod
-    def get_config_file_name(self):
+    @staticmethod
+    def get_log_file():
+        return '/var/log/azure-li-services.log'
+
+    @staticmethod
+    def get_config_file_name():
         return '/etc/suse_firstboot_config.yaml'
 
-    @classmethod
-    def get_status_report_directory(self):
+    @staticmethod
+    def get_status_report_directory():
         return '/var/lib/azure_li_services'
 
-    @classmethod
-    def get_service_reports(self):
+    @staticmethod
+    def get_service_reports():
         from azure_li_services.status_report import StatusReport
         service_reports = []
         unit_to_service_map = {
@@ -74,8 +78,8 @@ class Defaults(object):
             service_reports.append(report)
         return service_reports
 
-    @classmethod
-    def get_config_file(self):
+    @staticmethod
+    def get_config_file():
         """
         Provides config file as stored locally
 
@@ -92,8 +96,8 @@ class Defaults(object):
                 'No Azure Li/VLi file found: {0}'.format(config_file)
             )
 
-    @classmethod
-    def mount_config_source(self):
+    @staticmethod
+    def mount_config_source():
         config_type = namedtuple(
             'config_type', ['name', 'location', 'label']
         )
@@ -130,16 +134,16 @@ class Defaults(object):
 
         return azure_config
 
-    @classmethod
-    def umount_config_source(self, azure_config):
+    @staticmethod
+    def umount_config_source(azure_config):
         Command.run(
             ['umount', '--lazy', azure_config.location], raise_on_error=False
         )
 
-    @classmethod
-    def get_stonith_needed_modules(self):
+    @staticmethod
+    def get_stonith_needed_modules():
         return ['softdog']
 
-    @classmethod
-    def get_extra_kernel_modules_file_name(self):
+    @staticmethod
+    def get_extra_kernel_modules_file_name():
         return '/etc/modules-load.d/azure-extra-modules.conf'

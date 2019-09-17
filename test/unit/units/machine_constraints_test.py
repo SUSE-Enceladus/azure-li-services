@@ -8,13 +8,14 @@ from azure_li_services.exceptions import AzureHostedException
 
 
 class TestMachineConstraints(object):
+    @patch('azure_li_services.logger.Logger.setup')
     @patch('azure_li_services.units.machine_constraints.Defaults.get_config_file')
     @patch('azure_li_services.units.machine_constraints.StatusReport')
     @patch('multiprocessing.cpu_count')
     @patch('azure_li_services.units.machine_constraints.virtual_memory')
     def test_main(
         self, mock_virtual_memory, mock_cpu_count,
-        mock_StatusReport, mock_get_config_file
+        mock_StatusReport, mock_get_config_file, mock_logger_setup
     ):
         status = Mock()
         mock_StatusReport.return_value = status

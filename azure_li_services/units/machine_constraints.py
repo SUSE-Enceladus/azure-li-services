@@ -20,6 +20,7 @@ import humanfriendly
 from psutil import virtual_memory
 
 # project
+from azure_li_services.logger import Logger
 from azure_li_services.runtime_config import RuntimeConfig
 from azure_li_services.defaults import Defaults
 from azure_li_services.status_report import StatusReport
@@ -36,6 +37,7 @@ def main():
 
     Validation of machine requirements in the scope of an Azure Li/Vli instance
     """
+    Logger.setup()
     status = StatusReport('machine_constraints')
     config = RuntimeConfig(Defaults.get_config_file())
     machine_constraints = config.get_machine_constraints()

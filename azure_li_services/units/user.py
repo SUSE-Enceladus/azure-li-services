@@ -20,6 +20,7 @@ import pwd
 import grp
 
 # project
+from azure_li_services.logger import Logger
 from azure_li_services.runtime_config import RuntimeConfig
 from azure_li_services.defaults import Defaults
 from azure_li_services.users import Users
@@ -41,6 +42,7 @@ def main():
     Creates the configured user and its access setup for ssh
     and sudo services in the scope of an Azure Li/Vli instance
     """
+    Logger.setup()
     status = StatusReport('user')
     config = RuntimeConfig(Defaults.get_config_file())
 

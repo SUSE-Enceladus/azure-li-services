@@ -15,6 +15,7 @@ class TestUser(object):
     def setup(self):
         self.config = RuntimeConfig('../data/config.yaml')
 
+    @patch('azure_li_services.logger.Logger.setup')
     @patch('azure_li_services.units.user.Command.run')
     @patch('azure_li_services.defaults.Defaults.mount_config_source')
     @patch('azure_li_services.units.user.Defaults.get_config_file')
@@ -32,7 +33,7 @@ class TestUser(object):
         mock_path_exists, mock_StatusReport, mock_Path_create,
         mock_Users, mock_RuntimConfig, mock_get_config_file,
         mock_mount_config_source,
-        mock_Command_run
+        mock_Command_run, mock_logger_setup
     ):
         group_exists = [True, False, False]
         user_exists = [True, True, True, False]
@@ -180,11 +181,13 @@ class TestUser(object):
                 system_users.group_add.side_effect = Exception
                 main()
 
+    @patch('azure_li_services.logger.Logger.setup')
     @patch('azure_li_services.units.user.Defaults.get_config_file')
     @patch('azure_li_services.units.user.RuntimeConfig')
     @patch('azure_li_services.units.user.StatusReport')
     def test_main_raises_on_missing_credentials(
-        self, mock_StatusReport, mock_RuntimConfig, mock_get_config_file
+        self, mock_StatusReport, mock_RuntimConfig, mock_get_config_file,
+        mock_logger_setup
     ):
         config = Mock()
         config.get_user_config.return_value = None
@@ -192,11 +195,13 @@ class TestUser(object):
         with raises(AzureHostedUserConfigDataException):
             main()
 
+    @patch('azure_li_services.logger.Logger.setup')
     @patch('azure_li_services.units.user.Defaults.get_config_file')
     @patch('azure_li_services.units.user.RuntimeConfig')
     @patch('azure_li_services.units.user.StatusReport')
     def test_main_raises_on_incomplete_credentials(
-        self, mock_StatusReport, mock_RuntimConfig, mock_get_config_file
+        self, mock_StatusReport, mock_RuntimConfig, mock_get_config_file,
+        mock_logger_setup
     ):
         config = Mock()
         config.get_user_config.return_value = [{}]

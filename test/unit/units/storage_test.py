@@ -12,6 +12,7 @@ class TestStorage(object):
     def setup(self):
         self.config = RuntimeConfig('../data/config.yaml')
 
+    @patch('azure_li_services.logger.Logger.setup')
     @patch('azure_li_services.command.Command.run')
     @patch('azure_li_services.units.storage.RuntimeConfig')
     @patch('azure_li_services.units.storage.Defaults.get_config_file')
@@ -20,7 +21,8 @@ class TestStorage(object):
     @patch('azure_li_services.units.storage.Path.create')
     def test_main(
         self, mock_Path_create, mock_disk_usage, mock_StatusReport,
-        mock_get_config_file, mock_RuntimConfig, mock_Command_run
+        mock_get_config_file, mock_RuntimConfig, mock_Command_run,
+        mock_logger_setup
     ):
         disk_usage = Mock()
         disk_usage.free = humanfriendly.parse_size('112G', binary=True)
@@ -45,11 +47,13 @@ class TestStorage(object):
             with raises(AzureHostedException):
                 main()
 
+    @patch('azure_li_services.logger.Logger.setup')
     @patch('azure_li_services.units.storage.RuntimeConfig')
     @patch('azure_li_services.units.storage.Defaults.get_config_file')
     @patch('azure_li_services.units.storage.StatusReport')
     def test_main_raises(
-        self, mock_StatusReport, mock_get_config_file, mock_RuntimConfig
+        self, mock_StatusReport, mock_get_config_file, mock_RuntimConfig,
+        mock_logger_setup
     ):
         config = Mock()
         config.get_storage_config.return_value = [{}]

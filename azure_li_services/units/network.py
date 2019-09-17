@@ -16,6 +16,7 @@
 # along with azure-li-services.  If not, see <http://www.gnu.org/licenses/>
 #
 # project
+from azure_li_services.logger import Logger
 from azure_li_services.runtime_config import RuntimeConfig
 from azure_li_services.defaults import Defaults
 from azure_li_services.network import AzureHostedNetworkSetup
@@ -35,6 +36,7 @@ def main():
     Creates network configuration files to successfully start the
     network in the scope of an Azure Li/Vli instance
     """
+    Logger.setup()
     status = StatusReport('network')
     config = RuntimeConfig(Defaults.get_config_file())
     network_config = config.get_network_config()

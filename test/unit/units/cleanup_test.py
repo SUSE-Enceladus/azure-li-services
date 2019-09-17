@@ -6,13 +6,14 @@ from azure_li_services.units.cleanup import main
 
 
 class TestCleanup(object):
+    @patch('azure_li_services.logger.Logger.setup')
     @patch('azure_li_services.command.Command.run')
     @patch('azure_li_services.units.cleanup.Defaults.get_service_reports')
     @patch('azure_li_services.units.cleanup.Defaults.mount_config_source')
     @patch('azure_li_services.units.cleanup.Defaults.umount_config_source')
     def test_main(
         self, mock_umount_config_source, mock_mount_config_source,
-        mock_get_service_reports, mock_Command_run
+        mock_get_service_reports, mock_Command_run, mock_logger_setup
     ):
         report = Mock()
         report.get_state.return_value = True
@@ -71,6 +72,11 @@ class TestCleanup(object):
                     [
                         'bash', '-c',
                         'systemctl status -l --all &> lun_location/workload.log'
+                    ], raise_on_error=False
+                ),
+                call(
+                    [
+                        'cp', '/var/log/azure-li-services.log', 'lun_location'
                     ], raise_on_error=False
                 ),
                 call(

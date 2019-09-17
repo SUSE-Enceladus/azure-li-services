@@ -18,6 +18,7 @@
 import os
 
 # project
+from azure_li_services.logger import Logger
 from azure_li_services.command import Command
 from azure_li_services.defaults import Defaults
 
@@ -29,6 +30,7 @@ def main():
     Uninstall azure-li-services package and its dependencies
     and check for potential reboot request
     """
+    Logger.setup()
     service_reports = Defaults.get_service_reports()
 
     reboot_system = False
@@ -108,4 +110,8 @@ def write_service_log(install_source):
     )
     Command.run(
         ['bash', '-c', bash_command], raise_on_error=False
+    )
+    Command.run(
+        ['cp', Defaults.get_log_file(), install_source.location],
+        raise_on_error=False
     )

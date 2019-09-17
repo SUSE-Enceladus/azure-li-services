@@ -6,8 +6,9 @@ from azure_li_services.units.report import main
 
 
 class TestReport(object):
+    @patch('azure_li_services.logger.Logger.setup')
     @patch('azure_li_services.units.report.Defaults.get_service_reports')
-    def test_main(self, mock_get_service_reports):
+    def test_main(self, mock_get_service_reports, mock_logger_setup):
         report = Mock()
         report.get_systemd_service.return_value = 'service-name'
         report.get_state.return_value = False

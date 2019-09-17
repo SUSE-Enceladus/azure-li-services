@@ -19,6 +19,7 @@ import os
 import glob
 
 # project
+from azure_li_services.logger import Logger
 from azure_li_services.runtime_config import RuntimeConfig
 from azure_li_services.defaults import Defaults
 from azure_li_services.command import Command
@@ -34,6 +35,7 @@ def main():
     Installs all packages configured in the scope of an Azure
     Li/Vli instance
     """
+    Logger.setup()
     status = StatusReport('install')
     config = RuntimeConfig(Defaults.get_config_file())
     packages_config = config.get_packages_config()

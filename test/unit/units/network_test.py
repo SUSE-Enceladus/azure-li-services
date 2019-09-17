@@ -10,12 +10,13 @@ from azure_li_services.exceptions import (
 
 
 class TestNetwork(object):
+    @patch('azure_li_services.logger.Logger.setup')
     @patch('azure_li_services.units.network.AzureHostedNetworkSetup')
     @patch('azure_li_services.units.network.Defaults.get_config_file')
     @patch('azure_li_services.units.network.StatusReport')
     def test_main_li_vli_network(
         self, mock_StatusReport, mock_get_config_file,
-        mock_AzureHostedNetworkSetup
+        mock_AzureHostedNetworkSetup, mock_logger_setup
     ):
         status = Mock()
         mock_StatusReport.return_value = status
@@ -33,10 +34,11 @@ class TestNetwork(object):
         with raises(AzureHostedException):
             main()
 
+    @patch('azure_li_services.logger.Logger.setup')
     @patch('azure_li_services.units.network.Defaults.get_config_file')
     @patch('azure_li_services.units.network.StatusReport')
     def test_main_vli_gen3_network(
-        self, mock_StatusReport, mock_get_config_file
+        self, mock_StatusReport, mock_get_config_file, mock_logger_setup
     ):
         mock_get_config_file.return_value = '../data/config_vli_gen3.yaml'
         with raises(AzureHostedNetworkConfigDataException):
