@@ -7,6 +7,7 @@ from azure_li_services.exceptions import AzureHostedConfigFileNotFoundException
 
 
 class TestConfigLookup(object):
+    @patch('azure_li_services.logger.Logger.setup')
     @patch('azure_li_services.command.Command.run')
     @patch('azure_li_services.path.Path.create')
     @patch('azure_li_services.path.Path.which')
@@ -15,7 +16,7 @@ class TestConfigLookup(object):
     @patch('os.chmod')
     def test_main(
         self, mock_chmod, mock_mount_config_source, mock_StatusReport,
-        mock_Path_which, mock_Path_create, mock_Command_run
+        mock_Path_which, mock_Path_create, mock_Command_run, mock_logger_setup
     ):
         status = Mock()
         mock_StatusReport.return_value = status
@@ -45,13 +46,14 @@ class TestConfigLookup(object):
             [mock_mount_config_source.return_value.location]
         )
 
+    @patch('azure_li_services.logger.Logger.setup')
     @patch('azure_li_services.command.Command.run')
     @patch('azure_li_services.path.Path.which')
     @patch('azure_li_services.units.config_lookup.StatusReport')
     @patch('azure_li_services.defaults.Defaults.mount_config_source')
     def test_main_raises(
         self, mock_mount_config_source, mock_StatusReport,
-        mock_Path_which, mock_Command_run
+        mock_Path_which, mock_Command_run, mock_logger_setup
     ):
         mock_Path_which.return_value = None
         with raises(AzureHostedConfigFileNotFoundException):

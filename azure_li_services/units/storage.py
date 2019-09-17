@@ -20,6 +20,7 @@ import humanfriendly
 import shutil
 
 # project
+from azure_li_services.logger import Logger
 from azure_li_services.runtime_config import RuntimeConfig
 from azure_li_services.defaults import Defaults
 from azure_li_services.command import Command
@@ -39,6 +40,7 @@ def main():
     Updates fstab with new storage mount entries and activates
     them in the scope of an Azure Li/Vli instance
     """
+    Logger.setup()
     status = StatusReport('storage')
     config = RuntimeConfig(Defaults.get_config_file())
     storage_config = config.get_storage_config()

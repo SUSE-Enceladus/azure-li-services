@@ -21,6 +21,7 @@ class TestSystemSetup(object):
     def setup(self):
         self.config = RuntimeConfig('../data/config.yaml')
 
+    @patch('azure_li_services.logger.Logger.setup')
     @patch.object(system_setup, 'enable_extra_kernel_modules')
     @patch.object(system_setup, 'set_hostname')
     @patch.object(system_setup, 'set_stonith_service')
@@ -37,7 +38,8 @@ class TestSystemSetup(object):
         mock_set_energy_performance_settings,
         mock_set_kernel_samepage_merging_mode,
         mock_set_kdump_service, mock_set_stonith_service,
-        mock_set_hostname, mock_extra_modules
+        mock_set_hostname, mock_extra_modules,
+        mock_logger_setup
     ):
         status = Mock()
         mock_StatusReport.return_value = status

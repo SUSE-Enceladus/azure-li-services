@@ -15,33 +15,23 @@
 # You should have received a copy of the GNU General Public License
 # along with azure-li-services.  If not, see <http://www.gnu.org/licenses/>
 #
+import logging
+
 # project
-from azure_li_services.logger import Logger
-from azure_li_services.runtime_config import RuntimeConfig
 from azure_li_services.defaults import Defaults
-from azure_li_services.command import Command
-from azure_li_services.status_report import StatusReport
 
 
-def main():
-    """
-    Azure Li/Vli script call
+class Logger:
+    @staticmethod
+    def setup():
+        logger = logging.getLogger('Azure_LI_Services')
+        logger.setLevel(logging.INFO)
 
-    Calls a custom script in the scope of an Azure Li/Vli instance
-    """
-    Logger.setup()
-    status = StatusReport('call')
-    config = RuntimeConfig(Defaults.get_config_file())
-    call_script = config.get_call_script()
+        log_file = logging.FileHandler(Defaults.get_log_file())
+        log_file.setLevel(logging.INFO)
 
-    if call_script:
-        call_source = Defaults.mount_config_source()
-        Command.run(
-            [
-                'bash', '-c', '{0}/{1}'.format(
-                    call_source.location, call_script
-                )
-            ]
-        )
+        log_stream = logging.StreamHandler()
+        log_stream.setLevel(logging.INFO)
 
-    status.set_success()
+        logger.addHandler(log_stream)
+        logger.addHandler(log_file)

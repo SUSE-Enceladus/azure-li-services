@@ -18,6 +18,7 @@
 import os
 
 # project
+from azure_li_services.logger import Logger
 from azure_li_services.command import Command
 from azure_li_services.path import Path
 from azure_li_services.exceptions import AzureHostedConfigFileNotFoundException
@@ -33,6 +34,7 @@ def main():
     and make it locally available at the location described by
     Defaults.get_config_file_name()
     """
+    Logger.setup()
     status = StatusReport('config_lookup')
     azure_config = Defaults.mount_config_source()
 

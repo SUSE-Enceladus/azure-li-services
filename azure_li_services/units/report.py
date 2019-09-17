@@ -18,6 +18,7 @@
 import os
 
 # project
+from azure_li_services.logger import Logger
 from azure_li_services.defaults import Defaults
 
 
@@ -28,6 +29,7 @@ def main():
     Report overall service status in an update to /etc/issue
     if not all services were successful
     """
+    Logger.setup()
     service_reports = Defaults.get_service_reports()
 
     failed_services = []

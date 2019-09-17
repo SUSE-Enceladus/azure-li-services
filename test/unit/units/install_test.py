@@ -5,6 +5,7 @@ from azure_li_services.units.install import main
 
 
 class TestInstall(object):
+    @patch('azure_li_services.logger.Logger.setup')
     @patch('azure_li_services.command.Command.run')
     @patch('azure_li_services.units.install.Defaults.get_config_file')
     @patch('azure_li_services.units.install.Path.create')
@@ -15,7 +16,7 @@ class TestInstall(object):
     def test_main(
         self, mock_os_path_isdir, mock_iglob, mock_mount_config_source,
         mock_StatusReport, mock_Path_create, mock_get_config_file,
-        mock_Command_run
+        mock_Command_run, mock_logger_setup
     ):
         status = Mock()
         mock_StatusReport.return_value = status
