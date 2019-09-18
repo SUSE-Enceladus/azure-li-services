@@ -306,6 +306,12 @@ class TestSystemSetup(object):
                     ['rescan-scsi-bus.sh']
                 ),
                 call(
+                    ['systemctl', 'restart', 'iscsi']
+                ),
+                call(
+                    ['systemctl', 'restart', 'iscsid']
+                ),
+                call(
                     [
                         'sbd', '-d',
                         '/dev/disk/by-path/ip-10.20.253.31:3260-iscsi-iqn.'
