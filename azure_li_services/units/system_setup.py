@@ -240,6 +240,12 @@ def set_stonith_service(config):
             ['rescan-scsi-bus.sh']
         )
         Command.run(
+            ['systemctl', 'restart', 'iscsi']
+        )
+        Command.run(
+            ['systemctl', 'restart', 'iscsid']
+        )
+        Command.run(
             ['sbd', '-d', target_device, 'create']
         )
         Command.run(
