@@ -312,6 +312,9 @@ class TestSystemSetup(object):
                     ['systemctl', 'restart', 'iscsid']
                 ),
                 call(
+                    ['udevadm', 'settle', '--timeout=30']
+                ),
+                call(
                     [
                         'sbd', '-d',
                         '/dev/disk/by-path/ip-10.20.253.31:3260-iscsi-iqn.'
