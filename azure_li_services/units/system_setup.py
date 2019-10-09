@@ -228,6 +228,7 @@ def set_stonith_service(config):
     # target name. We also expect the discovery output to be in the
     # format: target_IP:port,target_portal_group_tag proper_target_name
     discovery_format = '.*:.*,.* .*'
+    udev_settle_timeout = '30'
     if discovery_output and re.match(discovery_format, discovery_output[0]):
         target_name = discovery_output[0].split(' ')[1]
         target_device = '/dev/disk/by-path/ip-{0}:3260-iscsi-{1}-lun-0'.format(
@@ -244,6 +245,9 @@ def set_stonith_service(config):
         )
         Command.run(
             ['systemctl', 'restart', 'iscsid']
+        )
+        Command.run(
+            ['udevadm', 'settle', '--timeout={0}'.format(udev_settle_timeout)]
         )
         Command.run(
             ['sbd', '-d', target_device, 'create']
