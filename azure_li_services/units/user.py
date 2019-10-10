@@ -105,12 +105,11 @@ def create_or_modify_user(user):
         ]
     if 'shadow_hash' in user:
         user_options += [
-            '-p', user['shadow_hash'],
-            '-s', '/bin/bash'
+            '-p', user['shadow_hash']
         ]
-    elif 'ssh-key' in user:
+    if 'loginshell' in user:
         user_options += [
-            '-s', '/bin/bash'
+            '-s', user['loginshell']
         ]
     else:
         user_options += [
