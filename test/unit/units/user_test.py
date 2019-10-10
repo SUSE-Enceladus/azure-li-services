@@ -82,7 +82,7 @@ class TestUser(object):
                     'root', ['-p', 'sha-512-cipher', '-s', '/bin/bash']
                 ),
                 call(
-                    'nopasslogin', ['-s', '/bin/bash']
+                    'nopasslogin', ['-s', '/sbin/nologin']
                 )
             ]
             system_users.setup_change_password_on_logon.assert_called_once_with(

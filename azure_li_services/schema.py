@@ -166,6 +166,10 @@ schema = {
                     'required': False,
                     'type': 'string'
                 },
+                'loginshell': {
+                    'required': False,
+                    'type': 'string'
+                },
                 'ssh-key': {
                     'required': False,
                     'type': 'string'

@@ -52,7 +52,8 @@ class TestRuntimeConfig(object):
                 'username': 'hanauser',
                 'shadow_hash': 'sha-512-cipher',
                 'ssh-private-key': 'path/to/private/key/id_dsa',
-                'require_password_change': True
+                'require_password_change': True,
+                'loginshell': '/bin/bash'
             },
             {
                 'group': {
@@ -66,7 +67,8 @@ class TestRuntimeConfig(object):
             {
                 'ssh-key': 'ssh-rsa foo',
                 'username': 'root',
-                'shadow_hash': 'sha-512-cipher'
+                'shadow_hash': 'sha-512-cipher',
+                'loginshell': '/bin/bash'
             },
             {
                 'ssh-key': 'ssh-rsa foo',

@@ -44,6 +44,7 @@ credentials:
     ssh-key: "ssh-rsa foo"
     ssh-private-key: "path/to/private/key/id_dsa"
     require_password_change: true
+    loginshell: "/bin/bash"
   -
     username: rpc
     id: 495
@@ -55,6 +56,7 @@ credentials:
     username: root
     shadow_hash: "sha-512-cipher"
     ssh-key: "ssh-rsa foo"
+    loginshell: "/bin/bash"
   -
     username: nopasslogin
     ssh-key: "ssh-rsa foo"
