@@ -198,25 +198,15 @@ class TestSystemSetup(object):
         mock_os_path_exists.return_value = True
         system_setup.set_saptune_service()
         assert mock_Command_run.call_args_list == [
-            call(['saptune', 'daemon', 'start']),
             call(['tuned-adm', 'profile', 'sap-hana']),
-            call(['systemctl', 'start', 'tuned']),
-            call(['systemctl', 'enable', 'tuned']),
-            call(['tuned-adm', 'profile', 'sap-hana']),
-            call(['saptune', 'solution', 'apply', 'HANA']),
-            call(['saptune', 'daemon', 'start'])
+            call(['systemctl', 'enable', '--now', 'sapconf.service'])
         ]
         mock_os_path_exists.return_value = False
         mock_Command_run.reset_mock()
         system_setup.set_saptune_service()
         assert mock_Command_run.call_args_list == [
-            call(['saptune', 'daemon', 'start']),
             call(['tuned-adm', 'profile', 'sapconf']),
-            call(['systemctl', 'start', 'tuned']),
-            call(['systemctl', 'enable', 'tuned']),
-            call(['tuned-adm', 'profile', 'sapconf']),
-            call(['saptune', 'solution', 'apply', 'HANA']),
-            call(['saptune', 'daemon', 'start'])
+            call(['systemctl', 'enable', '--now', 'sapconf.service'])
         ]
 
     @patch('azure_li_services.command.Command.run')
