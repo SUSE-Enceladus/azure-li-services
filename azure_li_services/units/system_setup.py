@@ -117,15 +117,11 @@ def set_energy_performance_settings():
 
 
 def set_saptune_service():
-    profile = 'sapconf'
-    if os.path.exists('/usr/lib/tuned/sap-hana'):
-        profile = 'sap-hana'
-
     Command.run(
-        ['tuned-adm', 'profile', profile]
+        ['saptune', 'daemon', 'start']
     )
     Command.run(
-        ['systemctl', 'enable', '--now', 'sapconf.service']
+        ['saptune', 'solution', 'apply', 'HANA']
     )
 
 
