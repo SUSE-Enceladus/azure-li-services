@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with azure-li-services.  If not, see <http://www.gnu.org/licenses/>
 #
+import logging
+import time
 import os
 import hashlib
 import re
@@ -171,6 +173,7 @@ def set_kdump_service(config, status):
 
 
 def set_stonith_service(config):
+    logger = logging.getLogger('Azure_LI_Services')
     # 1. setup InitiatorName
     initiator_name = 'iqn.1996-04.de.suse:01:{0}'.format(
         config['initiatorname']
@@ -211,6 +214,9 @@ def set_stonith_service(config):
     # format: target_IP:port,target_portal_group_tag proper_target_name
     discovery_format = '.*:.*,.* .*'
     udev_settle_timeout = '30'
+    sbd_max_attempts = 3
+    sbd_nop_time_sec = 2
+    sbd_setup_successful = False
     if discovery_output and re.match(discovery_format, discovery_output[0]):
         target_name = discovery_output[0].split(' ')[1]
         target_device = '/dev/disk/by-path/ip-{0}:3260-iscsi-{1}-lun-0'.format(
@@ -231,12 +237,29 @@ def set_stonith_service(config):
         Command.run(
             ['udevadm', 'settle', '--timeout={0}'.format(udev_settle_timeout)]
         )
-        Command.run(
-            ['sbd', '-d', target_device, 'create']
-        )
-        Command.run(
-            ['sbd', '-d', target_device, 'dump']
-        )
+        for try_count in range(sbd_max_attempts):
+            logger.info('SBD setup try[{0}]'.format(try_count))
+            try:
+                Command.run(
+                    ['sbd', '-d', target_device, 'create']
+                )
+                Command.run(
+                    ['sbd', '-d', target_device, 'dump']
+                )
+                sbd_setup_successful = True
+            except Exception as issue:
+                logger.error(
+                    'SBD setup failed with: {0}: Retry in {1}sec'.format(
+                        issue, sbd_nop_time_sec
+                    )
+                )
+                time.sleep(sbd_nop_time_sec)
+            else:
+                break
+        if not sbd_setup_successful:
+            raise AzureHostedCommandOutputException(
+                'Stonith: SBD setup failed'
+            )
         _write_file(
             '/etc/sysconfig/sbd', 'SBD_DEVICE="{0}"'.format(target_device)
         )

@@ -1,6 +1,9 @@
 import io
+import logging
 import os
-from pytest import raises
+from pytest import (
+    raises, fixture
+)
 from textwrap import dedent
 from unittest.mock import (
     patch, Mock, MagicMock, call
@@ -18,6 +21,10 @@ from azure_li_services.exceptions import (
 
 
 class TestSystemSetup(object):
+    @fixture(autouse=True)
+    def inject_fixtures(self, caplog):
+        self._caplog = caplog
+
     def setup(self):
         self.config = RuntimeConfig('../data/config.yaml')
 
@@ -213,6 +220,48 @@ class TestSystemSetup(object):
                 system_setup.set_stonith_service(
                     {'initiatorname': 't090xyzzysid4', 'ip': '10.20.253.31'}
                 )
+
+    @patch('azure_li_services.command.Command.run')
+    @patch('time.sleep')
+    def test_set_stonith_service_with_retry_failed(
+        self, mock_time_sleep, mock_Command_run
+    ):
+        command = Mock
+        command.output = os.linesep.join(
+            [
+                '10.20.253.31:3260,1054 iqn.1992-08.com.netapp:sn.'
+                '562892c1030b11e9b8ec00a098d274e4:vs.6',
+                '10.20.253.42:3260,1057 iqn.1992-08.com.netapp:sn.'
+                '562892c1030b11e9b8ec00a098d274e4:vs.6'
+            ]
+        )
+        mock_Command_run.return_value = command
+
+        def command_run(*args):
+            if args[0][0] == 'sbd':
+                raise Exception('bummer')
+            else:
+                return mock_Command_run
+
+        mock_Command_run.side_effect = command_run
+
+        with patch('builtins.open', create=True) as mock_open:
+            mock_open.return_value = MagicMock(spec=io.IOBase)
+            file_handle = mock_open.return_value.__enter__.return_value
+            file_handle.read.return_value = dedent('''
+                node.session.timeo.replacement_timeout = 120
+                node.startup = manual
+            ''')
+            with raises(AzureHostedCommandOutputException):
+                with self._caplog.at_level(logging.ERROR):
+                    system_setup.set_stonith_service(
+                        {'initiatorname': 't090xyzzysid4', 'ip': '10.20.253.31'}
+                    )
+                    assert 'SBD setup failed with: bummer: Retry in 2sec' in \
+                        self._caplog.text
+                    assert mock_time_sleep.call_args_list == [
+                        call(2), call(2), call(2)
+                    ]
 
     @patch('azure_li_services.command.Command.run')
     def test_set_stonith_service(self, mock_Command_run):
