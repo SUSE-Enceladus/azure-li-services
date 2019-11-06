@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- The line below is required in order to use the multibuild OBS features -->
+<!-- OBS-Profiles: @BUILD_FLAVOR@ -->
+
+<image schemaversion="6.2" name="SLES15-SP2-SAP-Azure-VLI-BYOS" displayname="SLES15-SP2-SAP-Azure-VLI-BYOS">
+    <description type="system">
+        <author>Public Cloud Team</author>
+        <contact>public-cloud-dev@susecloud.net</contact>
+        <specification>SUSE Linux Enterprise Server 15 Service Pack 2 for SAP
+            Applications image for Microsoft Azure Large Instance - Bring Your Own Subscription</specification>
+    </description>
+    <profiles>
+        <profile name="Devel" description="Devel Image Build"/>
+        <profile name="Production" description="Production Image Build"/>
+    </profiles>
+    <preferences>
+        <version>1.0.5</version>
+        <packagemanager>zypper</packagemanager>
+        <rpm-check-signatures>false</rpm-check-signatures>
+        <locale>en_US</locale>
+        <keytable>us.map.gz</keytable>
+        <timezone>UTC</timezone>
+    </preferences>
+    <preferences profiles="Production">
+        <type image="oem" filesystem="xfs" bootloader="grub2" bootloader_console="console" initrd_system="dracut" kernelcmdline="splash=verbose nomodeset net.ifnames=1 numa_balancing=disable transparent_hugepage=never intel_idle.max_cstate=1 processor.max_cstate=1 crashkernel=160M,high crashkernel=80M,low nohz=off skew_tick=1 intel_pstate=disable clocksource=tsc console=ttyS0,115200" firmware="uefi" bootpartition="false">
+            <oemconfig>
+                <oem-swap>true</oem-swap>
+                <!-- swap size set to 2G -->
+                <oem-swapsize>2048</oem-swapsize>
+            </oemconfig>
+        </type>
+    </preferences>
+    <preferences profiles="Devel">
+        <type image="oem" filesystem="xfs" bootloader="grub2" bootloader_console="console" initrd_system="dracut" kernelcmdline="splash=verbose nomodeset net.ifnames=1 numa_balancing=disable transparent_hugepage=never intel_idle.max_cstate=1 processor.max_cstate=1 crashkernel=160M,high crashkernel=80M,low nohz=off skew_tick=1 intel_pstate=disable clocksource=tsc console=ttyS0,115200 rd.kiwi.debug" firmware="uefi" bootpartition="false">
+            <oemconfig>
+                <oem-swap>true</oem-swap>
+                <!-- swap size set to 2G -->
+                <oem-swapsize>2048</oem-swapsize>
+            </oemconfig>
+        </type>
+    </preferences>
+    <users group="root">
+        <user password="$1$wYJUgpM5$RXMMeASDc035eX.NbYWFl0" home="/root" name="root"/>
+    </users>
+    <repository type="rpm-md" >
+        <source path='obsrepositories:/'/>
+    </repository>
+    <packages type="image">
+        <!-- jeos server -->
+        <package name="patterns-base-minimal_base"/>
+        <package name="blog"/>
+        <package name="dhcp-client"/>
+        <package name="fontconfig"/>
+        <package name="fonts-config"/>
+        <package name="shim"/>
+        <!-- requested by SAP Applications Configuration Guide for SAP HANA -->
+        <package name="wireshark"/>
+        <package name="findutils-locate"/>
+        <package name="audit-libs"/>
+        <package name="keyutils-libs"/>
+        <package name="libopenssl1_0_0"/>
+        <package name="libssh2-1"/>
+        <!-- add for kernel crash dump analysis -->
+        <!-- <package name="crash"/> -->
+        <!-- <package name="kernel-debug"/> -->
+        <!-- Explicit pull of gettext-runtime to avoid getting -mini-->
+        <package name="gettext-runtime"/>
+        <package name="grub2"/>
+        <package name="iproute2"/>
+        <package name="iputils"/>
+        <package name="lvm2"/>
+        <package name="openssh"/>
+        <package name="parted"/>
+        <package name="plymouth"/>
+        <package name="psmisc"/>
+        <package name="rsync"/>
+        <package name="syslinux"/>
+        <package name="systemd"/>
+        <package name="systemd-sysvinit"/>
+        <package name="sudo"/>
+        <package name="tar"/>
+        <package name="vim"/>
+        <package name="which"/>
+        <!-- end jeos server -->
+        <!-- basic functionality -->
+        <package name="aaa_base-extras"/>
+        <package name="at"/>
+        <package name="at-spi2-core"/>
+        <!--Accessibility-->
+        <package name="attr"/>
+        <package name="audit"/>
+        <package name="autofs"/>
+        <package name="bc"/>
+        <package name="binutils"/>
+        <package name="blktrace"/>
+        <package name="cifs-utils"/>
+        <package name="command-not-found"/>
+        <package name="crash"/>
+        <package name="curl"/>
+        <!-- Authentication functionality -->
+        <package name="cyrus-sasl"/>
+        <package name="cyrus-sasl-digestmd5"/>
+        <package name="cyrus-sasl-gssapi"/>
+        <package name="cyrus-sasl-plain"/>
+        <package name="cyrus-sasl-saslauthd"/>
+        <!-- Authentication functionality end -->
+        <package name="deltarpm"/>
+        <package name="dos2unix"/>
+        <package name="dosfstools"/>
+        <package name="ethtool"/>
+        <package name="expect"/>
+        <package name="fping"/>
+        <package name="glibc-i18ndata"/>
+        <package name="haveged"/>
+        <package name="icmpinfo"/>
+        <package name="irqbalance"/>
+        <package name="kernel-default"/>
+        <package name="kernel-firmware"/>
+        <package name="ucode-intel"/>
+        <package name="klogd"/>
+        <package name="krb5-client"/>
+        <package name="ksh"/>
+        <!-- used by gpg -->
+        <package name="lockdev"/>
+        <package name="man"/>
+        <package name="man-pages"/>
+        <package name="mozilla-nss-certs"/>
+        <package name="netcat-openbsd"/>
+        <package name="nfsidmap"/>
+        <package name="nfs-client"/>
+        <package name="nfs-kernel-server"/>
+        <package name="nscd"/>
+        <package name="ntp"/>
+        <package name="openldap2-client"/>
+        <package name="opie"/>
+        <package name="pam-modules"/>
+        <package name="polkit-default-privs"/>
+        <package name="prctl"/>
+        <package name="procinfo"/>
+        <package name="quota"/>
+        <package name="release-notes-sles"/>
+        <package name="rsh"/>
+        <package name="screen"/>
+        <package name="strace"/>
+        <package name="supportutils"/>
+        <package name="supportutils-plugin-suse-public-cloud"/>
+        <package name="SUSEConnect"/>
+        <package name="SuSEfirewall2"/>
+        <package name="suse-build-key"/>
+        <package name="tcpd"/>
+        <package name="tcpdump"/>
+        <package name="tcsh"/>
+        <package name="telnet"/>
+        <package name="terminfo"/>
+        <package name="wget"/>
+        <package name="xfsprogs"/>
+        <package name="yp-tools"/>
+        <package name="zip"/>
+        <package name="zsh"/>
+        <package name="zypper-migration-plugin"/>
+        <!-- packages needed for resolution in OBS -->
+        <package name="acl"/>
+        <package name="fipscheck"/>
+        <package name="ncurses-utils"/>
+        <package name="sg3_utils"/>
+        <package name="pkg-config"/>
+        <package name="elfutils"/>
+        <package name="udev"/>
+        <!-- end packages needed for resolution in OBS -->
+        <!-- end basic functionality -->
+        <!-- user configuration tools -->
+        <package name="multipath-tools"/>
+        <package name="yast2"/>
+        <package name="yast2-add-on"/>
+        <package name="yast2-audit-laf"/>
+        <package name="yast2-bootloader"/>
+        <package name="yast2-core"/>
+        <package name="yast2-country"/>
+        <package name="yast2-country-data"/>
+        <package name="yast2-dhcp-server"/>
+        <package name="yast2-dns-server"/>
+        <package name="yast2-firewall"/>
+        <package name="yast2-ftp-server"/>
+        <package name="yast2-hardware-detection"/>
+        <package name="yast2-http-server"/>
+        <package name="yast2-iscsi-client"/>
+        <package name="yast2-iscsi-lio-server"/>
+        <package name="yast2-isns"/>
+        <package name="yast2-kdump"/>
+        <package name="yast2-ldap"/>
+        <package name="yast2-mail"/>
+        <package name="yast2-network"/>
+        <package name="yast2-nfs-client"/>
+        <package name="yast2-nfs-common"/>
+        <package name="yast2-nfs-server"/>
+        <package name="yast2-nis-client"/>
+        <package name="yast2-nis-server"/>
+        <package name="yast2-ntp-client"/>
+        <package name="yast2-online-update"/>
+        <package name="yast2-online-update-frontend"/>
+        <package name="yast2-packager"/>
+        <package name="yast2-pam"/>
+        <package name="yast2-perl-bindings"/>
+        <package name="yast2-pkg-bindings"/>
+        <package name="yast2-printer"/>
+        <package name="yast2-registration"/>
+        <package name="yast2-samba-client"/>
+        <package name="yast2-samba-server"/>
+        <package name="yast2-schema"/>
+        <package name="yast2-security"/>
+        <package name="yast2-squid"/>
+        <package name="yast2-sudo"/>
+        <package name="yast2-support"/>
+        <package name="yast2-sysconfig"/>
+        <package name="yast2-tftp-server"/>
+        <package name="yast2-theme-SLE"/>
+        <package name="yast2-trans-en_US"/>
+        <package name="yast2-transfer"/>
+        <package name="yast2-trans-stats"/>
+        <package name="yast2-tune"/>
+        <package name="yast2-update"/>
+        <package name="yast2-users"/>
+        <package name="yast2-xml"/>
+        <package name="yast2-ycp-ui-bindings"/>
+        <!-- end user configuration tools -->
+        <!-- framework specific packages -->
+        <package name="hyper-v"/>
+        <!-- instance initialization -->
+        <package name="python3"/>
+        <package name="azure-li-services"/>
+        <!-- instance registration -->
+        <!-- BYOS needs to be registered by customer with SUSEConnect -->
+        <!-- end framework specific packages -->
+        <!-- SLES for SAP sepcific packages -->
+        <package name="patterns-ha-ha_sles"/>
+        <package name="patterns-sles-base"/>
+        <package name="patterns-sles-sap_server"/>
+        <package name="patterns-sap-hana"/>
+        <package name="MozillaFirefox-branding-SLE"/>
+        <package name="gconf2"/>
+        <package name="bing"/>
+        <package name="bonnie"/>
+        <package name="cluster-md-kmp-default"/>
+        <package name="saptune"/>
+        <package name="tuned"/>
+        <!-- OBS cannot resolve cpupower package as dependency of tuned -->
+        <package name="cpupower"/>
+        <package name="dlm-kmp-default"/>
+        <package name="drbd-kmp-default"/>
+        <!-- fence-agents is not part of the HA pattern but desired for SAP -->
+        <package name="fence-agents"/>
+        <package name="findutils-locate"/>
+        <package name="gfs2-kmp-default"/>
+        <package name="hawk2"/>
+        <package name="ocfs2-kmp-default"/>
+        <!-- OBS cannot resolve ipmitool package as dependency
+        of fence-agents -->
+        <package name="ipmitool"/>
+        <package name="SAPHanaSR"/>
+        <package name="SAPHanaSR-doc"/>
+        <package name="xauth"/>
+        <package name="xkbcomp"/>
+        <package name="xorg-x11-Xvnc"/>
+        <package name="yast2-control-center-qt"/>
+        <package name="yast2-sap-scp"/>
+        <package name="yast2-sap-scp-prodlist"/>
+        <!-- Msft requested packages -->
+        <package name="zlib"/>
+        <package name="zlib-devel"/>
+        <package name="perl-TimeDate"/>
+        <package name="dracut-kiwi-oem-repart"/>
+    </packages>
+    <packages type="bootstrap">
+        <!-- products -->
+        <!-- products get installed during bootstrap to avoid conflicts with
+             _dummy packages for builds outside of the Build Service -->
+        <package name="SLES_SAP-release"/>
+        <!-- Modules -->
+        <package name="sle-module-basesystem-release"/>
+        <package name="sle-module-containers-release"/>
+        <package name="sle-module-desktop-applications-release"/>
+        <package name="sle-module-web-scripting-release"/>
+        <package name="sle-module-legacy-release"/>
+        <package name="sle-ha-release"/>
+        <package name="sle-module-public-cloud-release"/>
+        <package name="sle-module-sap-applications-release"/>
+        <package name="sle-module-cap-tools-release"/>
+        <package name="sle-module-development-tools-release"/>
+        <package name="sle-module-server-applications-release"/>
+        <package name="filesystem"/>
+        <package name="glibc-locale"/>
+    </packages>
+</image>
