@@ -223,6 +223,7 @@
         <package name="yast2-users"/>
         <package name="yast2-xml"/>
         <package name="yast2-ycp-ui-bindings"/>
+        <package name="libyui-ncurses-pkg"/>
         <!-- end user configuration tools -->
         <!-- framework specific packages -->
         <package name="hyper-v"/>
