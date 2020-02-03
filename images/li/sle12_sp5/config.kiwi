@@ -2,7 +2,7 @@
 
 <!-- The line below is required in order to use the multibuild OBS features -->
 <!-- OBS-Profiles: @BUILD_FLAVOR@ -->
-
+<!-- OBS-ExclusiveArch: x86_64 -->
 <image schemaversion="6.2" name="SLES12-SP5-SAP-Azure-LI-BYOS" displayname="SLES12-SP5-SAP-Azure-LI-BYOS">
     <description type="system">
         <author>Public Cloud Team</author>
