@@ -255,6 +255,13 @@
         <package name="gfs2-kmp-default"/>
         <package name="hawk2"/>
         <package name="ocfs2-kmp-default"/>
+        <!-- Salt formulas etc. requested in jsc#SLE-11453 and jsc#11454 -->
+        <package name="drbd-formula"/>
+        <package name="habootstrap-formula"/>
+        <package name="python-shaptools"/>
+        <package name="salt-shaptools"/>
+        <package name="saphanabootstrap-formula"/>
+        <package name="sapnwbootstrap-formula"/>
         <!-- OBS cannot resolve ipmitool package as dependency
         of fence-agents -->
         <package name="ipmitool"/>
