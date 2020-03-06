@@ -8,6 +8,8 @@ variables:
 update_obs_services:
   image: $CI_REGISTRY/$BUILD_IMAGES_PROJECT:$TUMBLEWEED_BUILD
   stage: obs
+  only:
+    - master
   script:
     - base64 --decode "$HOP_HOST_SECRET" > id_hop_host
     - chmod 600 id_hop_host
