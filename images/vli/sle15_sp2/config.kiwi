@@ -278,6 +278,7 @@
         <package name="zlib-devel"/>
         <package name="perl-TimeDate"/>
         <package name="dracut-kiwi-oem-repart"/>
+        <package name="java-1_8_0-ibm"/>
     </packages>
     <packages type="bootstrap">
         <!-- products -->
