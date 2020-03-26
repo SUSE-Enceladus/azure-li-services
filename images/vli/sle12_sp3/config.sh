@@ -39,13 +39,6 @@ popd
 suseImportBuildKey
 
 #=========================================
-# Delete persistent-net.rules
-#-----------------------------------------
-# Avoid recreation of interface names at each boot
-# This goes along with net.ifnames=1
-rm -f /etc/udev/rules.d/70-persistent-net.rules
-
-#=========================================
 # Set sysconfig options
 #-----------------------------------------
 baseUpdateSysConfig \
