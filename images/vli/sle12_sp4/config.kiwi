@@ -184,7 +184,9 @@
         <!-- end basic functionality -->
         <!-- user configuration tools -->
         <package name="libyui-ncurses-pkg7"/>
+        <package name="libyui-qt-pkg7"/>
         <package name="multipath-tools"/>
+        <package name="numad"/>
         <package name="yast2"/>
         <package name="yast2-add-on"/>
         <package name="yast2-audit-laf"/>
