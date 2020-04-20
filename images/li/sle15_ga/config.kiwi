@@ -50,6 +50,7 @@
     <packages type="image">
         <!-- jeos server -->
         <package name="patterns-base-minimal_base"/>
+        <package name="rsyslog"/>
         <package name="blog"/>
         <package name="chrony"/>
         <package name="dhcp-client"/>
