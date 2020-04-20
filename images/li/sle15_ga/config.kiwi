@@ -85,6 +85,7 @@
         <package name="vim"/>
         <package name="which"/>
         <package name="udev"/>
+        <package name="system-group-wheel"/>
         <!-- end jeos server -->
         <!-- basic functionality -->
         <package name="aaa_base-extras"/>

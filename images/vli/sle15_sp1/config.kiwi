@@ -171,6 +171,7 @@
         <package name="pkg-config"/>
         <package name="elfutils"/>
         <package name="udev"/>
+        <package name="system-group-wheel"/>
         <!-- end packages needed for resolution in OBS -->
         <!-- end basic functionality -->
         <!-- user configuration tools -->
