@@ -16,6 +16,8 @@ update_obs_services:
     - ssh -o StrictHostKeyChecking=no -i id_hop_host $(echo "$HOP_HOST" | base64 --decode) 2>/dev/null
 
 mirror_testing_images:
+  image: $CI_REGISTRY/$BUILD_IMAGES_PROJECT:$TUMBLEWEED_BUILD
+  stage: obs
   only:
     - schedules
   script:
