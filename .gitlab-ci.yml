@@ -10,6 +10,8 @@ update_obs_services:
   stage: obs
   only:
     - master
+  except:
+    - schedules
   script:
     - base64 --decode "$HOP_HOST_SECRET" > id_hop_host
     - chmod 600 id_hop_host
@@ -30,6 +32,8 @@ create_obs_static_data:
   stage: obs
   only:
     - master
+  except:
+    - schedules
   script:
     - ./obs_static.sh
   artifacts:
