@@ -165,19 +165,32 @@ class TestSystemSetup(object):
     @patch('azure_li_services.units.system_setup.virtual_memory')
     def test_set_kdump_service(self, mock_virtual_memory, mock_Command_run):
         memory = Mock()
-        memory.total = 2216746782720
+        # simulate 4TB system
+        memory.total = 4 * (1024**4)
         mock_virtual_memory.return_value = memory
         kdumptool_call = Mock()
         kdumptool_call.output = dedent('''
             Total: 16308
             Low: 72
-            High: 123
+            High: 224
             MinLow: 72
             MaxLow: 2455
             MinHigh: 0
             MaxHigh: 13824
         ''').strip() + os.linesep
-        mock_Command_run.return_value = kdumptool_call
+
+        lun_call = Mock()
+        lun_call.output = dedent('''
+            16
+        ''').strip() + os.linesep
+
+        command_calls_return = [None, None, lun_call, kdumptool_call]
+
+        def command_calls(params):
+            return command_calls_return.pop()
+
+        mock_Command_run.side_effect = command_calls
+
         with open('../data/default_grub') as handle:
             grub_defaults_data = handle.read()
         with patch('builtins.open', create=True) as mock_open:
@@ -189,11 +202,12 @@ class TestSystemSetup(object):
             assert file_handle.write.call_args_list == [
                 call(
                     'GRUB_CMDLINE_LINUX_DEFAULT="quiet splash=silent '
-                    'crashkernel=246M,high crashkernel=72M,low"\n'
+                    'crashkernel=904M,high crashkernel=72M,low"\n'
                 )
             ]
             assert mock_Command_run.call_args_list == [
                 call(['kdumptool', 'calibrate']),
+                call(['bash', '-c', 'lsblk | grep disk | wc -l']),
                 call(['grub2-mkconfig', '-o', '/boot/grub2/grub.cfg']),
                 call(['systemctl', 'restart', 'kdump'])
             ]

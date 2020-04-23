@@ -311,11 +311,18 @@ def _kdump_calibrate(high, low):
                 pass
             calibration_values[key] = int(value)
 
-        # update High value on machines with more than 1TB of main memory
+        bash_command = ' '.join(
+            ['lsblk', '|', 'grep', 'disk', '|', 'wc', '-l']
+        )
+        storage_luns = int(
+            Command.run(['bash', '-c', bash_command]).output
+        )
         machine_memory = virtual_memory()
-        machine_memory_tbytes = int(machine_memory.total / 1024**4)
-        if machine_memory_tbytes > 1:
-            calibration_values['High'] *= machine_memory_tbytes
+        memory_TB = max(1, machine_memory.total / 1024**4)
+
+        calibration_values['High'] = int(
+            calibration_values['High'] * memory_TB + (storage_luns / 2)
+        )
     return calibration_values
 
 
