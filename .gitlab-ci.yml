@@ -25,7 +25,7 @@ mirror_testing_images:
   script:
     - base64 --decode "$HOP_HOST_SECRET_AZURE_TESTING" > id_hop_host
     - chmod 600 id_hop_host
-    - ssh -o StrictHostKeyChecking=no -i id_hop_host $(echo "$HOP_HOST" | base64 --decode) 2>/dev/null
+    - ssh -o StrictHostKeyChecking=no -i id_hop_host $(echo "$HOP_HOST_AZURE_TESTING" | base64 --decode) 2>/dev/null
 
 create_obs_static_data:
   image: $CI_REGISTRY/$BUILD_IMAGES_PROJECT:$TUMBLEWEED_BUILD
