@@ -24,7 +24,7 @@ mirror_testing_images:
     refs:
       - schedules
     variables:
-      - "$SCHEDULE_TYPE" == 'mirror'
+      - $SCHEDULE_TYPE == 'mirror'
   script:
     - base64 --decode "$HOP_HOST_SECRET_AZURE_TESTING" > id_hop_host
     - chmod 600 id_hop_host
