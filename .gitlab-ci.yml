@@ -22,6 +22,7 @@ mirror_testing_images:
   stage: obs
   only:
     - schedules
+  only:
     variables:
       - "$SCHEDULE_TYPE" == 'mirror'
   script:
