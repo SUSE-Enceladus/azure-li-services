@@ -21,8 +21,8 @@ mirror_testing_images:
   image: $CI_REGISTRY/$BUILD_IMAGES_PROJECT:$TUMBLEWEED_BUILD
   stage: obs
   only:
-    - schedules
-  only:
+    refs:
+      - schedules
     variables:
       - "$SCHEDULE_TYPE" == 'mirror'
   script:
