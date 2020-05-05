@@ -5,13 +5,14 @@ variables:
   BUILD_IMAGES_PROJECT: azure-li/azure-li-ci-containers
   TUMBLEWEED_BUILD: buildenv-tumbleweed
 
-update_obs_services:
+update_azure_li_services:
   image: $CI_REGISTRY/$BUILD_IMAGES_PROJECT:$TUMBLEWEED_BUILD
   stage: obs
   only:
-    - master
+    - tags
   except:
     - schedules
+    - branches
   script:
     - base64 --decode "$HOP_HOST_SECRET" > id_hop_host
     - chmod 600 id_hop_host
