@@ -280,6 +280,9 @@
         <package name="zlib-devel"/>
         <package name="perl-TimeDate"/>
         <package name="java-1_8_0-ibm"/>
+        <package name="prometheus-ha_cluster_exporter"/>
+        <package name="prometheus-hanadb_exporter"/>
+        <package name="prometheus-sap_host_exporter"/>
     </packages>
     <packages type="bootstrap">
         <!-- products -->
