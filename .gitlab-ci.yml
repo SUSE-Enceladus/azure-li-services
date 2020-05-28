@@ -50,7 +50,7 @@ mirror_production_images_to_microsoft:
     refs:
       - schedules
     variables:
-      - $SCHEDULE_TYPE == 'mirror'
+      - $SCHEDULE_TYPE == 'production_mirror'
   script:
     - base64 --decode "$AZURE_LI_PRODUCTION_MIRROR" > id_hop_host
     - chmod 600 id_hop_host
