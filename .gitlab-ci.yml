@@ -43,6 +43,19 @@ mirror_testing_images_to_microsoft:
     - chmod 600 id_hop_host
     - ssh -o StrictHostKeyChecking=no -i id_hop_host $(echo "$HOP_HOST_MIRROR" | base64 --decode) 2>/dev/null
 
+mirror_production_images_to_microsoft:
+  image: $CI_REGISTRY/$BUILD_IMAGES_PROJECT:$TUMBLEWEED_BUILD
+  stage: obs
+  only:
+    refs:
+      - schedules
+    variables:
+      - $SCHEDULE_TYPE == 'mirror'
+  script:
+    - base64 --decode "$AZURE_LI_PRODUCTION_MIRROR" > id_hop_host
+    - chmod 600 id_hop_host
+    - ssh -o StrictHostKeyChecking=no -i id_hop_host $(echo "$HOP_HOST_MIRROR" | base64 --decode) 2>/dev/null
+
 create_obs_data_for_production:
   image: $CI_REGISTRY/$BUILD_IMAGES_PROJECT:$TUMBLEWEED_BUILD
   stage: obs
