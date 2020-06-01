@@ -254,3 +254,15 @@ class TestAzureHostedNetworkSetup(object):
                 call('/etc/sysconfig/network/ifcfg-vlan10', 'w'),
                 call('/etc/sysconfig/network/ifcfg-bond0', 'w')
             ]
+
+    def test_update_hosts(self):
+        with patch('builtins.open', create=True) as mock_open:
+            mock_open.return_value = MagicMock(spec=io.IOBase)
+            file_handle = mock_open.return_value.__enter__.return_value
+            for network_config in self.network_config_vlan_bond:
+                network = AzureHostedNetworkSetup(network_config)
+                network.update_hosts('azure')
+                network.update_hosts('azure')
+            assert file_handle.write.call_args_list == [
+                call('10.250.10.51 azure.example.com azure\n')
+            ]

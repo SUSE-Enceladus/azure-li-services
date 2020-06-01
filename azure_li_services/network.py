@@ -28,6 +28,7 @@ class AzureHostedNetworkSetup(object):
     """
     def __init__(self, network):
         self.network = network
+        self._is_hosts_updated = False
 
     def create_interface_config(self):
         """
@@ -179,3 +180,23 @@ class AzureHostedNetworkSetup(object):
         Setup bridge configuration on top of interface config
         """
         raise NotImplementedError
+
+    def update_hosts(self, hostname):
+        """Set up hostname for testing purposes."""
+        if self._is_hosts_updated:
+            return
+        if 'vlan' not in self.network:
+            return
+        if str(self.network['vlan'])[-1] == '0' and self.network['vlan_mtu'] == 1500:
+            if 'ip' in self.network:
+                hosts_file = '/etc/hosts'
+                setup = dedent('''
+                    {ip} {hostname}.example.com {repeat_hostname}
+                ''').lstrip()
+                with open(hosts_file, 'w') as etc_hosts:
+                    etc_hosts.write(
+                        setup.format(ip=self.network['ip'],
+                                     hostname=hostname,
+                                     repeat_hostname=hostname)
+                    )
+                    self._is_hosts_updated = True

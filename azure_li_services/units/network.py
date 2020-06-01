@@ -52,6 +52,7 @@ def main():
                     li_network.create_vlan_config()
                     li_network.create_bond_config()
                     li_network.create_default_route_config()
+                    li_network.update_hosts(config.get_hostname())
                 except Exception as issue:
                     network_errors.append(issue)
 
