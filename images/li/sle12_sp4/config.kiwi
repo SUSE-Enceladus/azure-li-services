@@ -32,7 +32,7 @@
         </type>
     </preferences>
     <preferences profiles="Devel">
-        <type image="oem" filesystem="xfs" bootloader="grub2" initrd_system="dracut" kernelcmdline="splash=verbose net.ifnames=1 mce=ignore_ce nomodeset numa_balancing=disable transparent_hugepage=never intel_idle.max_cstate=1 processor.max_cstate=1 crashkernel=160M,high crashkernel=80M,low rd.kiwi.debug" firmware="bios" bootpartition="false">
+        <type image="oem" filesystem="xfs" bootloader="grub2" initrd_system="dracut" kernelcmdline="splash=verbose net.ifnames=1 mce=ignore_ce nomodeset numa_balancing=disable transparent_hugepage=never intel_idle.max_cstate=1 processor.max_cstate=1 crashkernel=160M,high crashkernel=80M,low rd.debug rd.kiwi.debug" firmware="bios" bootpartition="false">
             <oemconfig>
                 <oem-swap>true</oem-swap>
                 <!-- swap size set to 2G -->
