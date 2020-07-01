@@ -15,7 +15,7 @@
         <profile name="Production" description="Production Image Build"/>
     </profiles>
     <preferences>
-        <version>0.0.22</version>
+        <version>0.0.23</version>
         <packagemanager>zypper</packagemanager>
         <rpm-check-signatures>false</rpm-check-signatures>
         <locale>en_US</locale>
@@ -302,6 +302,9 @@
         <package name="perl-TimeDate"/>
         <package name="zlib"/>
         <package name="zlib-devel"/>
+        <package name="prometheus-ha_cluster_exporter"/>
+        <package name="prometheus-hanadb_exporter"/>
+        <package name="prometheus-sap_host_exporter"/>
     </packages>
     <packages type="bootstrap">
         <!-- products -->
