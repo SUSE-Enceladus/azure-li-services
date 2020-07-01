@@ -60,7 +60,7 @@
         <package name="findutils-locate"/>
         <package name="audit-libs"/>
         <package name="keyutils-libs"/>
-        <package name="syslog-ng"/>
+        <package name="rsyslog"/>
         <package name="libopenssl1_0_0"/>
         <package name="libssh2-1"/>
         <!-- add for kernel crash dump analysis -->
