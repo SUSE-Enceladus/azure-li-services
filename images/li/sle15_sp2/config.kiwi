@@ -283,6 +283,7 @@
         <package name="prometheus-ha_cluster_exporter"/>
         <package name="prometheus-hanadb_exporter"/>
         <package name="prometheus-sap_host_exporter"/>
+        <package name="golang-github-prometheus-node_exporter"/>
     </packages>
     <packages type="bootstrap">
         <!-- products -->
