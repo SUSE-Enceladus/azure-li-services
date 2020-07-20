@@ -15,7 +15,7 @@
         <profile name="Production" description="Production Image Build"/>
     </profiles>
     <preferences>
-        <version>1.0.11</version>
+        <version>1.0.12</version>
         <packagemanager>zypper</packagemanager>
         <rpm-check-signatures>false</rpm-check-signatures>
         <locale>en_US</locale>
@@ -23,7 +23,7 @@
         <timezone>UTC</timezone>
     </preferences>
     <preferences profiles="Production">
-        <type image="oem" filesystem="xfs" bootloader="grub2" initrd_system="dracut" kernelcmdline="splash=verbose net.ifnames=1 mce=ignore_ce nomodeset numa_balancing=disable transparent_hugepage=never intel_idle.max_cstate=1 processor.max_cstate=1 crashkernel=160M,high crashkernel=80M,low" firmware="bios" bootpartition="false">
+        <type image="oem" filesystem="xfs" bootloader="grub2" initrd_system="dracut" kernelcmdline="splash=verbose loglevel=3 net.ifnames=1 mce=ignore_ce nomodeset numa_balancing=disable transparent_hugepage=never intel_idle.max_cstate=1 processor.max_cstate=1 crashkernel=160M,high crashkernel=80M,low" firmware="bios" bootpartition="false">
             <oemconfig>
                 <oem-swap>true</oem-swap>
                 <!-- swap size set to 2G -->
@@ -32,7 +32,7 @@
         </type>
     </preferences>
     <preferences profiles="Devel">
-        <type image="oem" filesystem="xfs" bootloader="grub2" initrd_system="dracut" kernelcmdline="splash=verbose net.ifnames=1 mce=ignore_ce nomodeset numa_balancing=disable transparent_hugepage=never intel_idle.max_cstate=1 processor.max_cstate=1 crashkernel=160M,high crashkernel=80M,low rd.kiwi.debug" firmware="bios" bootpartition="false">
+        <type image="oem" filesystem="xfs" bootloader="grub2" initrd_system="dracut" kernelcmdline="splash=verbose loglevel=3 net.ifnames=1 mce=ignore_ce nomodeset numa_balancing=disable transparent_hugepage=never intel_idle.max_cstate=1 processor.max_cstate=1 crashkernel=160M,high crashkernel=80M,low rd.kiwi.debug" firmware="bios" bootpartition="false">
             <oemconfig>
                 <oem-swap>true</oem-swap>
                 <!-- swap size set to 2G -->

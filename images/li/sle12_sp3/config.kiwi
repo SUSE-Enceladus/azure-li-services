@@ -15,7 +15,7 @@
         <profile name="Production" description="Production Image Build"/>
     </profiles>
     <preferences>
-        <version>1.0.58</version>
+        <version>1.0.59</version>
         <packagemanager>zypper</packagemanager>
         <rpm-check-signatures>false</rpm-check-signatures>
         <locale>en_US</locale>
@@ -24,7 +24,7 @@
         <hwclock>utc</hwclock>
     </preferences>
     <preferences profiles="Production">
-        <type image="oem" boot="oemboot/suse-SLES12" filesystem="ext4" bootloader="grub2" kernelcmdline="splash=verbose net.ifnames=1 mce=ignore_ce nomodeset numa_balancing=disable transparent_hugepage=never intel_idle.max_cstate=1 processor.max_cstate=1 crashkernel=160M,high crashkernel=80M,low" firmware="bios">
+        <type image="oem" boot="oemboot/suse-SLES12" filesystem="ext4" bootloader="grub2" kernelcmdline="splash=verbose loglevel=3 net.ifnames=1 mce=ignore_ce nomodeset numa_balancing=disable transparent_hugepage=never intel_idle.max_cstate=1 processor.max_cstate=1 crashkernel=160M,high crashkernel=80M,low" firmware="bios">
             <oemconfig>
                 <oem-swap>true</oem-swap>
                 <!-- swap size set to 2G -->
@@ -33,7 +33,7 @@
         </type>
     </preferences>
     <preferences profiles="Devel">
-        <type image="oem" boot="oemboot/suse-SLES12" filesystem="ext4" bootloader="grub2" kernelcmdline="splash=verbose net.ifnames=1 mce=ignore_ce nomodeset numa_balancing=disable transparent_hugepage=never intel_idle.max_cstate=1 processor.max_cstate=1 crashkernel=160M,high crashkernel=80M,low rd.kiwi.debug" firmware="bios">
+        <type image="oem" boot="oemboot/suse-SLES12" filesystem="ext4" bootloader="grub2" kernelcmdline="splash=verbose loglevel=3 net.ifnames=1 mce=ignore_ce nomodeset numa_balancing=disable transparent_hugepage=never intel_idle.max_cstate=1 processor.max_cstate=1 crashkernel=160M,high crashkernel=80M,low rd.kiwi.debug" firmware="bios">
             <oemconfig>
                 <oem-swap>true</oem-swap>
                 <!-- swap size set to 2G -->
