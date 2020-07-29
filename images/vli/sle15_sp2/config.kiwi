@@ -15,7 +15,7 @@
         <profile name="Production" description="Production Image Build"/>
     </profiles>
     <preferences>
-        <version>1.0.7</version>
+        <version>1.0.8</version>
         <packagemanager>zypper</packagemanager>
         <rpm-check-signatures>false</rpm-check-signatures>
         <locale>en_US</locale>
@@ -75,6 +75,7 @@
         <package name="parted"/>
         <package name="plymouth"/>
         <package name="psmisc"/>
+        <package name="rpm-ndb"/>
         <package name="rsync"/>
         <package name="syslinux"/>
         <package name="systemd"/>
