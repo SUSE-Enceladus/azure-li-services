@@ -58,6 +58,7 @@
         <package name="fonts-config"/>
         <package name="shim"/>
         <!-- requested by SAP Applications Configuration Guide for SAP HANA -->
+        <package name="gcc7"/>
         <package name="wireshark"/>
         <package name="findutils-locate"/>
         <package name="audit-libs"/>
