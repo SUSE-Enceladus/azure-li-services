@@ -15,7 +15,7 @@
         <profile name="Production" description="Production Image Build"/>
     </profiles>
     <preferences>
-        <version>1.0.8</version>
+        <version>1.0.7</version>
         <packagemanager>zypper</packagemanager>
         <rpm-check-signatures>false</rpm-check-signatures>
         <locale>en_US</locale>
