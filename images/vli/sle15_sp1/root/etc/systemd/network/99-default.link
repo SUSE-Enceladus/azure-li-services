@@ -1,0 +1,5 @@
+[Link]
+NamePolicy=path
+MACAddressPolicy=persistent
+[Match]
+OriginalName=*
