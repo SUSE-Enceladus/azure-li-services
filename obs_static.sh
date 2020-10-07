@@ -9,7 +9,8 @@ for image_system in images/*;do
     for image in obs/"${system}"/*;do
         if [ -d "${image}/root" ];then
             pushd "${image}/root"
-            sudo chown -R root:root .
+            find -type d | xargs chmod 0755
+            chkstat --system --root "$(pwd)" --set
             tar -czf ../root.tar.gz *
             popd
             sudo rm -rf "${image}/root"
