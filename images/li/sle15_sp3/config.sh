@@ -48,7 +48,6 @@ baseUpdateSysConfig /etc/sysconfig/language RC_LANG "C.UTF-8"
 baseUpdateSysConfig /etc/sysconfig/network/dhcp DHCLIENT_SET_HOSTNAME yes
 baseUpdateSysConfig /etc/sysconfig/network/dhcp WRITE_HOSTNAME_TO_HOSTS no
 baseUpdateSysConfig /etc/sysconfig/security POLKIT_DEFAULT_PRIVS restrictive
-# Firewall settings are applied with image config, per SAP NOte
 baseUpdateSysConfig /etc/sysconfig/windowmanager DEFAULT_WM ""
 baseUpdateSysConfig /etc/sysconfig/windowmanager INSTALL_DESKTOP_EXTENSIONS no
 
