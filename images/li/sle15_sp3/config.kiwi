@@ -3,7 +3,8 @@
 <!-- The line below is required in order to use the multibuild OBS features -->
 <!-- OBS-Profiles: @BUILD_FLAVOR@ -->
 <!-- OBS-ExclusiveArch: x86_64 -->
-<image schemaversion="6.2" name="SLES15-SP3-SAP-Azure-LI-BYOS" displayname="SLES15-SP3-SAP-Azure-LI-BYOS">
+
+<image schemaversion="7.2" name="SLES15-SP3-SAP-Azure-LI-BYOS" displayname="SLES15-SP3-SAP-Azure-LI-BYOS">
     <description type="system">
         <author>Public Cloud Team</author>
         <contact>public-cloud-dev@susecloud.net</contact>
@@ -15,7 +16,7 @@
         <profile name="Production" description="Production Image Build"/>
     </profiles>
     <preferences>
-        <version>1.0.10</version>
+        <version>0.9.0</version>
         <packagemanager>zypper</packagemanager>
         <rpm-check-signatures>false</rpm-check-signatures>
         <locale>en_US</locale>
@@ -23,28 +24,28 @@
         <timezone>UTC</timezone>
     </preferences>
     <preferences profiles="Production">
-        <type image="oem" filesystem="xfs" bootloader="grub2" initrd_system="dracut" kernelcmdline="splash=verbose loglevel=3 net.ifnames=1 mce=ignore_ce nomodeset numa_balancing=disable transparent_hugepage=never intel_idle.max_cstate=1 processor.max_cstate=1 crashkernel=160M,high crashkernel=80M,low" firmware="bios" bootpartition="false">
+        <type image="oem" filesystem="xfs" initrd_system="dracut" kernelcmdline="splash=verbose loglevel=3 net.ifnames=1 mce=ignore_ce nomodeset numa_balancing=disable transparent_hugepage=never intel_idle.max_cstate=1 processor.max_cstate=1 crashkernel=160M,high crashkernel=80M,low" firmware="bios" bootpartition="false">
+            <bootloader name="grub2"/>
             <oemconfig>
                 <oem-swap>true</oem-swap>
-                <!-- swap size set to 2G -->
                 <oem-swapsize>2048</oem-swapsize>
             </oemconfig>
         </type>
     </preferences>
     <preferences profiles="Devel">
-        <type image="oem" filesystem="xfs" bootloader="grub2" initrd_system="dracut" kernelcmdline="splash=verbose loglevel=3 net.ifnames=1 mce=ignore_ce nomodeset numa_balancing=disable transparent_hugepage=never intel_idle.max_cstate=1 processor.max_cstate=1 crashkernel=160M,high crashkernel=80M,low rd.kiwi.debug" firmware="bios" bootpartition="false">
+        <type image="oem" filesystem="xfs" initrd_system="dracut" kernelcmdline="splash=verbose loglevel=3 net.ifnames=1 mce=ignore_ce nomodeset numa_balancing=disable transparent_hugepage=never intel_idle.max_cstate=1 processor.max_cstate=1 crashkernel=160M,high crashkernel=80M,low rd.kiwi.debug" firmware="bios" bootpartition="false">
+            <bootloader name="grub2"/>
             <oemconfig>
                 <oem-swap>true</oem-swap>
-                <!-- swap size set to 2G -->
                 <oem-swapsize>2048</oem-swapsize>
             </oemconfig>
         </type>
     </preferences>
-    <users group="root">
-        <user password="$1$wYJUgpM5$RXMMeASDc035eX.NbYWFl0" home="/root" name="root"/>
+    <users>
+        <user password="$1$wYJUgpM5$RXMMeASDc035eX.NbYWFl0" home="/root" name="root" groups="root"/>
     </users>
-    <repository type="rpm-md" >
-        <source path='obsrepositories:/'/>
+    <repository type="rpm-md">
+        <source path="obsrepositories:/"/>
     </repository>
     <packages type="image">
         <!-- jeos server -->
@@ -149,7 +150,7 @@
         <package name="supportutils"/>
         <package name="supportutils-plugin-suse-public-cloud"/>
         <package name="SUSEConnect"/>
-        <package name="SuSEfirewall2"/>
+        <package name="firewalld"/>
         <package name="suse-build-key"/>
         <package name="tcpd"/>
         <package name="tcpdump"/>
