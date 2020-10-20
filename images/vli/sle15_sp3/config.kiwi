@@ -227,7 +227,6 @@
         <package name="yast2-users"/>
         <package name="yast2-xml"/>
         <package name="yast2-ycp-ui-bindings"/>
-        <package name="libyui-ncurses-pkg"/>
         <!-- end user configuration tools -->
         <!-- framework specific packages -->
         <package name="hyper-v"/>
@@ -274,7 +273,6 @@
         <package name="xauth"/>
         <package name="xkbcomp"/>
         <package name="xorg-x11-Xvnc"/>
-        <package name="yast2-control-center-qt"/>
         <package name="yast2-sap-scp"/>
         <package name="yast2-sap-scp-prodlist"/>
         <!-- Msft requested packages -->
