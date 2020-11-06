@@ -108,6 +108,9 @@ sed -i -e '/^ALL *ALL=(ALL) *ALL/ s/^/#/' /etc/sudoers
 #-----------------------------------------
 sed -i 's/Verbosity\ =\ 0/Verbosity\ =\ 3/' /etc/idmapd.conf
 
+# Track the variant
+echo 'VARIANT_ID="sles-sap"' >> /etc/os-release
+
 #======================================
 # Create service trigger files
 #--------------------------------------
