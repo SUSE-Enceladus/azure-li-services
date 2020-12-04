@@ -26,6 +26,7 @@
         <type image="oem" filesystem="xfs" initrd_system="dracut" kernelcmdline="splash=verbose loglevel=3 nomodeset net.ifnames=1 numa_balancing=disable transparent_hugepage=never intel_idle.max_cstate=1 processor.max_cstate=1 crashkernel=232M,high crashkernel=80M,low nohz=off skew_tick=1 intel_pstate=disable clocksource=tsc console=ttyS0,115200 disable_mtrr_trim tsc=reliable DefaultTimeoutStartSec=900s DefaultTimeoutStopSec=900s Nmi_watchdog=0" firmware="uefi" bootpartition="false">
             <bootloader name="grub2" console="console"/>
             <oemconfig>
+                <oem-multipath-scan>true</oem-multipath-scan>
                 <oem-swap>true</oem-swap>
                 <oem-swapsize>2048</oem-swapsize>
             </oemconfig>
@@ -35,6 +36,7 @@
         <type image="oem" filesystem="xfs" initrd_system="dracut" kernelcmdline="splash=verbose loglevel=3 nomodeset net.ifnames=1 numa_balancing=disable transparent_hugepage=never intel_idle.max_cstate=1 processor.max_cstate=1 crashkernel=232M,high crashkernel=80M,low nohz=off skew_tick=1 intel_pstate=disable clocksource=tsc console=ttyS0,115200 disable_mtrr_trim tsc=reliable DefaultTimeoutStartSec=900s DefaultTimeoutStopSec=900s Nmi_watchdog=0 rd.kiwi.debug" firmware="uefi" bootpartition="false">
             <bootloader name="grub2" console="console"/>
             <oemconfig>
+                <oem-multipath-scan>true</oem-multipath-scan>
                 <oem-swap>true</oem-swap>
                 <oem-swapsize>2048</oem-swapsize>
             </oemconfig>
