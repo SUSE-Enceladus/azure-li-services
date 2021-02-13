@@ -15,7 +15,7 @@
         <profile name="Production" description="Production Image Build"/>
     </profiles>
     <preferences>
-        <version>1.0.9</version>
+        <version>1.0.10</version>
         <packagemanager>zypper</packagemanager>
         <rpm-check-signatures>false</rpm-check-signatures>
         <locale>en_US</locale>
@@ -277,6 +277,7 @@
         <package name="libyui-qt"/>
         <package name="SAPHanaSR"/>
         <package name="SAPHanaSR-doc"/>
+        <package name="supportutils-plugin-ha-sap"/>
         <package name="system-role-sles4sap"/>
         <!-- tuned is only recommended by sapconf ??? -->
         <package name="tuned"/>
