@@ -15,7 +15,7 @@
         <profile name="Production" description="Production Image Build"/>
     </profiles>
     <preferences>
-        <version>0.9.0</version>
+        <version>0.9.1</version>
         <packagemanager>zypper</packagemanager>
         <rpm-check-signatures>false</rpm-check-signatures>
         <locale>en_US</locale>
@@ -272,6 +272,7 @@
         <package name="ipmitool"/>
         <package name="SAPHanaSR"/>
         <package name="SAPHanaSR-doc"/>
+        <package name="supportutils-plugin-ha-sap"/>
         <package name="xauth"/>
         <package name="xkbcomp"/>
         <package name="xorg-x11-Xvnc"/>
