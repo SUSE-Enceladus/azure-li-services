@@ -33,11 +33,6 @@ pushd /etc/products.d
 ln -sf SLES_SAP.prod baseproduct
 popd
 
-#======================================
-# Setup the build keys
-#--------------------------------------
-suseImportBuildKey
-
 #=========================================
 # Set sysconfig options
 #-----------------------------------------
