@@ -57,7 +57,6 @@ fi
 # Set sysconfig for things that are not setup by default, net new
 echo 'CONSOLE_FONT="lat9w-16.psfu"' >> /etc/sysconfig/console
 echo 'CONSOLE_SCREENMAP="trivial"' >> /etc/sysconfig/console
-echo 'DEFAULT_TIMEZONE="Etc/UTC"' >> /etc/sysconfig/clock
 echo 'HWCLOCK="-u"' >> /etc/sysconfig/clock
 echo 'UTC=true' >> /etc/sysconfig/clock
 
