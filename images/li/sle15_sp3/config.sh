@@ -55,17 +55,11 @@ if [ -f /etc/modprobe.d/unsupported-modules ];then
 fi
 
 # Set sysconfig for things that are not setup by default, net new
-echo 'CONSOLE_ENCODING="UTF-8"' >> /etc/sysconfig/console
 echo 'CONSOLE_FONT="lat9w-16.psfu"' >> /etc/sysconfig/console
 echo 'CONSOLE_SCREENMAP="trivial"' >> /etc/sysconfig/console
 echo 'DEFAULT_TIMEZONE="Etc/UTC"' >> /etc/sysconfig/clock
 echo 'HWCLOCK="-u"' >> /etc/sysconfig/clock
 echo 'UTC=true' >> /etc/sysconfig/clock
-echo '
-# The YaST-internal identifier of the attached keyboard.
-#
-YAST_KEYBOARD="english-us,pc104"' >> /etc/sysconfig/keyboard
-# Multi NIC is handeled by the YaML config file parsed with azure-li-services
 
 # Configuration outside of sysconfig
 # Setup policy kit
