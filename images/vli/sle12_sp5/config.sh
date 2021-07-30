@@ -52,9 +52,6 @@ baseUpdateSysConfig \
 baseUpdateSysConfig \
     /etc/sysconfig/security POLKIT_DEFAULT_PRIVS restrictive
 
-baseUpdateSysConfig \
-    /etc/sysconfig/storage USED_FS_LIST ext4
-
 #=========================================
 # Allow unsupported modules
 #-----------------------------------------
