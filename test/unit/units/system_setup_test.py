@@ -28,6 +28,9 @@ class TestSystemSetup(object):
     def setup(self):
         self.config = RuntimeConfig('../data/config.yaml')
 
+    def setup_method(self, cls):
+        self.setup()
+
     @patch('azure_li_services.logger.Logger.setup')
     @patch.object(system_setup, 'enable_extra_kernel_modules')
     @patch.object(system_setup, 'set_hostname')

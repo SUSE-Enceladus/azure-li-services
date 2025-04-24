@@ -36,6 +36,11 @@ class TestStatusReport(object):
                 call('\n')
             ]
 
+    @patch('os.path.exists')
+    @patch('azure_li_services.status_report.Path.create')
+    def setup_method(self, cls, mock_Path_create, mock_exists):
+        self.setup()
+
     def test_set_success(self):
         with patch('builtins.open', create=True) as mock_open:
             self.report.set_success()

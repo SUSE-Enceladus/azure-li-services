@@ -12,6 +12,9 @@ class TestStorage(object):
     def setup(self):
         self.config = RuntimeConfig('../data/config.yaml')
 
+    def setup_method(self, cls):
+        self.setup()
+
     @patch('azure_li_services.logger.Logger.setup')
     @patch('azure_li_services.command.Command.run')
     @patch('azure_li_services.units.storage.RuntimeConfig')

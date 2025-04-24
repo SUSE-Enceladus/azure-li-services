@@ -15,6 +15,12 @@
 # Please submit bugfixes or comments via http://bugs.opensuse.org/
 #
 
+%if 0%{?suse_version} >= 1600
+%define pythons %{primary_python}
+%else
+%define pythons python3
+%endif
+%global _sitelibdir %{%{pythons}_sitelib}
 
 Name:             azure-li-services
 Version:          %%VERSION
@@ -25,14 +31,27 @@ License:          GPL-3.0+
 Group:            System/Management
 Source:           azure-li-services.tar.gz
 BuildRoot:        %{_tmppath}/%{name}-%{version}-build
-BuildRequires:    python3-devel
-BuildRequires:    python3-setuptools
+BuildRequires:    %{pythons}-devel
+BuildRequires:    %{pythons}-setuptools
+%if 0%{?suse_version} >= 1600
+BuildRequires:  %{pythons}-pip
+BuildRequires:  %{pythons}-wheel
+%endif
+BuildRequires:  python-rpm-macros
 BuildRequires:    systemd-rpm-macros
-Requires:         python3-PyYAML
-Requires:         python3-setuptools
-Requires:         python3-psutil
-Requires:         python3-humanfriendly
-Requires:         python3-Cerberus
+%if 0%{?suse_version} >= 1600
+Requires:         python-PyYAML
+Requires:         python-setuptools
+Requires:         python-psutil
+Requires:         python-humanfriendly
+Requires:         python-Cerberus
+%else
+Requires:         %{pythons}-PyYAML
+Requires:         %{pythons}-setuptools
+Requires:         %{pythons}-psutil
+Requires:         %{pythons}-humanfriendly
+Requires:         %{pythons}-Cerberus
+%endif
 Requires:         shadow
 Requires(preun):  systemd
 Requires(postun): systemd
@@ -54,10 +73,18 @@ phase of an Azure Large or Very Large Instance.
 %setup -q -n azure_li_services-%{version}
 
 %build
-python3 setup.py build
+%if 0%{?suse_version} >= 1600
+%pyproject_wheel
+%else
+%{pythons} setup.py build
+%endif
 
 %install
-python3 setup.py install --prefix=%{_prefix} --root=%{buildroot}
+%if 0%{?suse_version} >= 1600
+%pyproject_install
+%else
+%{pythons} setup.py install --prefix=%{_prefix} --root=%{buildroot}
+%endif
 
 install -D -m 644 systemd/azure-li-config-lookup.service \
     %{buildroot}%{_unitdir}/azure-li-config-lookup.service
@@ -99,7 +126,7 @@ install -D -m 644 systemd/azure-li-system-setup.service \
 
 %files
 %defattr(-,root,root,-)
-%{python3_sitelib}/*
+%{_sitelibdir}/*
 
 %{_bindir}/azure-li-config-lookup
 %{_unitdir}/azure-li-config-lookup.service

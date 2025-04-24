@@ -7,6 +7,9 @@ class TestUsers(object):
     def setup(self):
         self.users = Users()
 
+    def setup_method(self, cls):
+        self.setup()
+
     @patch('azure_li_services.users.Command.run')
     def test_user_exists(self, mock_command):
         self.users.user_exists('user')
