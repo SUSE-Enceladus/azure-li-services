@@ -10,6 +10,9 @@ class TestRuntimeConfig(object):
     def setup(self):
         self.runtime_config = RuntimeConfig('../data/config.yaml')
 
+    def setup_method(self, cls):
+        self.setup()
+
     @patch('yaml.safe_load')
     def test_init_raises_on_invalid_format(self, mock_yaml_load):
         mock_yaml_load.side_effect = Exception

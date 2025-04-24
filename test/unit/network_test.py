@@ -21,6 +21,9 @@ class TestAzureHostedNetworkSetup(object):
         self.network_config_bond_vlan = config_bond_vlan.get_network_config()
         self.network_config_vlan_bond = config_vlan_bond.get_network_config()
 
+    def setup_method(self, cls):
+        self.setup()
+
     def test_create_default_route_config(self):
         network = AzureHostedNetworkSetup(self.network_config[0])
         with patch('builtins.open', create=True) as mock_open:

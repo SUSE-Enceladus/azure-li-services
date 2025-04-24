@@ -15,6 +15,9 @@ class TestUser(object):
     def setup(self):
         self.config = RuntimeConfig('../data/config.yaml')
 
+    def setup_method(self, cls):
+        self.setup()
+
     @patch('azure_li_services.logger.Logger.setup')
     @patch('azure_li_services.units.user.Command.run')
     @patch('azure_li_services.defaults.Defaults.mount_config_source')

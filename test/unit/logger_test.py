@@ -14,5 +14,5 @@ class TestLogger:
             logger = Logger()
             logger.setup()
             mock_open.assert_called_once_with(
-                '/var/log/azure-li-services.log', 'a', encoding=None
+                '/var/log/azure-li-services.log', 'a', encoding='locale', errors=None
             )
