@@ -29,7 +29,8 @@ Url:              https://github.com/SUSE/azure-li-services
 Summary:          Azure Large Instance Services
 License:          GPL-3.0+
 Group:            System/Management
-Source:           azure-li-services.tar.gz
+Source0:          %{name}.tar.gz
+Source1:          %{name}-rpmlintrc
 BuildRoot:        %{_tmppath}/%{name}-%{version}-build
 BuildRequires:    %{pythons}-devel
 BuildRequires:    %{pythons}-setuptools
